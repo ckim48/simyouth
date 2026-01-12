@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-2">
+  <h2 class="mb-0">Aftermath — Step {{ step_index }}</h2>
+  <span class="text-muted small">Step {{ step_index }} of {{ total_steps }}</span>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <h6 class="text-uppercase small text-muted mb-2">Immediate Consequence</h6>
+        <p class="mb-0">{{ micro_story }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <h6 class="text-uppercase small text-muted mb-2">Story So Far</h6>
+        <p class="mb-0">{{ so_far_story }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex justify-content-end mt-3">
+  <a class="btn btn-primary" href="{{ continue_url }}">Continue</a>
+</div>
+{% endblock %}

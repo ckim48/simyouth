@@ -1,0 +1,360 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- ===== Profile (Insights + Sessions; tabbed survey distribution) ===== -->
+<style>
+  :root{
+    --ink:#2b2b2b; --muted:#6b6b6b; --primary:#574545; --secondary:#ab8e8e;
+    --bg:#faf9f8; --surface:#ffffff; --edge:#ece7e7; --ring:#e6dddd;
+    --shadow-sm:0 2px 10px rgba(17,12,12,.04); --shadow-md:0 10px 30px rgba(17,12,12,.06);
+    --r:18px; --space:clamp(12px, 1.8vw, 18px);
+    --h1:clamp(24px, 2.4vw, 32px); --h2:clamp(18px, 1.9vw, 22px);
+    --label:12px; --body:clamp(14px, 1.35vw, 16px); --small:12.5px;
+  }
+  body{background:var(--bg);}
+  .page{max-width:1080px;margin:0 auto;padding:calc(var(--space)*1.2) var(--space);}
+  .page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space);margin-bottom:calc(var(--space)*1.1);}
+  .title{margin:0;font-size:var(--h1);line-height:1.15;font-weight:850;color:var(--primary);letter-spacing:.2px;}
+  .subtitle{margin:.35rem 0 0;color:var(--muted);font-size:var(--body);}
+  .card{background:var(--surface);border:1px solid var(--edge);border-radius:var(--r);box-shadow:var(--shadow-sm);}
+  .card-pad{padding:calc(var(--space)*1.1);}
+  .section-title{font-size:var(--h2);font-weight:800;margin:0 0 .6rem;color:var(--ink);}
+  .section-sub{margin:0 0 var(--space);color:var(--muted);font-size:var(--small);}
+
+  /* KPIs */
+  .kpis{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--space);}
+  .kpi{grid-column:span 4;background:linear-gradient(180deg,#fff,#fffaf9);border:1px solid var(--ring);border-radius:14px;padding:16px 14px;}
+  @media(max-width:900px){.kpi{grid-column:span 12;}}
+  .kpi .k{font-size:var(--label);color:var(--muted);margin-bottom:6px;letter-spacing:.3px;}
+  .kpi .v{font-size:clamp(24px,3.4vw,32px);font-weight:900;color:var(--primary);}
+
+  /* Charts grid */
+  .charts{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--space);margin-top:var(--space);}
+  .chart-card{grid-column:span 6;border:1px solid var(--edge);border-radius:14px;padding:16px;display:flex;flex-direction:column;min-height:320px;}
+  .chart-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+  .chart-title{font-weight:800;color:var(--ink);font-size:var(--body);}
+  .chart-note{color:var(--muted);font-size:var(--small);}
+  .chart-wrap{position:relative;flex:1;min-height:220px;}
+  @media(max-width:900px){.chart-card{grid-column:span 12;}}
+
+  /* High-contrast pill tabs */
+  .nav-tabs{ border:0; display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media(max-width:680px){ .nav-tabs{ grid-template-columns:1fr; } }
+  .nav-tabs .nav-item{ margin:0; }
+  .nav-tabs .nav-link{
+    display:block;
+    width:100%;
+    text-align:left;
+    font-weight:800;
+    font-size:14px;
+    line-height:1.25;
+    color:var(--secondary);
+    background:#f8f3f3;
+    border:1px solid var(--edge);
+    border-radius:12px;
+    padding:10px 12px;
+    white-space:normal;            /* allow wrapping */
+    box-shadow:inset 0 -1px 0 rgba(0,0,0,0.02);
+  }
+  .nav-tabs .nav-link:hover{ background:#f3ecec; }
+  .nav-tabs .nav-link.active{
+    color:var(--primary) !important;
+    background:#efe6e6;
+    border-color:var(--primary);
+    box-shadow:inset 0 0 0 2px var(--primary);
+  }
+  .tab-pane .chart-wrap{ min-height:260px; }
+
+  /* Sessions */
+  .run-list{list-style:none;padding:0;margin:0;}
+  .run-list li{border-top:1px solid var(--edge);padding:14px 0;}
+  .run-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .run-meta{color:var(--muted);font-size:var(--small);}
+  .btn-min{appearance:none;border:1px solid var(--edge);background:#fff;color:var(--ink);padding:6px 10px;border-radius:10px;font-size:12.5px;font-weight:700;}
+  .run-collapse{margin-top:10px;border:1px solid var(--edge);border-radius:12px;padding:12px;background:#fff;box-shadow:var(--shadow-sm);}
+  details summary{cursor:pointer;font-size:var(--small);color:var(--ink);}
+  .opt-list{margin:6px 0 0 14px;padding:0;}
+  .opt-list li{margin:6px 0;font-size:var(--small);}
+
+  /* Reflection chips */
+  .rf-chip{display:inline-block;border:1px solid var(--edge);border-radius:999px;padding:2px 8px;font-size:11.5px;margin-right:6px;}
+  .rf-pre{background:#f2f7ff;color:#1e3a8a;border-color:#dbeafe;}
+  .rf-post{background:#fef7f1;color:#9a3412;border-color:#fde7d5;}
+  .rf-q{color:#4b5563;font-size:var(--small);}
+  .rf-a{white-space:pre-wrap;margin-top:4px;font-size:var(--body);}
+</style>
+
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1 class="title">Your Profile</h1>
+      <p class="subtitle">Decision patterns and session history—summarized with clear visuals.</p>
+    </div>
+  </div>
+
+  <!-- ===== INSIGHTS ===== -->
+  <section class="card card-pad">
+    <h2 class="section-title">Insights</h2>
+    <p class="section-sub">Key numbers and visual summaries from your decisions and reflections.</p>
+
+    <!-- KPIs -->
+    <div class="kpis">
+      <div class="kpi"><div class="k">Total Runs</div><div class="v">{{ stats.counts.runs }}</div></div>
+      <div class="kpi"><div class="k">Decisions Logged</div><div class="v">{{ stats.counts.decisions }}</div></div>
+      <div class="kpi"><div class="k">Reflections</div><div class="v">{{ stats.counts.reflections }}</div></div>
+    </div>
+
+    <!-- Charts row -->
+    <div class="charts">
+      <!-- Radar -->
+      <div class="chart-card">
+        <div class="chart-head">
+          <div class="chart-title">Decision Pattern (Radar)</div>
+          <div class="chart-note">Normalized keyword scores</div>
+        </div>
+        <div class="chart-wrap"><canvas id="radarEthics"></canvas></div>
+      </div>
+
+      <!-- Pre/Post bars -->
+      <div class="chart-card">
+        <div class="chart-head">
+          <div class="chart-title">Confidence • Satisfaction • Sentiment</div>
+        </div>
+        <div class="chart-wrap"><canvas id="barSurvey"></canvas></div>
+      </div>
+
+      <!-- Doughnut sentiments -->
+      <div class="chart-card">
+        <div class="chart-head">
+          <div class="chart-title">Reflection Sentiment Distribution</div>
+          <div class="chart-note">Aggregate of all pre & post reflections</div>
+        </div>
+        <div class="chart-wrap"><canvas id="donutSentiment"></canvas></div>
+      </div>
+
+      <!-- TABBED Survey choice distributions -->
+      <div class="chart-card">
+        <div class="chart-head">
+          <div class="chart-title">Survey Choice Distribution</div>
+          <div class="chart-note">MCQ breakdowns</div>
+        </div>
+
+        <ul class="nav nav-tabs" role="tablist" style="margin-bottom:8px;">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="pre-tab" data-bs-toggle="tab" data-bs-target="#tab-pre" type="button" role="tab" aria-controls="tab-pre" aria-selected="true" data-chart="pre">
+              Pre: Which factor matters most?
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="post-tab" data-bs-toggle="tab" data-bs-target="#tab-post" type="button" role="tab" aria-controls="tab-post" aria-selected="false" data-chart="post">
+              Post: Your choice most likely…
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content" style="flex:1;">
+          <div class="tab-pane fade show active" id="tab-pre" role="tabpanel" aria-labelledby="pre-tab" tabindex="0">
+            <div class="chart-wrap"><canvas id="barPreFactor"></canvas></div>
+          </div>
+          <div class="tab-pane fade" id="tab-post" role="tabpanel" aria-labelledby="post-tab" tabindex="0">
+            <div class="chart-wrap"><canvas id="barPostEffect"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Recent Sessions ===== -->
+  <section class="card card-pad" style="margin-top:var(--space);box-shadow:var(--shadow-md);">
+    <h2 class="section-title">Recent Sessions</h2>
+    <ul class="run-list">
+      {% for r in runs %}
+        <li>
+          <div class="run-head">
+            <div>
+              <div style="font-weight:850;color:var(--ink);">{{ r.title }}</div>
+              <div class="run-meta">
+                {{ r.run_type|upper }} · {{ r.total_steps }} steps · {{ (r.finished_at or r.started_at)[:19].replace("T"," ") }}
+              </div>
+            </div>
+            <button class="btn-min" type="button" data-bs-toggle="collapse" data-bs-target="#run-{{ r.id }}">Details</button>
+          </div>
+
+          <div id="run-{{ r.id }}" class="collapse run-collapse">
+            {% if r.scenario_intro_excerpt %}
+              <p class="run-meta"><em>Intro:</em> {{ r.scenario_intro_excerpt }}</p>
+            {% endif %}
+            <ol style="margin:0 0 0 18px;padding:0;">
+              {% for d in r.decisions %}
+                <li style="margin:10px 0;">
+                  <div style="font-weight:800;color:var(--ink);">{{ d.step_title }}</div>
+                  <div>Chosen: <span style="font-weight:800;color:var(--primary)">{{ d.chosen_label }}</span>
+                    <span class="run-meta">({{ d.chosen_value }})</span>
+                  </div>
+                  {% if d.chosen_consequence %}
+                    <div class="run-meta">Consequence: {{ d.chosen_consequence }}</div>
+                  {% endif %}
+
+                  {% set step_reflections = r.reflections | selectattr('step_index','equalto', d.step_index) | list %}
+                  {% if step_reflections and step_reflections|length > 0 %}
+                    <div style="margin-top:8px;">
+                      {% for rf in step_reflections %}
+                        <div style="margin-bottom:8px;">
+                          <span class="rf-chip {{ 'rf-pre' if rf.phase=='pre' else 'rf-post' }}">{{ rf.phase|upper }} · step {{ rf.step_index }}</span>
+                          <div class="rf-q"><em>Q:</em> {{ rf.question_text }}</div>
+                          {% if rf.response_text %}
+                            <div class="rf-a"><em>A:</em> {{ rf.response_text }}</div>
+                            <div class="run-meta" style="margin-top:4px;">
+                              Sentiment:
+                              {% if rf.sentiment_label == 'positive' %}
+                                <span style="color:#065f46;">{{ rf.sentiment_label }} ({{ '%.2f'|format(rf.sentiment_score) }})</span>
+                              {% elif rf.sentiment_label == 'negative' %}
+                                <span style="color:#9a1c1c;">{{ rf.sentiment_label }} ({{ '%.2f'|format(rf.sentiment_score) }})</span>
+                              {% else %}
+                                <span>{{ rf.sentiment_label }} ({{ '%.2f'|format(rf.sentiment_score) }})</span>
+                              {% endif %}
+                            </div>
+                          {% else %}
+                            <div class="run-meta">No response recorded.</div>
+                          {% endif %}
+                        </div>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+
+                  {% if d.all_options and d.all_options|length > 0 %}
+                    <details style="margin-top:6px;">
+                      <summary>Show all options</summary>
+                      <ul class="opt-list">
+                        {% for o in d.all_options %}
+                          <li>
+                            <span style="font-weight:700;color:var(--ink);">{{ o.label }}</span>
+                            <span class="run-meta">({{ o.value }})</span>
+                            {% if o.consequence %}<div class="run-meta">{{ o.consequence }}</div>{% endif %}
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    </details>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ol>
+          </div>
+        </li>
+      {% else %}
+        <li class="run-meta">No sessions yet. Try
+          <a href="{{ url_for('scenario_choose') }}">a static scenario</a>
+          or <a href="{{ url_for('gpt_scenario_prefs') }}">generate one</a>.
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+</div>
+
+<!-- Chart.js + tab-aware sizing -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+(() => {
+  const STATS = {{ stats|tojson }};
+  const cPrimary = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#574545';
+  const cSecondary = getComputedStyle(document.documentElement).getPropertyValue('--secondary').trim() || '#ab8e8e';
+  const gridC = '#eae3e3';
+
+  const baseOpts = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: { y: { grid: { color: gridC } }, x: { grid: { display: false } } }
+  };
+
+  // Radar
+  (function(){
+    const el = document.getElementById('radarEthics'); if(!el) return;
+    const labels = ['Distinction','Proportionality','Necessity','Precaution'];
+    const vNorm = labels.map(k => (STATS.dimensions_norm?.[k] ?? 0));
+    const vRaw  = labels.map(k => (STATS.dimensions_raw?.[k] ?? 0));
+    new Chart(el, {
+      type: 'radar',
+      data: { labels, datasets: [{ data: vNorm, fill: true, backgroundColor: cSecondary + '22', borderColor: cSecondary, pointBackgroundColor: cSecondary, pointRadius: 3, borderWidth: 2 }] },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display:false }, tooltip: { callbacks: { label: (ctx)=> `${labels[ctx.dataIndex]}: ${vRaw[ctx.dataIndex]} hits (norm ${ctx.raw.toFixed(2)})` } } },
+        scales: { r: { beginAtZero:true, suggestedMax:1, angleLines:{ color:gridC }, grid:{ color:gridC }, pointLabels:{ color:'#4b4545', font:{ weight:700 } }, ticks:{ display:false } } }
+      }
+    });
+  })();
+
+  // Pre vs Post bars
+  (function(){
+    const el = document.getElementById('barSurvey'); if(!el) return;
+    const preConf = STATS.survey?.pre_confidence_avg ?? 0;
+    const postSat = STATS.survey?.post_satisfaction_avg ?? 0;
+    const preSent = STATS.sentiment?.pre_avg ?? 0;
+    const postSent = STATS.sentiment?.post_avg ?? 0;
+    new Chart(el, {
+      type: 'bar',
+      data: {
+        labels: ['Confidence (1–5)','Satisfaction (1–5)','Sentiment (−1..1)'],
+        datasets: [
+          { label:'Pre',  data:[preConf, null, preSent], backgroundColor: cPrimary + '55', borderColor: cPrimary, borderWidth:1 },
+          { label:'Post', data:[null, postSat, postSent], backgroundColor: cSecondary + '66', borderColor: cSecondary, borderWidth:1 }
+        ]
+      },
+      options: baseOpts
+    });
+  })();
+
+  // Doughnut sentiments
+  (function(){
+    const el = document.getElementById('donutSentiment'); if(!el) return;
+    const dist = STATS.sentiment?.dist || { positive:0, neutral:0, negative:0 };
+    new Chart(el, {
+      type: 'doughnut',
+      data: {
+        labels: ['Positive','Neutral','Negative'],
+        datasets: [{ data:[dist.positive||0, dist.neutral||0, dist.negative||0], backgroundColor:[cSecondary+'77', '#b5a6a6', cPrimary+'88'], borderColor:['#fff','#fff','#fff'], borderWidth:1 }]
+      },
+      options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:true, position:'bottom' } }, cutout:'62%' }
+    });
+  })();
+
+  // Tabbed survey charts (create both; resize on tab shown)
+  let _preChart = null, _postChart = null;
+
+  function buildPre(){
+    const el = document.getElementById('barPreFactor'); if(!el) return;
+    const dist = STATS.survey?.pre_factor_dist || { CIV:0, MS:0, TP:0, IQ:0 };
+    const labs = ['Civilian safety (CIV)','Mission success (MS)','Time pressure (TP)','Intel quality (IQ)'];
+    const vals = [dist.CIV||0, dist.MS||0, dist.TP||0, dist.IQ||0];
+    _preChart = new Chart(el, {
+      type: 'bar',
+      data: { labels: labs, datasets: [{ data: vals, backgroundColor: cPrimary + '33', borderColor: cPrimary, borderWidth: 1 }]},
+      options: { ...baseOpts, indexAxis: 'y' }
+    });
+  }
+
+  function buildPost(){
+    const el = document.getElementById('barPostEffect'); if(!el) return;
+    const dist = STATS.survey?.post_effect_dist || { RR:0, KS:0, IR:0, UN:0 };
+    const labs = ['Reduced risk (RR)','Kept similar (KS)','Increased risk (IR)','Unsure (UN)'];
+    const vals = [dist.RR||0, dist.KS||0, dist.IR||0, dist.UN||0];
+    _postChart = new Chart(el, {
+      type: 'bar',
+      data: { labels: labs, datasets: [{ data: vals, backgroundColor: cSecondary + '33', borderColor: cSecondary, borderWidth: 1 }]},
+      options: { ...baseOpts, indexAxis: 'y' }
+    });
+  }
+
+  buildPre();   // active tab first
+  buildPost();  // build hidden tab too
+
+  // Ensure proper sizing when a tab becomes visible
+  document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(btn => {
+    btn.addEventListener('shown.bs.tab', (e) => {
+      const which = e.target.dataset.chart;
+      if (which === 'pre' && _preChart) { _preChart.resize(); }
+      if (which === 'post' && _postChart) { _postChart.resize(); }
+    });
+  });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,1282 @@
+[
+  {
+    "path": "A-A-A-A",
+    "path_letters": "AAAA",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you take personal risk to extend help while take personal risk to extend help, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "A-A-A-B",
+    "path_letters": "AAAB",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you take personal risk to extend help while take personal risk to extend help, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "A-A-A-C",
+    "path_letters": "AAAC",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you take personal risk to extend help while take personal risk to extend help, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "A-A-A-D",
+    "path_letters": "AAAD",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you take personal risk to extend help while take personal risk to extend help, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "A-A-B-A",
+    "path_letters": "AABA",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you take personal risk to extend help while coordinate from relative safety, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "A-A-B-B",
+    "path_letters": "AABB",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you take personal risk to extend help while coordinate from relative safety, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "A-A-B-C",
+    "path_letters": "AABC",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you take personal risk to extend help while coordinate from relative safety, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "A-A-B-D",
+    "path_letters": "AABD",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you take personal risk to extend help while coordinate from relative safety, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "A-A-C-A",
+    "path_letters": "AACA",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you take personal risk to extend help while prioritize a small circle over the crowd, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "A-A-C-B",
+    "path_letters": "AACB",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you take personal risk to extend help while prioritize a small circle over the crowd, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "A-A-C-C",
+    "path_letters": "AACC",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you take personal risk to extend help while prioritize a small circle over the crowd, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "A-A-C-D",
+    "path_letters": "AACD",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you take personal risk to extend help while prioritize a small circle over the crowd, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "A-A-D-A",
+    "path_letters": "AADA",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you take personal risk to extend help while distance yourself to survive the aftermath, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "A-A-D-B",
+    "path_letters": "AADB",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you take personal risk to extend help while distance yourself to survive the aftermath, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "A-A-D-C",
+    "path_letters": "AADC",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you take personal risk to extend help while distance yourself to survive the aftermath, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "A-A-D-D",
+    "path_letters": "AADD",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you take personal risk to extend help while distance yourself to survive the aftermath, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "A-B-A-A",
+    "path_letters": "ABAA",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you coordinate from relative safety while take personal risk to extend help, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "A-B-A-B",
+    "path_letters": "ABAB",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you coordinate from relative safety while take personal risk to extend help, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "A-B-A-C",
+    "path_letters": "ABAC",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you coordinate from relative safety while take personal risk to extend help, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "A-B-A-D",
+    "path_letters": "ABAD",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you coordinate from relative safety while take personal risk to extend help, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "A-B-B-A",
+    "path_letters": "ABBA",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you coordinate from relative safety while coordinate from relative safety, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "A-B-B-B",
+    "path_letters": "ABBB",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you coordinate from relative safety while coordinate from relative safety, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "A-B-B-C",
+    "path_letters": "ABBC",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you coordinate from relative safety while coordinate from relative safety, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "A-B-B-D",
+    "path_letters": "ABBD",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you coordinate from relative safety while coordinate from relative safety, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "A-B-C-A",
+    "path_letters": "ABCA",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you coordinate from relative safety while prioritize a small circle over the crowd, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "A-B-C-B",
+    "path_letters": "ABCB",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you coordinate from relative safety while prioritize a small circle over the crowd, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "A-B-C-C",
+    "path_letters": "ABCC",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you coordinate from relative safety while prioritize a small circle over the crowd, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "A-B-C-D",
+    "path_letters": "ABCD",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you coordinate from relative safety while prioritize a small circle over the crowd, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "A-B-D-A",
+    "path_letters": "ABDA",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you coordinate from relative safety while distance yourself to survive the aftermath, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "A-B-D-B",
+    "path_letters": "ABDB",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you coordinate from relative safety while distance yourself to survive the aftermath, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "A-B-D-C",
+    "path_letters": "ABDC",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you coordinate from relative safety while distance yourself to survive the aftermath, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "A-B-D-D",
+    "path_letters": "ABDD",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you coordinate from relative safety while distance yourself to survive the aftermath, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "A-C-A-A",
+    "path_letters": "ACAA",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you prioritize a small circle over the crowd while take personal risk to extend help, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "A-C-A-B",
+    "path_letters": "ACAB",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you prioritize a small circle over the crowd while take personal risk to extend help, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "A-C-A-C",
+    "path_letters": "ACAC",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you prioritize a small circle over the crowd while take personal risk to extend help, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "A-C-A-D",
+    "path_letters": "ACAD",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you prioritize a small circle over the crowd while take personal risk to extend help, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "A-C-B-A",
+    "path_letters": "ACBA",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you prioritize a small circle over the crowd while coordinate from relative safety, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "A-C-B-B",
+    "path_letters": "ACBB",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you prioritize a small circle over the crowd while coordinate from relative safety, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "A-C-B-C",
+    "path_letters": "ACBC",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you prioritize a small circle over the crowd while coordinate from relative safety, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "A-C-B-D",
+    "path_letters": "ACBD",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you prioritize a small circle over the crowd while coordinate from relative safety, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "A-C-C-A",
+    "path_letters": "ACCA",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you prioritize a small circle over the crowd while prioritize a small circle over the crowd, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "A-C-C-B",
+    "path_letters": "ACCB",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you prioritize a small circle over the crowd while prioritize a small circle over the crowd, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "A-C-C-C",
+    "path_letters": "ACCC",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you prioritize a small circle over the crowd while prioritize a small circle over the crowd, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "A-C-C-D",
+    "path_letters": "ACCD",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you prioritize a small circle over the crowd while prioritize a small circle over the crowd, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "A-C-D-A",
+    "path_letters": "ACDA",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you prioritize a small circle over the crowd while distance yourself to survive the aftermath, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "A-C-D-B",
+    "path_letters": "ACDB",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you prioritize a small circle over the crowd while distance yourself to survive the aftermath, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "A-C-D-C",
+    "path_letters": "ACDC",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you prioritize a small circle over the crowd while distance yourself to survive the aftermath, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "A-C-D-D",
+    "path_letters": "ACDD",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you prioritize a small circle over the crowd while distance yourself to survive the aftermath, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "A-D-A-A",
+    "path_letters": "ADAA",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you distance yourself to survive the aftermath while take personal risk to extend help, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "A-D-A-B",
+    "path_letters": "ADAB",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you distance yourself to survive the aftermath while take personal risk to extend help, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "A-D-A-C",
+    "path_letters": "ADAC",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you distance yourself to survive the aftermath while take personal risk to extend help, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "A-D-A-D",
+    "path_letters": "ADAD",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you distance yourself to survive the aftermath while take personal risk to extend help, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "A-D-B-A",
+    "path_letters": "ADBA",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you distance yourself to survive the aftermath while coordinate from relative safety, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "A-D-B-B",
+    "path_letters": "ADBB",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you distance yourself to survive the aftermath while coordinate from relative safety, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "A-D-B-C",
+    "path_letters": "ADBC",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you distance yourself to survive the aftermath while coordinate from relative safety, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "A-D-B-D",
+    "path_letters": "ADBD",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you distance yourself to survive the aftermath while coordinate from relative safety, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "A-D-C-A",
+    "path_letters": "ADCA",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you distance yourself to survive the aftermath while prioritize a small circle over the crowd, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "A-D-C-B",
+    "path_letters": "ADCB",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you distance yourself to survive the aftermath while prioritize a small circle over the crowd, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "A-D-C-C",
+    "path_letters": "ADCC",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you distance yourself to survive the aftermath while prioritize a small circle over the crowd, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "A-D-C-D",
+    "path_letters": "ADCD",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you distance yourself to survive the aftermath while prioritize a small circle over the crowd, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "A-D-D-A",
+    "path_letters": "ADDA",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you distance yourself to survive the aftermath while distance yourself to survive the aftermath, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "A-D-D-B",
+    "path_letters": "ADDB",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you distance yourself to survive the aftermath while distance yourself to survive the aftermath, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "A-D-D-C",
+    "path_letters": "ADDC",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you distance yourself to survive the aftermath while distance yourself to survive the aftermath, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "A-D-D-D",
+    "path_letters": "ADDD",
+    "consequence": "After splitting the kit, you keep balancing fairness with risk as convoys come and go. In the end, you distance yourself to survive the aftermath while distance yourself to survive the aftermath, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "B-A-A-A",
+    "path_letters": "BAAA",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you take personal risk to extend help while take personal risk to extend help, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "B-A-A-B",
+    "path_letters": "BAAB",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you take personal risk to extend help while take personal risk to extend help, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "B-A-A-C",
+    "path_letters": "BAAC",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you take personal risk to extend help while take personal risk to extend help, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "B-A-A-D",
+    "path_letters": "BAAD",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you take personal risk to extend help while take personal risk to extend help, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "B-A-B-A",
+    "path_letters": "BABA",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you take personal risk to extend help while coordinate from relative safety, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "B-A-B-B",
+    "path_letters": "BABB",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you take personal risk to extend help while coordinate from relative safety, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "B-A-B-C",
+    "path_letters": "BABC",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you take personal risk to extend help while coordinate from relative safety, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "B-A-B-D",
+    "path_letters": "BABD",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you take personal risk to extend help while coordinate from relative safety, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "B-A-C-A",
+    "path_letters": "BACA",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you take personal risk to extend help while prioritize a small circle over the crowd, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "B-A-C-B",
+    "path_letters": "BACB",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you take personal risk to extend help while prioritize a small circle over the crowd, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "B-A-C-C",
+    "path_letters": "BACC",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you take personal risk to extend help while prioritize a small circle over the crowd, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "B-A-C-D",
+    "path_letters": "BACD",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you take personal risk to extend help while prioritize a small circle over the crowd, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "B-A-D-A",
+    "path_letters": "BADA",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you take personal risk to extend help while distance yourself to survive the aftermath, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "B-A-D-B",
+    "path_letters": "BADB",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you take personal risk to extend help while distance yourself to survive the aftermath, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "B-A-D-C",
+    "path_letters": "BADC",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you take personal risk to extend help while distance yourself to survive the aftermath, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "B-A-D-D",
+    "path_letters": "BADD",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you take personal risk to extend help while distance yourself to survive the aftermath, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "B-B-A-A",
+    "path_letters": "BBAA",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you coordinate from relative safety while take personal risk to extend help, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "B-B-A-B",
+    "path_letters": "BBAB",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you coordinate from relative safety while take personal risk to extend help, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "B-B-A-C",
+    "path_letters": "BBAC",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you coordinate from relative safety while take personal risk to extend help, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "B-B-A-D",
+    "path_letters": "BBAD",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you coordinate from relative safety while take personal risk to extend help, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "B-B-B-A",
+    "path_letters": "BBBA",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you coordinate from relative safety while coordinate from relative safety, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "B-B-B-B",
+    "path_letters": "BBBB",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you coordinate from relative safety while coordinate from relative safety, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "B-B-B-C",
+    "path_letters": "BBBC",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you coordinate from relative safety while coordinate from relative safety, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "B-B-B-D",
+    "path_letters": "BBBD",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you coordinate from relative safety while coordinate from relative safety, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "B-B-C-A",
+    "path_letters": "BBCA",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you coordinate from relative safety while prioritize a small circle over the crowd, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "B-B-C-B",
+    "path_letters": "BBCB",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you coordinate from relative safety while prioritize a small circle over the crowd, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "B-B-C-C",
+    "path_letters": "BBCC",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you coordinate from relative safety while prioritize a small circle over the crowd, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "B-B-C-D",
+    "path_letters": "BBCD",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you coordinate from relative safety while prioritize a small circle over the crowd, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "B-B-D-A",
+    "path_letters": "BBDA",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you coordinate from relative safety while distance yourself to survive the aftermath, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "B-B-D-B",
+    "path_letters": "BBDB",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you coordinate from relative safety while distance yourself to survive the aftermath, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "B-B-D-C",
+    "path_letters": "BBDC",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you coordinate from relative safety while distance yourself to survive the aftermath, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "B-B-D-D",
+    "path_letters": "BBDD",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you coordinate from relative safety while distance yourself to survive the aftermath, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "B-C-A-A",
+    "path_letters": "BCAA",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you prioritize a small circle over the crowd while take personal risk to extend help, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "B-C-A-B",
+    "path_letters": "BCAB",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you prioritize a small circle over the crowd while take personal risk to extend help, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "B-C-A-C",
+    "path_letters": "BCAC",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you prioritize a small circle over the crowd while take personal risk to extend help, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "B-C-A-D",
+    "path_letters": "BCAD",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you prioritize a small circle over the crowd while take personal risk to extend help, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "B-C-B-A",
+    "path_letters": "BCBA",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you prioritize a small circle over the crowd while coordinate from relative safety, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "B-C-B-B",
+    "path_letters": "BCBB",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you prioritize a small circle over the crowd while coordinate from relative safety, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "B-C-B-C",
+    "path_letters": "BCBC",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you prioritize a small circle over the crowd while coordinate from relative safety, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "B-C-B-D",
+    "path_letters": "BCBD",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you prioritize a small circle over the crowd while coordinate from relative safety, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "B-C-C-A",
+    "path_letters": "BCCA",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you prioritize a small circle over the crowd while prioritize a small circle over the crowd, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "B-C-C-B",
+    "path_letters": "BCCB",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you prioritize a small circle over the crowd while prioritize a small circle over the crowd, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "B-C-C-C",
+    "path_letters": "BCCC",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you prioritize a small circle over the crowd while prioritize a small circle over the crowd, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "B-C-C-D",
+    "path_letters": "BCCD",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you prioritize a small circle over the crowd while prioritize a small circle over the crowd, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "B-C-D-A",
+    "path_letters": "BCDA",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you prioritize a small circle over the crowd while distance yourself to survive the aftermath, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "B-C-D-B",
+    "path_letters": "BCDB",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you prioritize a small circle over the crowd while distance yourself to survive the aftermath, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "B-C-D-C",
+    "path_letters": "BCDC",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you prioritize a small circle over the crowd while distance yourself to survive the aftermath, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "B-C-D-D",
+    "path_letters": "BCDD",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you prioritize a small circle over the crowd while distance yourself to survive the aftermath, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "B-D-A-A",
+    "path_letters": "BDAA",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you distance yourself to survive the aftermath while take personal risk to extend help, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "B-D-A-B",
+    "path_letters": "BDAB",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you distance yourself to survive the aftermath while take personal risk to extend help, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "B-D-A-C",
+    "path_letters": "BDAC",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you distance yourself to survive the aftermath while take personal risk to extend help, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "B-D-A-D",
+    "path_letters": "BDAD",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you distance yourself to survive the aftermath while take personal risk to extend help, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "B-D-B-A",
+    "path_letters": "BDBA",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you distance yourself to survive the aftermath while coordinate from relative safety, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "B-D-B-B",
+    "path_letters": "BDBB",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you distance yourself to survive the aftermath while coordinate from relative safety, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "B-D-B-C",
+    "path_letters": "BDBC",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you distance yourself to survive the aftermath while coordinate from relative safety, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "B-D-B-D",
+    "path_letters": "BDBD",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you distance yourself to survive the aftermath while coordinate from relative safety, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "B-D-C-A",
+    "path_letters": "BDCA",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you distance yourself to survive the aftermath while prioritize a small circle over the crowd, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "B-D-C-B",
+    "path_letters": "BDCB",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you distance yourself to survive the aftermath while prioritize a small circle over the crowd, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "B-D-C-C",
+    "path_letters": "BDCC",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you distance yourself to survive the aftermath while prioritize a small circle over the crowd, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "B-D-C-D",
+    "path_letters": "BDCD",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you distance yourself to survive the aftermath while prioritize a small circle over the crowd, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "B-D-D-A",
+    "path_letters": "BDDA",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you distance yourself to survive the aftermath while distance yourself to survive the aftermath, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "B-D-D-B",
+    "path_letters": "BDDB",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you distance yourself to survive the aftermath while distance yourself to survive the aftermath, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "B-D-D-C",
+    "path_letters": "BDDC",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you distance yourself to survive the aftermath while distance yourself to survive the aftermath, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "B-D-D-D",
+    "path_letters": "BDDD",
+    "consequence": "After giving the kit to the boy, your choices revolve around protecting the boy while the neighborhood watches your tradeoffs. In the end, you distance yourself to survive the aftermath while distance yourself to survive the aftermath, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "C-A-A-A",
+    "path_letters": "CAAA",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you take personal risk to extend help while take personal risk to extend help, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "C-A-A-B",
+    "path_letters": "CAAB",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you take personal risk to extend help while take personal risk to extend help, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "C-A-A-C",
+    "path_letters": "CAAC",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you take personal risk to extend help while take personal risk to extend help, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "C-A-A-D",
+    "path_letters": "CAAD",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you take personal risk to extend help while take personal risk to extend help, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "C-A-B-A",
+    "path_letters": "CABA",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you take personal risk to extend help while coordinate from relative safety, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "C-A-B-B",
+    "path_letters": "CABB",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you take personal risk to extend help while coordinate from relative safety, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "C-A-B-C",
+    "path_letters": "CABC",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you take personal risk to extend help while coordinate from relative safety, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "C-A-B-D",
+    "path_letters": "CABD",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you take personal risk to extend help while coordinate from relative safety, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "C-A-C-A",
+    "path_letters": "CACA",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you take personal risk to extend help while prioritize a small circle over the crowd, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "C-A-C-B",
+    "path_letters": "CACB",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you take personal risk to extend help while prioritize a small circle over the crowd, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "C-A-C-C",
+    "path_letters": "CACC",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you take personal risk to extend help while prioritize a small circle over the crowd, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "C-A-C-D",
+    "path_letters": "CACD",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you take personal risk to extend help while prioritize a small circle over the crowd, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "C-A-D-A",
+    "path_letters": "CADA",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you take personal risk to extend help while distance yourself to survive the aftermath, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "C-A-D-B",
+    "path_letters": "CADB",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you take personal risk to extend help while distance yourself to survive the aftermath, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "C-A-D-C",
+    "path_letters": "CADC",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you take personal risk to extend help while distance yourself to survive the aftermath, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "C-A-D-D",
+    "path_letters": "CADD",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you take personal risk to extend help while distance yourself to survive the aftermath, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "C-B-A-A",
+    "path_letters": "CBAA",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you coordinate from relative safety while take personal risk to extend help, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "C-B-A-B",
+    "path_letters": "CBAB",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you coordinate from relative safety while take personal risk to extend help, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "C-B-A-C",
+    "path_letters": "CBAC",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you coordinate from relative safety while take personal risk to extend help, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "C-B-A-D",
+    "path_letters": "CBAD",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you coordinate from relative safety while take personal risk to extend help, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "C-B-B-A",
+    "path_letters": "CBBA",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you coordinate from relative safety while coordinate from relative safety, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "C-B-B-B",
+    "path_letters": "CBBB",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you coordinate from relative safety while coordinate from relative safety, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "C-B-B-C",
+    "path_letters": "CBBC",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you coordinate from relative safety while coordinate from relative safety, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "C-B-B-D",
+    "path_letters": "CBBD",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you coordinate from relative safety while coordinate from relative safety, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "C-B-C-A",
+    "path_letters": "CBCA",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you coordinate from relative safety while prioritize a small circle over the crowd, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "C-B-C-B",
+    "path_letters": "CBCB",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you coordinate from relative safety while prioritize a small circle over the crowd, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "C-B-C-C",
+    "path_letters": "CBCC",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you coordinate from relative safety while prioritize a small circle over the crowd, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "C-B-C-D",
+    "path_letters": "CBCD",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you coordinate from relative safety while prioritize a small circle over the crowd, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "C-B-D-A",
+    "path_letters": "CBDA",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you coordinate from relative safety while distance yourself to survive the aftermath, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "C-B-D-B",
+    "path_letters": "CBDB",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you coordinate from relative safety while distance yourself to survive the aftermath, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "C-B-D-C",
+    "path_letters": "CBDC",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you coordinate from relative safety while distance yourself to survive the aftermath, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "C-B-D-D",
+    "path_letters": "CBDD",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you coordinate from relative safety while distance yourself to survive the aftermath, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "C-C-A-A",
+    "path_letters": "CCAA",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you prioritize a small circle over the crowd while take personal risk to extend help, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "C-C-A-B",
+    "path_letters": "CCAB",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you prioritize a small circle over the crowd while take personal risk to extend help, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "C-C-A-C",
+    "path_letters": "CCAC",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you prioritize a small circle over the crowd while take personal risk to extend help, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "C-C-A-D",
+    "path_letters": "CCAD",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you prioritize a small circle over the crowd while take personal risk to extend help, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "C-C-B-A",
+    "path_letters": "CCBA",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you prioritize a small circle over the crowd while coordinate from relative safety, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "C-C-B-B",
+    "path_letters": "CCBB",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you prioritize a small circle over the crowd while coordinate from relative safety, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "C-C-B-C",
+    "path_letters": "CCBC",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you prioritize a small circle over the crowd while coordinate from relative safety, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "C-C-B-D",
+    "path_letters": "CCBD",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you prioritize a small circle over the crowd while coordinate from relative safety, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "C-C-C-A",
+    "path_letters": "CCCA",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you prioritize a small circle over the crowd while prioritize a small circle over the crowd, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "C-C-C-B",
+    "path_letters": "CCCB",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you prioritize a small circle over the crowd while prioritize a small circle over the crowd, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "C-C-C-C",
+    "path_letters": "CCCC",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you prioritize a small circle over the crowd while prioritize a small circle over the crowd, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "C-C-C-D",
+    "path_letters": "CCCD",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you prioritize a small circle over the crowd while prioritize a small circle over the crowd, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "C-C-D-A",
+    "path_letters": "CCDA",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you prioritize a small circle over the crowd while distance yourself to survive the aftermath, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "C-C-D-B",
+    "path_letters": "CCDB",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you prioritize a small circle over the crowd while distance yourself to survive the aftermath, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "C-C-D-C",
+    "path_letters": "CCDC",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you prioritize a small circle over the crowd while distance yourself to survive the aftermath, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "C-C-D-D",
+    "path_letters": "CCDD",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you prioritize a small circle over the crowd while distance yourself to survive the aftermath, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "C-D-A-A",
+    "path_letters": "CDAA",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you distance yourself to survive the aftermath while take personal risk to extend help, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "C-D-A-B",
+    "path_letters": "CDAB",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you distance yourself to survive the aftermath while take personal risk to extend help, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "C-D-A-C",
+    "path_letters": "CDAC",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you distance yourself to survive the aftermath while take personal risk to extend help, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "C-D-A-D",
+    "path_letters": "CDAD",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you distance yourself to survive the aftermath while take personal risk to extend help, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "C-D-B-A",
+    "path_letters": "CDBA",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you distance yourself to survive the aftermath while coordinate from relative safety, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "C-D-B-B",
+    "path_letters": "CDBB",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you distance yourself to survive the aftermath while coordinate from relative safety, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "C-D-B-C",
+    "path_letters": "CDBC",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you distance yourself to survive the aftermath while coordinate from relative safety, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "C-D-B-D",
+    "path_letters": "CDBD",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you distance yourself to survive the aftermath while coordinate from relative safety, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "C-D-C-A",
+    "path_letters": "CDCA",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you distance yourself to survive the aftermath while prioritize a small circle over the crowd, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "C-D-C-B",
+    "path_letters": "CDCB",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you distance yourself to survive the aftermath while prioritize a small circle over the crowd, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "C-D-C-C",
+    "path_letters": "CDCC",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you distance yourself to survive the aftermath while prioritize a small circle over the crowd, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "C-D-C-D",
+    "path_letters": "CDCD",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you distance yourself to survive the aftermath while prioritize a small circle over the crowd, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "C-D-D-A",
+    "path_letters": "CDDA",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you distance yourself to survive the aftermath while distance yourself to survive the aftermath, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "C-D-D-B",
+    "path_letters": "CDDB",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you distance yourself to survive the aftermath while distance yourself to survive the aftermath, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "C-D-D-C",
+    "path_letters": "CDDC",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you distance yourself to survive the aftermath while distance yourself to survive the aftermath, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "C-D-D-D",
+    "path_letters": "CDDD",
+    "consequence": "After treating Lena fully, you navigate evacuation lines and hard bargains as the boy’s condition shadows each step. In the end, you distance yourself to survive the aftermath while distance yourself to survive the aftermath, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "D-A-A-A",
+    "path_letters": "DAAA",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you take personal risk to extend help while take personal risk to extend help, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "D-A-A-B",
+    "path_letters": "DAAB",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you take personal risk to extend help while take personal risk to extend help, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "D-A-A-C",
+    "path_letters": "DAAC",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you take personal risk to extend help while take personal risk to extend help, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "D-A-A-D",
+    "path_letters": "DAAD",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you take personal risk to extend help while take personal risk to extend help, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "D-A-B-A",
+    "path_letters": "DABA",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you take personal risk to extend help while coordinate from relative safety, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "D-A-B-B",
+    "path_letters": "DABB",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you take personal risk to extend help while coordinate from relative safety, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "D-A-B-C",
+    "path_letters": "DABC",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you take personal risk to extend help while coordinate from relative safety, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "D-A-B-D",
+    "path_letters": "DABD",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you take personal risk to extend help while coordinate from relative safety, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "D-A-C-A",
+    "path_letters": "DACA",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you take personal risk to extend help while prioritize a small circle over the crowd, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "D-A-C-B",
+    "path_letters": "DACB",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you take personal risk to extend help while prioritize a small circle over the crowd, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "D-A-C-C",
+    "path_letters": "DACC",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you take personal risk to extend help while prioritize a small circle over the crowd, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "D-A-C-D",
+    "path_letters": "DACD",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you take personal risk to extend help while prioritize a small circle over the crowd, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "D-A-D-A",
+    "path_letters": "DADA",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you take personal risk to extend help while distance yourself to survive the aftermath, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "D-A-D-B",
+    "path_letters": "DADB",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you take personal risk to extend help while distance yourself to survive the aftermath, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "D-A-D-C",
+    "path_letters": "DADC",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you take personal risk to extend help while distance yourself to survive the aftermath, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "D-A-D-D",
+    "path_letters": "DADD",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you take personal risk to extend help while distance yourself to survive the aftermath, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "D-B-A-A",
+    "path_letters": "DBAA",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you coordinate from relative safety while take personal risk to extend help, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "D-B-A-B",
+    "path_letters": "DBAB",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you coordinate from relative safety while take personal risk to extend help, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "D-B-A-C",
+    "path_letters": "DBAC",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you coordinate from relative safety while take personal risk to extend help, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "D-B-A-D",
+    "path_letters": "DBAD",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you coordinate from relative safety while take personal risk to extend help, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "D-B-B-A",
+    "path_letters": "DBBA",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you coordinate from relative safety while coordinate from relative safety, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "D-B-B-B",
+    "path_letters": "DBBB",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you coordinate from relative safety while coordinate from relative safety, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "D-B-B-C",
+    "path_letters": "DBBC",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you coordinate from relative safety while coordinate from relative safety, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "D-B-B-D",
+    "path_letters": "DBBD",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you coordinate from relative safety while coordinate from relative safety, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "D-B-C-A",
+    "path_letters": "DBCA",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you coordinate from relative safety while prioritize a small circle over the crowd, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "D-B-C-B",
+    "path_letters": "DBCB",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you coordinate from relative safety while prioritize a small circle over the crowd, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "D-B-C-C",
+    "path_letters": "DBCC",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you coordinate from relative safety while prioritize a small circle over the crowd, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "D-B-C-D",
+    "path_letters": "DBCD",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you coordinate from relative safety while prioritize a small circle over the crowd, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "D-B-D-A",
+    "path_letters": "DBDA",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you coordinate from relative safety while distance yourself to survive the aftermath, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "D-B-D-B",
+    "path_letters": "DBDB",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you coordinate from relative safety while distance yourself to survive the aftermath, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "D-B-D-C",
+    "path_letters": "DBDC",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you coordinate from relative safety while distance yourself to survive the aftermath, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "D-B-D-D",
+    "path_letters": "DBDD",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you coordinate from relative safety while distance yourself to survive the aftermath, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "D-C-A-A",
+    "path_letters": "DCAA",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you prioritize a small circle over the crowd while take personal risk to extend help, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "D-C-A-B",
+    "path_letters": "DCAB",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you prioritize a small circle over the crowd while take personal risk to extend help, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "D-C-A-C",
+    "path_letters": "DCAC",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you prioritize a small circle over the crowd while take personal risk to extend help, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "D-C-A-D",
+    "path_letters": "DCAD",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you prioritize a small circle over the crowd while take personal risk to extend help, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "D-C-B-A",
+    "path_letters": "DCBA",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you prioritize a small circle over the crowd while coordinate from relative safety, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "D-C-B-B",
+    "path_letters": "DCBB",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you prioritize a small circle over the crowd while coordinate from relative safety, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "D-C-B-C",
+    "path_letters": "DCBC",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you prioritize a small circle over the crowd while coordinate from relative safety, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "D-C-B-D",
+    "path_letters": "DCBD",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you prioritize a small circle over the crowd while coordinate from relative safety, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "D-C-C-A",
+    "path_letters": "DCCA",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you prioritize a small circle over the crowd while prioritize a small circle over the crowd, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "D-C-C-B",
+    "path_letters": "DCCB",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you prioritize a small circle over the crowd while prioritize a small circle over the crowd, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "D-C-C-C",
+    "path_letters": "DCCC",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you prioritize a small circle over the crowd while prioritize a small circle over the crowd, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "D-C-C-D",
+    "path_letters": "DCCD",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you prioritize a small circle over the crowd while prioritize a small circle over the crowd, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "D-C-D-A",
+    "path_letters": "DCDA",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you prioritize a small circle over the crowd while distance yourself to survive the aftermath, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "D-C-D-B",
+    "path_letters": "DCDB",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you prioritize a small circle over the crowd while distance yourself to survive the aftermath, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "D-C-D-C",
+    "path_letters": "DCDC",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you prioritize a small circle over the crowd while distance yourself to survive the aftermath, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "D-C-D-D",
+    "path_letters": "DCDD",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you prioritize a small circle over the crowd while distance yourself to survive the aftermath, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "D-D-A-A",
+    "path_letters": "DDAA",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you distance yourself to survive the aftermath while take personal risk to extend help, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "D-D-A-B",
+    "path_letters": "DDAB",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you distance yourself to survive the aftermath while take personal risk to extend help, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "D-D-A-C",
+    "path_letters": "DDAC",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you distance yourself to survive the aftermath while take personal risk to extend help, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "D-D-A-D",
+    "path_letters": "DDAD",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you distance yourself to survive the aftermath while take personal risk to extend help, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "D-D-B-A",
+    "path_letters": "DDBA",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you distance yourself to survive the aftermath while coordinate from relative safety, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "D-D-B-B",
+    "path_letters": "DDBB",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you distance yourself to survive the aftermath while coordinate from relative safety, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "D-D-B-C",
+    "path_letters": "DDBC",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you distance yourself to survive the aftermath while coordinate from relative safety, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "D-D-B-D",
+    "path_letters": "DDBD",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you distance yourself to survive the aftermath while coordinate from relative safety, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "D-D-C-A",
+    "path_letters": "DDCA",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you distance yourself to survive the aftermath while prioritize a small circle over the crowd, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "D-D-C-B",
+    "path_letters": "DDCB",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you distance yourself to survive the aftermath while prioritize a small circle over the crowd, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "D-D-C-C",
+    "path_letters": "DDCC",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you distance yourself to survive the aftermath while prioritize a small circle over the crowd, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "D-D-C-D",
+    "path_letters": "DDCD",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you distance yourself to survive the aftermath while prioritize a small circle over the crowd, accepting guilt while forging a new routine. Silence buys time, not peace."
+  },
+  {
+    "path": "D-D-D-A",
+    "path_letters": "DDDA",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you distance yourself to survive the aftermath while distance yourself to survive the aftermath, bringing aid home sooner. People remember the courage more than the cost."
+  },
+  {
+    "path": "D-D-D-B",
+    "path_letters": "DDDB",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you distance yourself to survive the aftermath while distance yourself to survive the aftermath, stabilizing logistics and fair distribution. Quiet diligence prevents duplication and waste."
+  },
+  {
+    "path": "D-D-D-C",
+    "path_letters": "DDDC",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you distance yourself to survive the aftermath while distance yourself to survive the aftermath, protecting family even when others wait. The choice is intimate, and the consequence lingers."
+  },
+  {
+    "path": "D-D-D-D",
+    "path_letters": "DDDD",
+    "consequence": "After hiding the kit for your sister, you move between paperwork and secrecy, choosing who is seen and who waits. In the end, you distance yourself to survive the aftermath while distance yourself to survive the aftermath, accepting guilt while forging a new routine. Silence buys time, not peace."
+  }
+]

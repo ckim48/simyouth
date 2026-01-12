@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <title>Dashboard</title>
+    <style>
+        .chart-card{
+            background: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            border-radius: 1rem;
+            padding: 1.5rem;
+        }
+        .dashboard-container{
+            margin: 3rem auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container dashboard-container">
+    <h2 class="text-center mb-5">Dashboard - Experiment Results</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="chart-card">
+                <h5>Chart Title</h5>
+                <canvas id="lineChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="chart-card">
+                <h5>Chart Title2</h5>
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.umd.min.js" crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<script>
+    const ctxLine = document.getElementById('lineChart').getContext('2d');
+    new Chart(ctxLine, {
+        type: 'line',
+        data: {
+            labels: ['Jan',"Feb","Mar","Apr","May"],
+            datasets: [{
+                label: 'Performance',
+                data: [12,19,14,25,22,30],
+                borderColor:  '#0d6efd',
+                backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                fill: true,
+                tension: 0.35,
+                pointRadius: 4
+            }]
+        }
+
+    });
+
+    const ctxBar = document.getElementById('barChart').getContext('2d');
+        new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+            labels: ['A',"B","C","D","E"],
+            datasets: [{
+                label: 'Counts',
+                data: [12,19,14,25,22,30],
+                backgroundColor: [
+                    "#F5B6A9", "#E3D1B6", "#DBE3B6", "#B6E3DC", "#E3B6E2"
+                ],
+                borderRadius: 10
+            }]
+        }
+
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --primary:#574545;
+      --secondary:#AB8E8E;
+      --ink:#2b2b2b;
+      --muted:#6b6b6b;
+      --edge:#e9e4e4;
+      --surface:#ffffff;
+    }
+    body{
+      min-height:100vh;
+      margin:0;
+      font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,sans-serif;
+      background:
+        radial-gradient(1000px 600px at -10% -10%, #fff1f1 0%, transparent 60%),
+        radial-gradient(900px 500px at 110% 110%, #f0e7e7 0%, transparent 60%),
+        linear-gradient(to right,#AB8E8E,#574545);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      color:var(--ink);
+    }
+    .auth-wrap{width:100%;max-width:420px;}
+    .brand-top{
+      display:flex;align-items:center;gap:.6rem;justify-content:center;
+      color:#fff; margin-bottom:18px; opacity:.95;
+    }
+    .brand-mark{
+      width:12px;height:12px;border-radius:50%;
+      background:rgba(255,255,255,.85); box-shadow:0 0 0 6px rgba(255,255,255,.18);
+    }
+    .brand-top h1{
+      font-size:1rem; font-weight:700; letter-spacing:.3px; margin:0;
+    }
+    .card{
+      border:1px solid var(--edge);
+      border-radius:18px;
+      box-shadow:0 20px 45px rgba(0,0,0,.1);
+      overflow:hidden;
+      background:var(--surface);
+    }
+    .card-head{
+      padding:1.2rem 1.25rem;
+      background:linear-gradient(180deg,#fff 0%, #f9f6f6 100%);
+      border-bottom:1px solid var(--edge);
+    }
+    .card-head h2{
+      font-size:1.25rem;font-weight:800;color:var(--primary);margin:0;
+    }
+    .card-body{padding:1.5rem;}
+    label{font-weight:700;color:var(--primary);margin-bottom:.35rem;}
+    .form-control{
+      border:1px solid var(--edge);border-radius:12px;padding:.75rem .9rem;
+    }
+    .form-control:focus{
+      border-color:var(--secondary);box-shadow:0 0 0 .2rem rgba(171,142,142,.20);
+    }
+    .btn-main{
+      background:var(--secondary);border:none;color:#fff;font-weight:700;
+      border-radius:12px;padding:.8rem 1.1rem;
+    }
+    .btn-main:hover{background:var(--primary);}
+    .btn-ghost{
+      border:1px solid var(--edge);color:var(--primary);background:#fff;
+      border-radius:12px;padding:.8rem 1.1rem;font-weight:700;
+    }
+    .btn-ghost:hover{border-color:var(--secondary);color:var(--secondary);}
+    .row-actions{display:flex;gap:.75rem;}
+    @media(max-width:480px){.row-actions{flex-direction:column;}}
+  </style>
+</head>
+<body>
+  <div class="auth-wrap">
+    <div class="brand-top">
+      <span class="brand-mark"></span>
+      <h1>Decision Study</h1>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2>Welcome back</h2>
+      </div>
+      <div class="card-body">
+        <form action="{{ url_for('login') }}" method="POST">
+          <div class="mb-3">
+            <label>Username</label>
+            <input name="username" class="form-control" placeholder="Enter your username" required>
+          </div>
+          <div class="mb-3">
+            <label>Password</label>
+            <input name="password" type="password" class="form-control" placeholder="Enter your password" required>
+          </div>
+
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              <div class="alert alert-warning small">{{ messages[0] }}</div>
+            {% endif %}
+          {% endwith %}
+
+          <div class="row-actions mt-4">
+            <button type="submit" class="btn btn-main w-100">Login</button>
+            <a href="{{ url_for('register') }}" class="btn btn-ghost w-100">Create Account</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

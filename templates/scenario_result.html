@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+:root{
+  --ink:#2b2b2b; --muted:#6b6b6b;
+  --primary:#574545; --secondary:#ab8e8e;
+  --edge:#e8e3e3; --surface:#ffffff; --bg:#f9f7f7;
+  --ring:#f1e5e5;
+  --shadow:0 10px 28px rgba(87,69,69,.10);
+}
+body{ background:linear-gradient(180deg,#fcfbfb 0%, #f6f3f3 100%); }
+.page{ max-width:980px; margin:0 auto; padding:1.5rem; }
+.h1{ margin:0; font-weight:800; color:var(--primary); letter-spacing:.2px; }
+.sub{ color:var(--muted); margin:.35rem 0 0; }
+.header{ display:flex; justify-content:space-between; align-items:end; gap:1rem; flex-wrap:wrap; }
+
+.meta{ text-align:right; min-width:260px; }
+.meta .row{ display:flex; gap:.5rem; justify-content:flex-end; flex-wrap:wrap; }
+.badge{ display:inline-block; font-weight:700; padding:.25rem .55rem; border-radius:999px; border:1px solid var(--edge); background:#fff; }
+.badge-weak{ background:#f8f3f3; border-color:#e6dcdc; color:var(--primary); }
+.kv{ margin-top:.4rem; font-size:.9rem; color:var(--muted); }
+
+.card{ background:var(--surface); border:1px solid var(--edge); border-radius:16px; box-shadow:var(--shadow); }
+.card + .card{ margin-top:1rem; }
+.card-head{ display:flex; justify-content:space-between; align-items:center; padding:1rem 1.25rem; border-bottom:1px solid var(--edge); }
+.card-title{ margin:0; color:var(--primary); font-weight:800; font-size:1.05rem; }
+.card-body{ padding:1.25rem; }
+.section-sub{ color:var(--muted); }
+
+.step-list{ list-style:none; padding:0; margin:0; }
+.step-list li{ padding:1rem 0; border-bottom:1px solid var(--edge); }
+.step-list li:last-child{ border-bottom:none; }
+.step-title{ margin:0 0 .3rem; font-weight:700; color:var(--primary); }
+.step-label{ margin:0; }
+.step-cons{ margin:.25rem 0 0; color:var(--muted); }
+
+.story{ color:var(--ink); line-height:1.75; }
+
+.grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+@media(max-width:900px){ .grid-2{ grid-template-columns:1fr; } .meta{ text-align:left; } }
+
+.pill{ display:inline-block; background:#f6eaea; border:1px solid #eadede; color:var(--primary); border-radius:999px; padding:.25rem .6rem; margin:.2rem .25rem 0 0; font-weight:700; }
+.kicker{ display:inline-block; background:#fff; border:1px solid var(--edge); padding:.2rem .5rem; border-radius:6px; font-weight:700; color:var(--primary); }
+
+.helper{ display:flex; gap:.5rem; align-items:center; }
+.btn-soft{
+  background:var(--primary); color:#fff; border:none; border-radius:10px;
+  padding:.6rem 1rem; font-weight:700; letter-spacing:.2px;
+}
+.btn-soft.outline{ background:#fff; color:var(--primary); border:1px solid var(--edge); }
+.btn-soft:hover{ filter:brightness(.98); }
+
+.copy-wrap{ position:relative; }
+.copy-wrap pre{
+  margin:0; padding:1rem; max-height:260px; overflow:auto;
+  background:#fff; border:1px solid var(--edge); border-radius:12px; font-size:.9rem;
+}
+.copy-actions{ display:flex; gap:.5rem; margin-top:.6rem; }
+.small-muted{ color:var(--muted); font-size:.9rem; }
+.hr-soft{ border:none; height:1px; background:var(--edge); margin:1rem 0; }
+</style>
+
+<div class="page">
+  <div class="header">
+    <div>
+      <h1 class="h1">{{ scenario_title }}</h1>
+      <p class="sub">Result summary and reflective insights.</p>
+    </div>
+    <div class="meta">
+      <div class="row">
+        <span class="badge">Path: <strong>{{ path_letters }}</strong></span>
+        <span class="badge badge-weak">Steps: <strong>{{ decisions|length }}</strong></span>
+      </div>
+      <div class="kv">Completed at: {{ timestamp | int | datetime }}</div>
+    </div>
+  </div>
+
+  <!-- Ending / Summary -->
+  <div class="card">
+    <div class="card-head">
+      <h3 class="card-title">Outcome</h3>
+      <span class="kicker">Summary</span>
+    </div>
+    <div class="card-body">
+      <p class="section-sub">{{ scenario_intro }}</p>
+      <hr class="hr-soft">
+      <p class="story"><strong>Ending:</strong> {{ ending }}</p>
+    </div>
+  </div>
+
+  <!-- Decisions -->
+  <div class="card">
+    <div class="card-head">
+      <h3 class="card-title">Your Decisions</h3>
+      <span class="kicker">Step-by-step</span>
+    </div>
+    <div class="card-body">
+      <ul class="step-list">
+        {% for d in decisions %}
+        <li>
+          <p class="step-title">Step {{ d.step_id }} — {{ d.title }}</p>
+          <p class="step-label"><strong>Chosen:</strong> {{ d.label }}</p>
+          {% if d.consequence %}
+          <p class="step-cons"><strong>Consequence:</strong> {{ d.consequence }}</p>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <!-- Full Story -->
+  <div class="card">
+    <div class="card-head">
+      <h3 class="card-title">Stitched Narrative</h3>
+      <span class="kicker">Story so far</span>
+    </div>
+    <div class="card-body">
+      {% if full_story %}
+        <p class="story">{{ full_story }}</p>
+      {% else %}
+        <p class="small-muted">Narrative will appear when at least one step has a consequence.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if run_journal %}
+  <!-- Reflective Journal (GPT) -->
+  <div class="card">
+    <div class="card-head">
+      <h3 class="card-title">Reflective Journal</h3>
+      <span class="kicker">IHL-aligned self-assessment</span>
+    </div>
+    <div class="card-body">
+      <div class="grid-2">
+        <div>
+          <h5 class="mb-2" style="color:var(--primary);font-weight:800;">Narrative Summary</h5>
+          <p class="story">{{ run_journal.narrative_summary }}</p>
+        </div>
+        <div>
+          <h5 class="mb-2" style="color:var(--primary);font-weight:800;">Framework Self-Assessment</h5>
+          <ul class="list-unstyled">
+            {% for k,v in run_journal.framework_self_assessment.items() %}
+              <li class="mb-2"><strong>{{ k }}:</strong> {{ v }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+
+      <hr class="hr-soft">
+
+      <div class="grid-2">
+        <div>
+          <h5 class="mb-2" style="color:var(--primary);font-weight:800;">Decision Rationale</h5>
+          <ul class="list-unstyled">
+            {% for r in run_journal.decision_rationale %}
+              <li class="mb-2"><strong>Step {{ r.step }}:</strong> {{ r.why }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div>
+          <h5 class="mb-2" style="color:var(--primary);font-weight:800;">Emotional Influences</h5>
+          <p class="story">{{ run_journal.emotional_influences }}</p>
+        </div>
+      </div>
+
+      <hr class="hr-soft">
+
+      <div class="grid-2">
+        <div>
+          <h5 class="mb-2" style="color:var(--primary);font-weight:800;">Growth Targets</h5>
+          {% if run_journal.growth_targets and run_journal.growth_targets|length %}
+            {% for g in run_journal.growth_targets %}<span class="pill">{{ g }}</span>{% endfor %}
+          {% else %}
+            <p class="small-muted">No targets provided.</p>
+          {% endif %}
+        </div>
+        <div>
+          <h5 class="mb-2" style="color:var(--primary);font-weight:800;">Action Items</h5>
+          {% if run_journal.action_items and run_journal.action_items|length %}
+            {% for a in run_journal.action_items %}<span class="pill">{{ a }}</span>{% endfor %}
+          {% else %}
+            <p class="small-muted">No action items provided.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Raw JSON (copy/export) -->
+      <hr class="hr-soft">
+      <div class="copy-wrap">
+        <h6 class="mb-2" style="color:var(--primary);font-weight:800;">Journal JSON</h6>
+        <pre id="journalJSON">{{ run_journal | tojson(indent=2) }}</pre>
+        <div class="copy-actions">
+          <button class="btn-soft" id="btnCopy">Copy JSON</button>
+          <button class="btn-soft outline" id="btnDownload">Download JSON</button>
+          <span class="small-muted" id="copyStatus" style="margin-left:.5rem;"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Next actions -->
+  <div class="card">
+    <div class="card-head">
+      <h3 class="card-title">What’s Next</h3>
+      <span class="kicker">Continue</span>
+    </div>
+    <div class="card-body helper">
+      <a href="{{ url_for('profile') }}" class="btn-soft outline">View Profile</a>
+      <a href="{{ url_for('scenario_choose') }}" class="btn-soft outline">Try Static Scenario</a>
+      <a href="{{ url_for('gpt_scenario_prefs') }}" class="btn-soft">Generate New GPT Scenario</a>
+    </div>
+  </div>
+</div>
+
+<script>
+// Jinja filter shortcut for timestamp -> local string
+// (the server provided int seconds; we render via custom filter in Python if you added it.
+// If not, keep this client fallback.)
+(function(){
+  const tsNode = document.querySelector('.kv');
+  if(!tsNode) return;
+  const m = tsNode.textContent.match(/Completed at: (\d+)/);
+  if(!m) return;
+  const ms = parseInt(m[1],10) * 1000;
+  const d = new Date(ms);
+  tsNode.textContent = "Completed at: " + d.toLocaleString();
+})();
+
+const preEl = document.getElementById('journalJSON');
+const copyBtn = document.getElementById('btnCopy');
+const dlBtn = document.getElementById('btnDownload');
+const statusEl = document.getElementById('copyStatus');
+
+if(copyBtn && preEl){
+  copyBtn.addEventListener('click', async ()=>{
+    try{
+      await navigator.clipboard.writeText(preEl.textContent);
+      if(statusEl){ statusEl.textContent = "Copied!"; setTimeout(()=>statusEl.textContent="", 1500); }
+    }catch(e){
+      if(statusEl){ statusEl.textContent = "Copy failed"; setTimeout(()=>statusEl.textContent="", 1500); }
+    }
+  });
+}
+if(dlBtn && preEl){
+  dlBtn.addEventListener('click', ()=>{
+    const blob = new Blob([preEl.textContent], {type: "application/json"});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = "reflective_journal.json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  });
+}
+</script>
+
+{% endblock %}

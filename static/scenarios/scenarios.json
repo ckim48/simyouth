@@ -1,0 +1,478 @@
+{
+  "A": {
+    "id": "A",
+    "title": "Ukraine Civilian Ethics — Empathy Path",
+    "intro": "Yarova, Ukraine. A winter blast tears through the queue for the supply van. You survive only because you ran back inside for bandages for Lena, a seventy‑three‑year‑old widow. Hidden beneath your floorboards lies one last sealed medical kit. Across the road, a boy bleeds into his mother’s coat. No medics. No certainty. Only choices.",
+    "steps": [
+      {
+        "id": 1,
+        "title": "One Kit, Two Lives",
+        "situation": "The street is glassed with ice and dust. Shrapnel ticks as it cools. Lena’s leg is swollen and angry red; the boy’s breaths are shallow and fast. Your sister whispers, “What do we do?” The kit in your hands feels heavier than steel.",
+        "question": "Who receives the last medical kit?",
+        "options": [
+          {
+            "value": "A1",
+            "label": "Split the kit between Lena and the boy",
+            "consequence": "You divide ointment, gauze, and pills with surgical care, knowing it may be too little for both. Lena squeezes your wrist in thanks; the boy’s mother mouths a silent prayer. Dawn will test whether ‘fair’ was also ‘effective’. When the sun rises, if transport appears and offers only one civilian seat, do you advocate for the boy, for Lena, for yourself—or for no one?"
+          },
+          {
+            "value": "B1",
+            "label": "Give the full kit to the boy",
+            "consequence": "You clean the wound, medicate, and bind until his breaths lengthen. Across the road, Lena looks away and nods, as if granting permission you never sought. By nightfall, fever breaks for the boy; infection deepens for Lena. Tomorrow a convoy may allow one seat—if that moment comes, will you go with the boy, send him alone, choose Lena instead, or take the seat yourself?"
+          },
+          {
+            "value": "C1",
+            "label": "Give the full kit to Lena",
+            "consequence": "You flush the wound, pack gauze, and wrap her leg. She weeps—a sound like a memory cracking. The boy’s mother turns, holding him closer. By morning he is colder; Lena is warmer. If an evacuation truck later offers exactly one seat, do you stand by Lena, send the boy, send yourself, or refuse to choose?"
+          },
+          {
+            "value": "D1",
+            "label": "Keep the kit hidden",
+            "consequence": "You say you have nothing. The lie lingers in the air like smoke. By dawn the boy is gone; by the third day Lena fades. Your sister stops speaking to you. When evacuation finally comes and asks for your story, do you donate the still‑sealed kit, destroy it, keep it, or send it—along with the truth—to your sister?"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "One Seat on the Truck",
+        "situation": "Word spreads: a Red Cross–UN convoy can take exactly one more civilian. A medic points to you: “You’ve been helping. You decide.” Engines idle. Snow begins again.",
+        "question": "Who boards the final seat?",
+        "options": [
+          {
+            "value": "A2",
+            "label": "The boy—and you go with him to advocate at arrival.",
+            "consequence": "You lift him in, promising his mother you’ll argue his case. Kilometers later, in Lviv, surgery is possible—but so is forgetting the faces you left behind. A coordinator asks for one more choice: return east escorting a medical shipment, send supplies only, stay silent, or lie about your origin to ease asylum?"
+          },
+          {
+            "value": "B2",
+            "label": "Lena—and you accompany her through checkpoints.",
+            "consequence": "You steady her up the tailgate as documents blur under a soldier’s stare. At a field hospital, a doctor whispers: wait weeks for surgery, push for priority, or arrange a risky transfer to Poland. Which path will you take when compassion collides with capacity?"
+          },
+          {
+            "value": "C2",
+            "label": "Place the boy on the truck alone; you remain.",
+            "consequence": "The medic wraps him in a blanket as the truck lurches away. Night fire returns; basements become lungs. A rumor of a westbound convoy forces another call: walk slowly together, run ahead to secure spots, send your sister ahead and stay with Lena, or refuse the road and wait?"
+          },
+          {
+            "value": "D2",
+            "label": "Take the seat yourself; tell no one.",
+            "consequence": "Truck steel swallows you. Silence follows you to Dnipro, then Lviv, then abroad. Months later a TV frame finds your sister alive in a camp. Will you contact her, help anonymously, travel to her, or continue the lie you began at the tailgate?"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Distance, Duty, and Stories We Tell",
+        "situation": "Shelter offers food and forms—but also choices that fix your story in ink. A coordinator asks for help that risks your progress; a doctor asks for favors you cannot guarantee; your radio or phone can still reach those you left.",
+        "question": "How do you use safety and distance?",
+        "options": [
+          {
+            "value": "A3",
+            "label": "Return east escorting medical shipments",
+            "consequence": "At dawn you ride past craters and burned fields. You deliver crates and find your sister thinner but alive; the boy steadier; Lena gone. The medics offer you a ride back out in two hours—leave with your sister, stay to rebuild, send her alone, or disappear before choosing again?"
+          },
+          {
+            "value": "B3",
+            "label": "Stay but mobilize aid: messages, money, logistics, and advocacy.",
+            "consequence": "Your letters and packages arrive late but alive. One day, a plea: another child needs surgery you might arrange. Do you dive fully into coordination, give only money, write regrets, or go quiet to protect your fragile stability?"
+          },
+          {
+            "value": "C3",
+            "label": "Stay silent; build a new life and let memory blur.",
+            "consequence": "You learn the language of elevators, pay stubs, and quiet. News from Yarova breaks through—a list with your sister’s name. Do you call, write, send money without a name, or do nothing and keep the wall intact?"
+          },
+          {
+            "value": "D3",
+            "label": "Lie about your hometown to ease asylum; sever ties cleanly.",
+            "consequence": "Paperwork moves faster; nights grow longer. When a colleague seeks anyone from Yarova, the lie constricts. Do you confess and help, search privately, contact a reconnection NGO anonymously, or double down on the lie?"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "What Your Choices Make of You",
+        "situation": "Time does not heal so much as accumulate. Aid routes shift. Front lines breathe. You have seen what fairness, loyalty, pragmatism, and fear each purchase.",
+        "question": "Given everything, how do you close this chapter—for now?",
+        "options": [
+          {
+            "value": "A4",
+            "label": "Leave again with your sister",
+            "consequence": "You board together and do not look back until the road bends. You learn to cook for two in a new city and to memorialize the third at the table. Your story becomes service: you translate intake forms, steady trembling hands at clinics, and keep one empty chair on holidays. On quiet nights, you revisit the first blast only to confirm that the love you protected is still here—and that you did not stop loving those you could not save."
+          },
+          {
+            "value": "B4",
+            "label": "Stay and rebuild Yarova—caretaker of graves and beginnings.",
+            "consequence": "You map wells, list names, and plant onions between shell holes. When convoys come, you teach triage that centers dignity: label kits, post windows, publish loops. You become the person you needed—one who makes the next decider’s load slightly lighter."
+          },
+          {
+            "value": "C4",
+            "label": "Help from the shadows; keep certain truths unsent.",
+            "consequence": "You route donations, arrange transfers, and let thank‑you notes pile up with no return address. Your silence protects some people and imprisons others. Years later, you tell the whole story to a counselor—or to your child—and discover that absolution was never the goal; accountability was."
+          },
+          {
+            "value": "D4",
+            "label": "Cut ties; survive; let history judge",
+            "consequence": "You keep your head down, build credit, and master a language that lacks words for what happened. One day at a fundraiser someone displays a sealed kit like the one you once hid. You step outside before the applause. On the walk home you realize that forgetting is a muscle: it strengthens with use, but it cannot lift what love chose to carry."
+          }
+        ]
+      }
+    ]
+  },
+  "B": {
+    "id": "B",
+    "title": "Ukraine Civilian Ethics — Child‑First Path",
+    "intro": "Yarova, Ukraine. A winter blast tears through the queue for the supply van. You survive only because you ran back inside for bandages for Lena, a seventy‑three‑year‑old widow. Hidden beneath your floorboards lies one last sealed medical kit. Across the road, a boy bleeds into his mother’s coat. No medics. No certainty. Only choices.",
+    "steps": [
+      {
+        "id": 1,
+        "title": "One Kit, Two Lives",
+        "situation": "The street is glassed with ice and dust. Shrapnel ticks as it cools. Lena’s leg is swollen and angry red; the boy’s breaths are shallow and fast. Your sister whispers, “What do we do?” The kit in your hands feels heavier than steel.",
+        "question": "Who receives the last medical kit?",
+        "options": [
+          {
+            "value": "A1",
+            "label": "Split the kit between Lena and the boy",
+            "consequence": "You divide ointment, gauze, and pills with surgical care, knowing it may be too little for both. Lena squeezes your wrist in thanks; the boy’s mother mouths a silent prayer. Dawn will test whether ‘fair’ was also ‘effective’. When the sun rises, if transport appears and offers only one civilian seat, do you advocate for the boy, for Lena, for yourself—or for no one?"
+          },
+          {
+            "value": "B1",
+            "label": "Give the full kit to the boy",
+            "consequence": "You clean the wound, medicate, and bind until his breaths lengthen. Across the road, Lena looks away and nods, as if granting permission you never sought. By nightfall, fever breaks for the boy; infection deepens for Lena. Tomorrow a convoy may allow one seat—if that moment comes, will you go with the boy, send him alone, choose Lena instead, or take the seat yourself?"
+          },
+          {
+            "value": "C1",
+            "label": "Give the full kit to Lena",
+            "consequence": "You flush the wound, pack gauze, and wrap her leg. She weeps—a sound like a memory cracking. The boy’s mother turns, holding him closer. By morning he is colder; Lena is warmer. If an evacuation truck later offers exactly one seat, do you stand by Lena, send the boy, send yourself, or refuse to choose?"
+          },
+          {
+            "value": "D1",
+            "label": "Keep the kit hidden",
+            "consequence": "You say you have nothing. The lie lingers in the air like smoke. By dawn the boy is gone; by the third day Lena fades. Your sister stops speaking to you. When evacuation finally comes and asks for your story, do you donate the still‑sealed kit, destroy it, keep it, or send it—along with the truth—to your sister?"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "One Seat on the Truck",
+        "situation": "Word spreads: a Red Cross–UN convoy can take exactly one more civilian. A medic points to you: “You’ve been helping. You decide.” Engines idle. Snow begins again.",
+        "question": "Who boards the final seat?",
+        "options": [
+          {
+            "value": "A2",
+            "label": "The boy—and you go with him to advocate at arrival.",
+            "consequence": "You lift him in, promising his mother you’ll argue his case. Kilometers later, in Lviv, surgery is possible—but so is forgetting the faces you left behind. A coordinator asks for one more choice: return east escorting a medical shipment, send supplies only, stay silent, or lie about your origin to ease asylum?"
+          },
+          {
+            "value": "B2",
+            "label": "Lena—and you accompany her through checkpoints.",
+            "consequence": "You steady her up the tailgate as documents blur under a soldier’s stare. At a field hospital, a doctor whispers: wait weeks for surgery, push for priority, or arrange a risky transfer to Poland. Which path will you take when compassion collides with capacity?"
+          },
+          {
+            "value": "C2",
+            "label": "Place the boy on the truck alone; you remain.",
+            "consequence": "The medic wraps him in a blanket as the truck lurches away. Night fire returns; basements become lungs. A rumor of a westbound convoy forces another call: walk slowly together, run ahead to secure spots, send your sister ahead and stay with Lena, or refuse the road and wait?"
+          },
+          {
+            "value": "D2",
+            "label": "Take the seat yourself; tell no one.",
+            "consequence": "Truck steel swallows you. Silence follows you to Dnipro, then Lviv, then abroad. Months later a TV frame finds your sister alive in a camp. Will you contact her, help anonymously, travel to her, or continue the lie you began at the tailgate?"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Distance, Duty, and Stories We Tell",
+        "situation": "Shelter offers food and forms—but also choices that fix your story in ink. A coordinator asks for help that risks your progress; a doctor asks for favors you cannot guarantee; your radio or phone can still reach those you left.",
+        "question": "How do you use safety and distance?",
+        "options": [
+          {
+            "value": "A3",
+            "label": "Return east escorting medical shipments",
+            "consequence": "At dawn you ride past craters and burned fields. You deliver crates and find your sister thinner but alive; the boy steadier; Lena gone. The medics offer you a ride back out in two hours—leave with your sister, stay to rebuild, send her alone, or disappear before choosing again?"
+          },
+          {
+            "value": "B3",
+            "label": "Stay but mobilize aid: messages, money, logistics, and advocacy.",
+            "consequence": "Your letters and packages arrive late but alive. One day, a plea: another child needs surgery you might arrange. Do you dive fully into coordination, give only money, write regrets, or go quiet to protect your fragile stability?"
+          },
+          {
+            "value": "C3",
+            "label": "Stay silent; build a new life and let memory blur.",
+            "consequence": "You learn the language of elevators, pay stubs, and quiet. News from Yarova breaks through—a list with your sister’s name. Do you call, write, send money without a name, or do nothing and keep the wall intact?"
+          },
+          {
+            "value": "D3",
+            "label": "Lie about your hometown to ease asylum; sever ties cleanly.",
+            "consequence": "Paperwork moves faster; nights grow longer. When a colleague seeks anyone from Yarova, the lie constricts. Do you confess and help, search privately, contact a reconnection NGO anonymously, or double down on the lie?"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "What Your Choices Make of You",
+        "situation": "Time does not heal so much as accumulate. Aid routes shift. Front lines breathe. You have seen what fairness, loyalty, pragmatism, and fear each purchase.",
+        "question": "Given everything, how do you close this chapter—for now?",
+        "options": [
+          {
+            "value": "A4",
+            "label": "Leave again with your sister",
+            "consequence": "You board together and do not look back until the road bends. You learn to cook for two in a new city and to memorialize the third at the table. Your story becomes service: you translate intake forms, steady trembling hands at clinics, and keep one empty chair on holidays. On quiet nights, you revisit the first blast only to confirm that the love you protected is still here—and that you did not stop loving those you could not save."
+          },
+          {
+            "value": "B4",
+            "label": "Stay and rebuild Yarova—caretaker of graves and beginnings.",
+            "consequence": "You map wells, list names, and plant onions between shell holes. When convoys come, you teach triage that centers dignity: label kits, post windows, publish loops. You become the person you needed—one who makes the next decider’s load slightly lighter."
+          },
+          {
+            "value": "C4",
+            "label": "Help from the shadows; keep certain truths unsent.",
+            "consequence": "You route donations, arrange transfers, and let thank‑you notes pile up with no return address. Your silence protects some people and imprisons others. Years later, you tell the whole story to a counselor—or to your child—and discover that absolution was never the goal; accountability was."
+          },
+          {
+            "value": "D4",
+            "label": "Cut ties; survive; let history judge",
+            "consequence": "You keep your head down, build credit, and master a language that lacks words for what happened. One day at a fundraiser someone displays a sealed kit like the one you once hid. You step outside before the applause. On the walk home you realize that forgetting is a muscle: it strengthens with use, but it cannot lift what love chose to carry."
+          }
+        ]
+      }
+    ]
+  },
+  "C": {
+    "id": "C",
+    "title": "Ukraine Civilian Ethics — Loyalty Path",
+    "intro": "Yarova, Ukraine. A winter blast tears through the queue for the supply van. You survive only because you ran back inside for bandages for Lena, a seventy‑three‑year‑old widow. Hidden beneath your floorboards lies one last sealed medical kit. Across the road, a boy bleeds into his mother’s coat. No medics. No certainty. Only choices.",
+    "steps": [
+      {
+        "id": 1,
+        "title": "One Kit, Two Lives",
+        "situation": "The street is glassed with ice and dust. Shrapnel ticks as it cools. Lena’s leg is swollen and angry red; the boy’s breaths are shallow and fast. Your sister whispers, “What do we do?” The kit in your hands feels heavier than steel.",
+        "question": "Who receives the last medical kit?",
+        "options": [
+          {
+            "value": "A1",
+            "label": "Split the kit between Lena and the boy",
+            "consequence": "You divide ointment, gauze, and pills with surgical care, knowing it may be too little for both. Lena squeezes your wrist in thanks; the boy’s mother mouths a silent prayer. Dawn will test whether ‘fair’ was also ‘effective’. When the sun rises, if transport appears and offers only one civilian seat, do you advocate for the boy, for Lena, for yourself—or for no one?"
+          },
+          {
+            "value": "B1",
+            "label": "Give the full kit to the boy",
+            "consequence": "You clean the wound, medicate, and bind until his breaths lengthen. Across the road, Lena looks away and nods, as if granting permission you never sought. By nightfall, fever breaks for the boy; infection deepens for Lena. Tomorrow a convoy may allow one seat—if that moment comes, will you go with the boy, send him alone, choose Lena instead, or take the seat yourself?"
+          },
+          {
+            "value": "C1",
+            "label": "Give the full kit to Lena",
+            "consequence": "You flush the wound, pack gauze, and wrap her leg. She weeps—a sound like a memory cracking. The boy’s mother turns, holding him closer. By morning he is colder; Lena is warmer. If an evacuation truck later offers exactly one seat, do you stand by Lena, send the boy, send yourself, or refuse to choose?"
+          },
+          {
+            "value": "D1",
+            "label": "Keep the kit hidden",
+            "consequence": "You say you have nothing. The lie lingers in the air like smoke. By dawn the boy is gone; by the third day Lena fades. Your sister stops speaking to you. When evacuation finally comes and asks for your story, do you donate the still‑sealed kit, destroy it, keep it, or send it—along with the truth—to your sister?"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "One Seat on the Truck",
+        "situation": "Word spreads: a Red Cross–UN convoy can take exactly one more civilian. A medic points to you: “You’ve been helping. You decide.” Engines idle. Snow begins again.",
+        "question": "Who boards the final seat?",
+        "options": [
+          {
+            "value": "A2",
+            "label": "The boy—and you go with him to advocate at arrival.",
+            "consequence": "You lift him in, promising his mother you’ll argue his case. Kilometers later, in Lviv, surgery is possible—but so is forgetting the faces you left behind. A coordinator asks for one more choice: return east escorting a medical shipment, send supplies only, stay silent, or lie about your origin to ease asylum?"
+          },
+          {
+            "value": "B2",
+            "label": "Lena—and you accompany her through checkpoints.",
+            "consequence": "You steady her up the tailgate as documents blur under a soldier’s stare. At a field hospital, a doctor whispers: wait weeks for surgery, push for priority, or arrange a risky transfer to Poland. Which path will you take when compassion collides with capacity?"
+          },
+          {
+            "value": "C2",
+            "label": "Place the boy on the truck alone; you remain.",
+            "consequence": "The medic wraps him in a blanket as the truck lurches away. Night fire returns; basements become lungs. A rumor of a westbound convoy forces another call: walk slowly together, run ahead to secure spots, send your sister ahead and stay with Lena, or refuse the road and wait?"
+          },
+          {
+            "value": "D2",
+            "label": "Take the seat yourself; tell no one.",
+            "consequence": "Truck steel swallows you. Silence follows you to Dnipro, then Lviv, then abroad. Months later a TV frame finds your sister alive in a camp. Will you contact her, help anonymously, travel to her, or continue the lie you began at the tailgate?"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Distance, Duty, and Stories We Tell",
+        "situation": "Shelter offers food and forms—but also choices that fix your story in ink. A coordinator asks for help that risks your progress; a doctor asks for favors you cannot guarantee; your radio or phone can still reach those you left.",
+        "question": "How do you use safety and distance?",
+        "options": [
+          {
+            "value": "A3",
+            "label": "Return east escorting medical shipments",
+            "consequence": "At dawn you ride past craters and burned fields. You deliver crates and find your sister thinner but alive; the boy steadier; Lena gone. The medics offer you a ride back out in two hours—leave with your sister, stay to rebuild, send her alone, or disappear before choosing again?"
+          },
+          {
+            "value": "B3",
+            "label": "Stay but mobilize aid: messages, money, logistics, and advocacy.",
+            "consequence": "Your letters and packages arrive late but alive. One day, a plea: another child needs surgery you might arrange. Do you dive fully into coordination, give only money, write regrets, or go quiet to protect your fragile stability?"
+          },
+          {
+            "value": "C3",
+            "label": "Stay silent; build a new life and let memory blur.",
+            "consequence": "You learn the language of elevators, pay stubs, and quiet. News from Yarova breaks through—a list with your sister’s name. Do you call, write, send money without a name, or do nothing and keep the wall intact?"
+          },
+          {
+            "value": "D3",
+            "label": "Lie about your hometown to ease asylum; sever ties cleanly.",
+            "consequence": "Paperwork moves faster; nights grow longer. When a colleague seeks anyone from Yarova, the lie constricts. Do you confess and help, search privately, contact a reconnection NGO anonymously, or double down on the lie?"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "What Your Choices Make of You",
+        "situation": "Time does not heal so much as accumulate. Aid routes shift. Front lines breathe. You have seen what fairness, loyalty, pragmatism, and fear each purchase.",
+        "question": "Given everything, how do you close this chapter—for now?",
+        "options": [
+          {
+            "value": "A4",
+            "label": "Leave again with your sister",
+            "consequence": "You board together and do not look back until the road bends. You learn to cook for two in a new city and to memorialize the third at the table. Your story becomes service: you translate intake forms, steady trembling hands at clinics, and keep one empty chair on holidays. On quiet nights, you revisit the first blast only to confirm that the love you protected is still here—and that you did not stop loving those you could not save."
+          },
+          {
+            "value": "B4",
+            "label": "Stay and rebuild Yarova—caretaker of graves and beginnings.",
+            "consequence": "You map wells, list names, and plant onions between shell holes. When convoys come, you teach triage that centers dignity: label kits, post windows, publish loops. You become the person you needed—one who makes the next decider’s load slightly lighter."
+          },
+          {
+            "value": "C4",
+            "label": "Help from the shadows; keep certain truths unsent.",
+            "consequence": "You route donations, arrange transfers, and let thank‑you notes pile up with no return address. Your silence protects some people and imprisons others. Years later, you tell the whole story to a counselor—or to your child—and discover that absolution was never the goal; accountability was."
+          },
+          {
+            "value": "D4",
+            "label": "Cut ties; survive; let history judge",
+            "consequence": "You keep your head down, build credit, and master a language that lacks words for what happened. One day at a fundraiser someone displays a sealed kit like the one you once hid. You step outside before the applause. On the walk home you realize that forgetting is a muscle: it strengthens with use, but it cannot lift what love chose to carry."
+          }
+        ]
+      }
+    ]
+  },
+  "D": {
+    "id": "D",
+    "title": "Ukraine Civilian Ethics — Self‑Preservation Path",
+    "intro": "Yarova, Ukraine. A winter blast tears through the queue for the supply van. You survive only because you ran back inside for bandages for Lena, a seventy‑three‑year‑old widow. Hidden beneath your floorboards lies one last sealed medical kit. Across the road, a boy bleeds into his mother’s coat. No medics. No certainty. Only choices.",
+    "steps": [
+      {
+        "id": 1,
+        "title": "One Kit, Two Lives",
+        "situation": "The street is glassed with ice and dust. Shrapnel ticks as it cools. Lena’s leg is swollen and angry red; the boy’s breaths are shallow and fast. Your sister whispers, “What do we do?” The kit in your hands feels heavier than steel.",
+        "question": "Who receives the last medical kit?",
+        "options": [
+          {
+            "value": "A1",
+            "label": "Split the kit between Lena and the boy",
+            "consequence": "You divide ointment, gauze, and pills with surgical care, knowing it may be too little for both. Lena squeezes your wrist in thanks; the boy’s mother mouths a silent prayer. Dawn will test whether ‘fair’ was also ‘effective’. When the sun rises, if transport appears and offers only one civilian seat, do you advocate for the boy, for Lena, for yourself—or for no one?"
+          },
+          {
+            "value": "B1",
+            "label": "Give the full kit to the boy",
+            "consequence": "You clean the wound, medicate, and bind until his breaths lengthen. Across the road, Lena looks away and nods, as if granting permission you never sought. By nightfall, fever breaks for the boy; infection deepens for Lena. Tomorrow a convoy may allow one seat—if that moment comes, will you go with the boy, send him alone, choose Lena instead, or take the seat yourself?"
+          },
+          {
+            "value": "C1",
+            "label": "Give the full kit to Lena",
+            "consequence": "You flush the wound, pack gauze, and wrap her leg. She weeps—a sound like a memory cracking. The boy’s mother turns, holding him closer. By morning he is colder; Lena is warmer. If an evacuation truck later offers exactly one seat, do you stand by Lena, send the boy, send yourself, or refuse to choose?"
+          },
+          {
+            "value": "D1",
+            "label": "Keep the kit hidden",
+            "consequence": "You say you have nothing. The lie lingers in the air like smoke. By dawn the boy is gone; by the third day Lena fades. Your sister stops speaking to you. When evacuation finally comes and asks for your story, do you donate the still‑sealed kit, destroy it, keep it, or send it—along with the truth—to your sister?"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "One Seat on the Truck",
+        "situation": "Word spreads: a Red Cross–UN convoy can take exactly one more civilian. A medic points to you: “You’ve been helping. You decide.” Engines idle. Snow begins again.",
+        "question": "Who boards the final seat?",
+        "options": [
+          {
+            "value": "A2",
+            "label": "The boy—and you go with him to advocate at arrival.",
+            "consequence": "You lift him in, promising his mother you’ll argue his case. Kilometers later, in Lviv, surgery is possible—but so is forgetting the faces you left behind. A coordinator asks for one more choice: return east escorting a medical shipment, send supplies only, stay silent, or lie about your origin to ease asylum?"
+          },
+          {
+            "value": "B2",
+            "label": "Lena—and you accompany her through checkpoints.",
+            "consequence": "You steady her up the tailgate as documents blur under a soldier’s stare. At a field hospital, a doctor whispers: wait weeks for surgery, push for priority, or arrange a risky transfer to Poland. Which path will you take when compassion collides with capacity?"
+          },
+          {
+            "value": "C2",
+            "label": "Place the boy on the truck alone; you remain.",
+            "consequence": "The medic wraps him in a blanket as the truck lurches away. Night fire returns; basements become lungs. A rumor of a westbound convoy forces another call: walk slowly together, run ahead to secure spots, send your sister ahead and stay with Lena, or refuse the road and wait?"
+          },
+          {
+            "value": "D2",
+            "label": "Take the seat yourself; tell no one.",
+            "consequence": "Truck steel swallows you. Silence follows you to Dnipro, then Lviv, then abroad. Months later a TV frame finds your sister alive in a camp. Will you contact her, help anonymously, travel to her, or continue the lie you began at the tailgate?"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Distance, Duty, and Stories We Tell",
+        "situation": "Shelter offers food and forms—but also choices that fix your story in ink. A coordinator asks for help that risks your progress; a doctor asks for favors you cannot guarantee; your radio or phone can still reach those you left.",
+        "question": "How do you use safety and distance?",
+        "options": [
+          {
+            "value": "A3",
+            "label": "Return east escorting medical shipments",
+            "consequence": "At dawn you ride past craters and burned fields. You deliver crates and find your sister thinner but alive; the boy steadier; Lena gone. The medics offer you a ride back out in two hours—leave with your sister, stay to rebuild, send her alone, or disappear before choosing again?"
+          },
+          {
+            "value": "B3",
+            "label": "Stay but mobilize aid: messages, money, logistics, and advocacy.",
+            "consequence": "Your letters and packages arrive late but alive. One day, a plea: another child needs surgery you might arrange. Do you dive fully into coordination, give only money, write regrets, or go quiet to protect your fragile stability?"
+          },
+          {
+            "value": "C3",
+            "label": "Stay silent; build a new life and let memory blur.",
+            "consequence": "You learn the language of elevators, pay stubs, and quiet. News from Yarova breaks through—a list with your sister’s name. Do you call, write, send money without a name, or do nothing and keep the wall intact?"
+          },
+          {
+            "value": "D3",
+            "label": "Lie about your hometown to ease asylum; sever ties cleanly.",
+            "consequence": "Paperwork moves faster; nights grow longer. When a colleague seeks anyone from Yarova, the lie constricts. Do you confess and help, search privately, contact a reconnection NGO anonymously, or double down on the lie?"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "What Your Choices Make of You",
+        "situation": "Time does not heal so much as accumulate. Aid routes shift. Front lines breathe. You have seen what fairness, loyalty, pragmatism, and fear each purchase.",
+        "question": "Given everything, how do you close this chapter—for now?",
+        "options": [
+          {
+            "value": "A4",
+            "label": "Leave again with your sister",
+            "consequence": "You board together and do not look back until the road bends. You learn to cook for two in a new city and to memorialize the third at the table. Your story becomes service: you translate intake forms, steady trembling hands at clinics, and keep one empty chair on holidays. On quiet nights, you revisit the first blast only to confirm that the love you protected is still here—and that you did not stop loving those you could not save."
+          },
+          {
+            "value": "B4",
+            "label": "Stay and rebuild Yarova—caretaker of graves and beginnings.",
+            "consequence": "You map wells, list names, and plant onions between shell holes. When convoys come, you teach triage that centers dignity: label kits, post windows, publish loops. You become the person you needed—one who makes the next decider’s load slightly lighter."
+          },
+          {
+            "value": "C4",
+            "label": "Help from the shadows; keep certain truths unsent.",
+            "consequence": "You route donations, arrange transfers, and let thank‑you notes pile up with no return address. Your silence protects some people and imprisons others. Years later, you tell the whole story to a counselor—or to your child—and discover that absolution was never the goal; accountability was."
+          },
+          {
+            "value": "D4",
+            "label": "Cut ties; survive; let history judge",
+            "consequence": "You keep your head down, build credit, and master a language that lacks words for what happened. One day at a fundraiser someone displays a sealed kit like the one you once hid. You step outside before the applause. On the walk home you realize that forgetting is a muscle: it strengthens with use, but it cannot lift what love chose to carry."
+          }
+        ]
+      }
+    ]
+  }
+}

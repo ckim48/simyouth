@@ -1,0 +1,167 @@
+{
+  "id": "G",
+  "title": "Ethics in Humanitarian Coordination during the Korean War",
+  "intro": "The Korean War (1950-1953) was a significant conflict that arose from the division of Korea into North and South after World War II. As tensions escalated, military actions led to widespread devastation and a humanitarian crisis, with millions of civilians affected. Humanitarian coordinators played a crucial role in providing aid and ensuring the protection of civilians amidst the chaos of war. This scenario presents a series of ethical decisions that a humanitarian coordinator might face while navigating the complexities of delivering aid in a conflict zone, emphasizing the importance of adhering to International Humanitarian Law (IHL) and the principles of neutrality, impartiality, and humanity.",
+  "steps": [
+    {
+      "id": 1,
+      "title": "Assessing the Situation",
+      "situation": "As a humanitarian coordinator, you arrive in a war-torn area where civilians are in desperate need of food and medical supplies. You learn that a local military faction controls the distribution of aid and has been known to divert supplies for their own use. You must decide how to approach the situation to ensure that aid reaches those in need without compromising the safety of your team or the civilians. The local military faction has offered to assist you in delivering the aid, but their motives are unclear.",
+      "question": "What is your best course of action?",
+      "options": [
+        {
+          "value": "A1",
+          "label": "Collaborate with the military faction",
+          "consequence": "By collaborating, you may ensure a quicker distribution of aid, but you risk the possibility of the supplies being misused or diverted. This could undermine the trust of the civilian population.",
+          "hint": "Consider the potential risks of compromising your neutrality."
+        },
+        {
+          "value": "B1",
+          "label": "Seek alternative routes for distribution",
+          "consequence": "Finding alternative routes may take longer, but it allows you to maintain control over the aid and ensure it reaches the intended recipients directly, preserving the integrity of the operation.",
+          "hint": "Think about the importance of direct aid delivery."
+        },
+        {
+          "value": "C1",
+          "label": "Report the situation to higher authorities",
+          "consequence": "Reporting the situation could lead to increased scrutiny and potential delays in aid delivery, but it may also prompt a more strategic response to ensure civilian safety and proper aid distribution.",
+          "hint": "Evaluate the balance between immediate needs and long-term solutions."
+        },
+        {
+          "value": "D1",
+          "label": "Conduct a needs assessment with the community",
+          "consequence": "Engaging with the community can provide valuable insights into their needs and priorities, fostering trust and ensuring that aid is relevant and effective, though it may delay immediate action.",
+          "hint": "Community involvement can enhance the effectiveness of aid."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Ensuring Safety of Aid Workers",
+      "situation": "After deciding on a distribution method, you receive reports of increased hostilities in the area, putting your team at risk. You must now consider the safety of your aid workers while still fulfilling your mission to assist civilians. The local military faction has offered protection for your team, but their involvement raises ethical concerns about complicity.",
+      "question": "How do you prioritize safety while maintaining your mission?",
+      "options": [
+        {
+          "value": "A2",
+          "label": "Accept protection from the military faction",
+          "consequence": "Accepting protection may ensure the safety of your team, but it could compromise your organization's neutrality and lead to distrust among the civilian population.",
+          "hint": "Weigh the importance of safety against the principles of neutrality."
+        },
+        {
+          "value": "B2",
+          "label": "Evacuate the team until the situation stabilizes",
+          "consequence": "Evacuating your team can protect them from harm, but it also halts aid delivery, leaving civilians without necessary support during a critical time.",
+          "hint": "Consider the impact of your decision on both your team and the civilians."
+        },
+        {
+          "value": "C2",
+          "label": "Implement safety protocols and continue operations",
+          "consequence": "By enhancing safety protocols, you can continue operations while minimizing risks, but this may slow down the aid distribution process.",
+          "hint": "Think about how to balance safety and efficiency."
+        },
+        {
+          "value": "D2",
+          "label": "Coordinate with other NGOs for joint operations",
+          "consequence": "Collaborating with other NGOs can enhance safety through shared resources and knowledge, but it may complicate logistics and require additional time to organize.",
+          "hint": "Collaboration can strengthen your position and safety."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Addressing Resource Allocation",
+      "situation": "You have received a limited supply of medical supplies, but the needs of the community are vast. You must decide how to allocate these resources fairly among the various groups of civilians, including those who are particularly vulnerable, such as children and the elderly. Each group has different needs, and some may be more vocal in their demands than others.",
+      "question": "How do you approach resource allocation?",
+      "options": [
+        {
+          "value": "A3",
+          "label": "Prioritize the most vocal group",
+          "consequence": "Focusing on the most vocal group may satisfy their immediate demands, but it could lead to resentment among other groups who also need assistance, potentially causing conflict.",
+          "hint": "Consider the long-term implications of your choices."
+        },
+        {
+          "value": "B3",
+          "label": "Allocate resources based on vulnerability",
+          "consequence": "By prioritizing the most vulnerable populations, you ensure that those in greatest need receive assistance, fostering goodwill and trust within the community.",
+          "hint": "Think about the ethical implications of your allocation strategy."
+        },
+        {
+          "value": "C3",
+          "label": "Distribute resources equally among all groups",
+          "consequence": "Equal distribution may seem fair, but it could result in insufficient aid for those who need it most, potentially exacerbating existing inequalities.",
+          "hint": "Evaluate the effectiveness of equal distribution."
+        },
+        {
+          "value": "D3",
+          "label": "Engage the community in the decision-making process",
+          "consequence": "Involving the community can lead to a more informed and accepted allocation strategy, but it may take time and could delay immediate aid delivery.",
+          "hint": "Community engagement can enhance the legitimacy of your actions."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Responding to Misinformation",
+      "situation": "As aid distribution progresses, you discover that misinformation is spreading among the civilian population regarding the intentions of your organization. Some believe that your aid is conditional or that you are aligned with one of the military factions. This misinformation is causing distrust and may hinder your operations.",
+      "question": "What steps do you take to address the misinformation?",
+      "options": [
+        {
+          "value": "A4",
+          "label": "Issue a public statement clarifying your mission",
+          "consequence": "A public statement can help clarify your intentions and rebuild trust, but it may not reach all affected individuals and could provoke further scrutiny.",
+          "hint": "Consider the effectiveness of communication in crisis situations."
+        },
+        {
+          "value": "B4",
+          "label": "Engage with community leaders to spread accurate information",
+          "consequence": "Working with community leaders can effectively disseminate accurate information and rebuild trust, but it requires time and effort to establish those relationships.",
+          "hint": "Leverage existing community structures for better outreach."
+        },
+        {
+          "value": "C4",
+          "label": "Ignore the misinformation and focus on aid delivery",
+          "consequence": "Ignoring the misinformation may allow you to continue operations, but it risks further alienating the community and could lead to increased hostility.",
+          "hint": "Think about the long-term relationship with the community."
+        },
+        {
+          "value": "D4",
+          "label": "Conduct community meetings to address concerns",
+          "consequence": "Holding community meetings can provide a platform for dialogue and clarification, fostering trust, but it may also expose your organization to criticism and challenges.",
+          "hint": "Engagement can be a powerful tool for rebuilding trust."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Evaluating the Impact of Aid",
+      "situation": "After several months of operation, you are tasked with evaluating the impact of your aid efforts. You must consider both the positive outcomes and any unintended consequences that may have arisen from your actions. This evaluation is crucial for future planning and for maintaining accountability to the communities you serve.",
+      "question": "How do you approach the evaluation process?",
+      "options": [
+        {
+          "value": "A5",
+          "label": "Conduct a comprehensive impact assessment",
+          "consequence": "A thorough assessment can provide valuable insights into the effectiveness of your aid, but it requires significant time and resources that may delay immediate needs.",
+          "hint": "Consider the importance of accountability in humanitarian work."
+        },
+        {
+          "value": "B5",
+          "label": "Gather feedback from the community",
+          "consequence": "Community feedback can highlight both successes and areas for improvement, fostering a sense of ownership, but it may also reveal criticisms that are difficult to address.",
+          "hint": "Engagement can lead to more effective future interventions."
+        },
+        {
+          "value": "C5",
+          "label": "Focus on quantitative data for evaluation",
+          "consequence": "Quantitative data can provide clear metrics of success, but it may overlook qualitative aspects of the community's experience and needs.",
+          "hint": "Balance quantitative and qualitative data for a complete picture."
+        },
+        {
+          "value": "D5",
+          "label": "Prepare a report for stakeholders without community input",
+          "consequence": "Preparing a report without community input may streamline the process, but it risks missing critical insights and undermining the community's trust in your organization.",
+          "hint": "Involve the community to enhance the credibility of your findings."
+        }
+      ]
+    }
+  ]
+}

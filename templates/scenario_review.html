@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-2">
+  <h2 class="h4 mb-0">Review — {{ scenario_title }}</h2>
+  <span class="text-muted small">Step {{ step_index }} of {{ total_steps }}</span>
+</div>
+
+{% if decisions_so_far %}
+<div class="card mb-3">
+  <div class="card-body">
+    <h6 class="text-uppercase small text-muted mb-2">Decisions so far</h6>
+    <ul class="mb-0">{% for d in decisions_so_far %}<li>{{ d }}</li>{% endfor %}</ul>
+  </div>
+</div>
+{% endif %}
+
+<div class="card mb-3">
+  <div class="card-body">
+    <h6 class="text-uppercase small text-muted mb-2">Previous Scenario</h6>
+    <p class="mb-0">{{ situation }}</p>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <h6 class="text-uppercase small text-muted mb-2">Your Decision</h6>
+        <p class="mb-2"><strong>{{ chosen_label }}</strong></p>
+        <h6 class="text-uppercase small text-muted mb-2">Consequence</h6>
+        <p class="mb-0">{{ chosen_consequence }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <h6 class="text-uppercase small text-muted mb-2">Other Options (not chosen)</h6>
+        <ul class="mb-0">
+          {% for opt in other_options %}
+            <li>{{ opt.label }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex justify-content-end mt-3">
+  <a class="btn btn-primary" href="{{ continue_url }}">Continue</a>
+</div>
+{% endblock %}
