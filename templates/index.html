@@ -1,244 +1,351 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ title or "SimYouth | Ethical Simulations" }}</title>
+{% extends "base.html" %}
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+{% block content %}
 
-  <style>
-    :root {
-      --primary: #6366f1; /* Indigo */
-      --primary-dark: #4f46e5;
-      --dark: #0f172a;
-      --slate-500: #64748b;
-      --slate-100: #f1f5f9;
-      --glass: rgba(255, 255, 255, 0.8);
-    }
+<style>
+  :root {
+    --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
 
-    body {
-      background-color: #ffffff;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      color: var(--dark);
-      -webkit-font-smoothing: antialiased;
-    }
+  /* --- Hero Section --- */
+  .hero-container {
+    padding: 6rem 0;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+    gap: 4rem;
+    position: relative;
+  }
 
-    /* Modern Navbar */
-    .app-nav {
-      background: var(--glass);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(0,0,0,0.05);
-      padding: 0.8rem 0;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
+  .hero-text { text-align: left; }
 
-    .brand {
-      font-weight: 800;
-      font-size: 1.4rem;
-      letter-spacing: -0.02em;
-      color: var(--dark);
-      text-decoration: none;
-    }
+  .badge-main {
+    display: inline-block;
+    background: rgba(87, 69, 69, 0.1);
+    color: var(--brand);
+    font-weight: 700;
+    padding: 0.5rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+  }
 
-    .nav-link {
-      font-weight: 600;
-      color: var(--slate-500);
-      transition: all 0.2s ease;
-      padding: 0.5rem 1rem !important;
-    }
+  .hero-text h1 {
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 850;
+    line-height: 1.05;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.04em;
+  }
 
-    .nav-link:hover {
-      color: var(--primary);
-    }
+  .hero-text p {
+    font-size: 1.25rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 3rem;
+    max-width: 540px;
+  }
 
-    .nav-link.active {
-      color: var(--primary) !important;
-      background: rgba(99, 102, 241, 0.1);
-      border-radius: 8px;
-    }
+  /* --- Hero Visual Mockup --- */
+  .ui-mockup {
+    background: #fff;
+    border-radius: 28px;
+    border: 1px solid var(--line);
+    box-shadow: 0 40px 80px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transform: perspective(1200px) rotateY(-8deg) rotateX(3deg);
+    transition: var(--transition);
+  }
 
-    .btn-auth {
-      background: var(--dark);
-      color: #fff;
-      border-radius: 10px;
-      padding: 0.5rem 1.25rem;
-      font-weight: 600;
-      transition: transform 0.2s ease;
-    }
+  .mock-header {
+    height: 44px; background: #f1f5f9; border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; padding: 0 1.25rem; gap: 8px;
+  }
 
-    .btn-auth:hover {
-      background: #000;
-      color: #fff;
-      transform: translateY(-1px);
-    }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: #cbd5e1; }
 
-    /* Refined Hero Section */
-    .hero-section {
-      padding: 8rem 0 6rem;
-      background: radial-gradient(circle at top right, #f8fafc, #ffffff);
-      overflow: hidden;
-      position: relative;
-    }
+  .mock-body {
+    padding: 2rem; display: grid; grid-template-columns: 120px 1fr; gap: 1.5rem; background: white;
+  }
 
-    /* Decorative background blob */
-    .hero-section::before {
-      content: "";
-      position: absolute;
-      top: -10%;
-      right: -5%;
-      width: 400px;
-      height: 400px;
-      background: var(--primary);
-      filter: blur(120px);
-      opacity: 0.1;
-      z-index: 0;
-    }
+  .mock-sidebar { height: 180px; background: #faf9f9; border-radius: 14px; border: 1px solid var(--line); }
+  .mock-content { display: flex; flex-direction: column; gap: 12px; }
+  .mock-line { height: 12px; background: #f1f5f9; border-radius: 4px; width: 100%; }
+  .mock-choice { height: 40px; background: #fff; border: 1.5px solid var(--line); border-radius: 10px; }
+  .mock-btn { height: 36px; background: var(--brand); border-radius: 10px; width: 110px; margin-top: 10px;}
 
-    .hero-content {
-      position: relative;
-      z-index: 1;
-    }
+  /* --- About & Motivation Section --- */
+  .about-section {
+    padding: 8rem 0;
+    background: #fff;
+    border-top: 1px solid var(--line);
+  }
 
-    .hero-section h1 {
-      font-size: clamp(2.5rem, 5vw, 3.75rem);
-      font-weight: 800;
-      line-height: 1.1;
-      letter-spacing: -0.03em;
-      margin-bottom: 1.5rem;
-      color: var(--dark);
-    }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 5rem;
+  }
 
-    .hero-section p {
-      font-size: 1.25rem;
-      color: var(--slate-500);
-      max-width: 600px;
-      margin: 0 auto 2.5rem;
-      line-height: 1.6;
-    }
+  .about-content h2 {
+    font-weight: 850;
+    font-size: 2.5rem;
+    color: var(--brand);
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+  }
 
-    .btn-main {
-      background: var(--primary);
-      color: white;
-      padding: 0.9rem 2rem;
-      border-radius: 12px;
-      font-weight: 600;
-      border: none;
-      box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
-      transition: all 0.2s ease;
-    }
+  .about-content p {
+    font-size: 1.15rem;
+    line-height: 1.8;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
 
-    .btn-main:hover {
-      background: var(--primary-dark);
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.4);
-    }
+  .motivation-quote {
+    border-left: 4px solid var(--brand-light);
+    padding-left: 1.5rem;
+    margin: 2rem 0;
+    font-style: italic;
+    color: var(--primary);
+    font-size: 1.1rem;
+  }
 
-    .btn-alt {
-      background: white;
-      color: var(--dark);
-      padding: 0.9rem 2rem;
-      border-radius: 12px;
-      font-weight: 600;
-      border: 1px solid var(--slate-100);
-      transition: all 0.2s ease;
-    }
+  .about-image-wrap {
+    border-radius: 32px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  }
 
-    .btn-alt:hover {
-      background: var(--slate-100);
-      border-color: #e2e8f0;
-    }
+  .about-image-wrap img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
 
-    /* Alert Styling */
-    .alert {
-      border: none;
-      border-radius: 12px;
-      padding: 1rem 1.25rem;
-    }
-  </style>
-</head>
-<body>
+  /* --- Alternating Timeline Section --- */
+  .timeline-section { padding: 8rem 0; background: var(--bg); }
 
-<nav class="navbar navbar-expand-lg app-nav">
-  <div class="container">
-    <a class="brand" href="{{ url_for('index') }}">SimYouth</a>
+  .timeline-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 6rem;
+    margin-bottom: 8rem;
+  }
 
-    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+  /* Reverse every second row */
+  .timeline-row:nth-child(even) {
+    direction: rtl;
+  }
+  .timeline-row:nth-child(even) .timeline-text-content {
+    direction: ltr; /* Reset text direction for content */
+  }
 
-    <div class="collapse navbar-collapse" id="mainNav">
-      <ul class="navbar-nav ms-auto align-items-center gap-2">
-        <li class="nav-item">
-          <a class="nav-link {% if request.endpoint in ['scenario_choose','scenario_start','scenario_step','scenario_result'] %}active{% endif %}"
-             href="{{ url_for('scenario_choose') }}">Research</a>
-        </li>
+  .timeline-text-content h3 {
+    font-weight: 850;
+    font-size: 2.2rem;
+    color: var(--ink);
+    margin-bottom: 1.25rem;
+  }
 
-        <li class="nav-item">
-          <a class="nav-link {% if request.endpoint in ['gpt_scenario_prefs','gpt_scenario_step','gpt_scenario_result'] %}active{% endif %}"
-             href="{{ url_for('gpt_scenario_prefs') }}">GPT Scenario</a>
-        </li>
+  .timeline-text-content p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--muted);
+  }
 
-        {% if session.get('username') %}
-          <li class="nav-item">
-            <a class="nav-link {% if request.endpoint == 'profile' %}active{% endif %}"
-               href="{{ url_for('profile') }}">Profile</a>
-          </li>
-          <li class="nav-item">
-            <a class="btn btn-auth ms-lg-2" href="{{ url_for('logout') }}">Logout</a>
-          </li>
-        {% else %}
-          <li class="nav-item">
-            <a class="btn btn-auth ms-lg-2" href="{{ url_for('login') }}">Login</a>
-          </li>
-        {% endif %}
-      </ul>
+  .step-indicator {
+    font-weight: 800;
+    color: var(--brand);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .app-snapshot-wrap {
+    background: white;
+    border-radius: 24px;
+    padding: 10px;
+    border: 1px solid var(--line);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+    transition: var(--transition);
+  }
+
+  .app-snapshot-wrap:hover {
+    transform: translateY(-10px);
+  }
+
+  .app-snapshot-wrap img {
+    width: 100%;
+    border-radius: 16px;
+    display: block;
+  }
+
+  /* --- Contact Section --- */
+  .contact-section { padding: 8rem 0; background: #fff; border-top: 1px solid var(--line); }
+
+  .email-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg);
+    padding: 1.5rem 2.5rem;
+    border-radius: 20px;
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.2rem;
+    border: 1px solid var(--line);
+    transition: var(--transition);
+  }
+
+  .email-card:hover {
+    border-color: var(--brand);
+    transform: translateY(-2px);
+  }
+
+  /* --- Responsive --- */
+  @media (max-width: 992px) {
+    .hero-container, .about-grid, .timeline-row { grid-template-columns: 1fr; text-align: center; }
+    .hero-text, .about-content, .timeline-row:nth-child(even) { direction: ltr; }
+    .timeline-row { gap: 3rem; margin-bottom: 5rem; }
+    .hero-text p { margin-left: auto; margin-right: auto; }
+  }
+</style>
+
+<section class="container hero-container">
+  <div class="hero-text">
+    <div class="badge-main">Next-Gen Humanitarian Learning</div>
+    <h1>SimYouth: The <br><span style="color:var(--brand)">Human Side</span> of War</h1>
+    <p>An immersive platform designed for students to navigate the ethical complexity of international conflict through research-backed AI simulations.</p>
+    <div class="d-flex gap-3 flex-wrap justify-content-center justify-content-lg-start">
+      <a href="{{ url_for('research_gate') }}" class="btn btn-dark px-5 py-3 fw-bold" style="border-radius: 16px; background: var(--brand);">Start Research Mode</a>
+      <a href="{{ url_for('gpt_scenario_prefs') }}" class="btn btn-outline-dark px-5 py-3 fw-bold" style="border-radius: 16px;">AI Experience</a>
     </div>
   </div>
-</nav>
 
-<section class="hero-section text-center">
-  <div class="container hero-content">
-    <div class="badge bg-soft-primary text-primary mb-3 px-3 py-2 rounded-pill" style="background: rgba(99,102,241,0.1)">
-      Ethical Decision Learning
+  <div class="hero-visual">
+    <div class="ui-mockup">
+      <div class="mock-header">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        <small class="ms-auto text-muted fw-bold">Live Scenario Preview</small>
+      </div>
+      <div class="mock-body">
+        <div class="mock-sidebar"></div>
+        <div class="mock-content">
+          <div class="mock-line" style="height: 20px;"></div>
+          <div class="mock-line short"></div>
+          <div class="mt-2">
+             <div class="mock-choice"></div>
+             <div class="mock-choice mt-2" style="border-color: var(--brand);"></div>
+          </div>
+          <div class="mock-btn"></div>
+        </div>
+      </div>
     </div>
-    <h1>Master Ethics Through <br><span style="color: var(--primary)">Real-World</span> Scenarios</h1>
-    <p>
-      Explore complex dilemmas, challenge your judgment, and see how your choices shape outcomes in a safe, interactive environment.
-    </p>
+  </div>
+</section>
 
-    <div class="d-flex justify-content-center gap-3 flex-wrap">
-      <a href="{{ url_for('scenario_choose') }}" class="btn btn-main">
-        Start Training
-      </a>
-      <a href="{{ url_for('gpt_scenario_prefs') }}" class="btn btn-alt">
-        AI-Generated Case
+<section class="about-section">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-content">
+        <div class="badge-main" style="background: rgba(171, 142, 142, 0.1); color: var(--secondary);">Our Mission</div>
+        <h2>Empowering the Next Generation of Ethical Thinkers</h2>
+        <p>
+          SimYouth was born from a critical observation: while the rules of war—International Humanitarian Law—are taught in classrooms, the <strong>moral weight</strong> of applying them in the field is rarely felt by those who will inherit the future.
+        </p>
+        <p>
+          Our motivation is to bridge the gap between abstract legal principles and human empathy. By simulating the impossible choices faced by civilians, students, and medics, we allow users to develop a "moral compass" that functions under pressure.
+        </p>
+        <div class="motivation-quote">
+          "The goal is not just to teach what is legal, but to understand what is human when every option feels like a loss."
+        </div>
+      </div>
+      <div class="about-image-wrap">
+        <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop" alt="Global Education Context">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="timeline-section">
+  <div class="container">
+    <div class="text-center mb-5 pb-5">
+      <h2 class="fw-bold" style="font-size: 2.8rem; letter-spacing: -1px;">The SimYouth Journey</h2>
+    </div>
+
+    <div class="timeline-row">
+      <div class="timeline-text-content">
+        <span class="step-indicator">Step 01</span>
+        <h3>Assume Your Role</h3>
+        <p>Step into the life of a school student, a field medic, or a commander. Experience how different perspectives change the weight of every choice and reveal unique layers of the conflict.</p>
+      </div>
+      <div class="app-snapshot-wrap">
+        <img src="../static/about1.png" alt="Role Selection Screen">
+      </div>
+    </div>
+
+    <div class="timeline-row">
+      <div class="timeline-text-content">
+        <span class="step-indicator">Step 02</span>
+        <h3>Navigate Dilemmas</h3>
+        <p>Engage with scenarios built on IHL principles. Decide under pressure while the system tracks your alignment with International Humanitarian Law principles like Distinction and Proportionality.</p>
+      </div>
+      <div class="app-snapshot-wrap">
+        <img src="../static/about2.png" alt="Scenario Interface Screen">
+      </div>
+    </div>
+
+    <div class="timeline-row">
+      <div class="timeline-text-content">
+        <span class="step-indicator">Step 03</span>
+        <h3>Analyze & Reflect</h3>
+        <p>Receive a comprehensive report and an AI-generated Reflective Journal. Understand your ethical framework and discover how your decisions compare to established legal standards.</p>
+      </div>
+      <div class="app-snapshot-wrap">
+        <img src="https://via.placeholder.com/600x400/f8fafc/574545?text=App+Snapshot:+Reflective+Journal" alt="Reflective Journal Screen">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact-section">
+  <div class="container">
+    <div style="max-width: 600px; margin: 0 auto; text-align: center;">
+      <div class="badge-main" style="background: rgba(87, 69, 69, 0.05);">Get in Touch</div>
+      <h2 style="font-weight: 850; font-size: 2.5rem; margin-bottom: 1.5rem;">Have questions?</h2>
+      <p style="color: var(--muted); font-size: 1.1rem; margin-bottom: 2.5rem;">
+        Whether you are an educator, a researcher, or a student, we'd love to hear your thoughts on SimYouth.
+      </p>
+
+      <a href="mailto:hello@simyouth.org" class="email-card">
+        <span style="color: var(--brand);">✉</span> hello@simyouth.org
       </a>
     </div>
   </div>
 </section>
 
-<main class="container py-5">
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      <div class="row justify-content-center">
-        <div class="col-md-8">
-          {% for cat, msg in messages %}
-            <div class="alert alert-{{ cat if cat != 'message' else 'info' }} shadow-sm mb-3">
-              {{ msg }}
-            </div>
-          {% endfor %}
-        </div>
+<footer style="padding: 4rem 0; border-top: 1px solid var(--line); background: var(--bg);">
+  <div class="container">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-4">
+      <div>
+        <h4 style="font-weight: 850; color: var(--ink); margin-bottom: 0.5rem; letter-spacing: -1px;">SimYouth</h4>
+        <p style="color: var(--muted); font-size: 0.9rem; margin: 0;">&copy; 2024 SimYouth Project. All rights reserved.</p>
       </div>
-    {% endif %}
-  {% endwith %}
 
-  </main>
+      <div class="d-flex gap-4">
+        <a href="{{ url_for('research_gate') }}" style="color: var(--brand); text-decoration: none; font-size: 0.9rem; font-weight: 700;">Research Gate</a>
+      </div>
+    </div>
+  </div>
+</footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+{% endblock %}

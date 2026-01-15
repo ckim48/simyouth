@@ -1,0 +1,497 @@
+{# templates/admin_research.html (FULL UPDATED — charts render + popular full path) #}
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  :root {
+    --brand-primary: #574545;
+    --brand-secondary: #ab8e8e;
+    --brand-soft: #f4f1f0;
+    --bg: #f8f9fa;
+    --surface: #ffffff;
+    --text-muted: #736b6b;
+    --edge: rgba(0,0,0,.06);
+    --radius: 16px;
+  }
+
+  .admin-wrapper {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 2rem;
+    margin-top: 1rem;
+    height: calc(100vh - 140px);
+  }
+
+  .explorer-sidebar {
+    background: var(--surface);
+    border: 1px solid var(--edge);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    overflow: hidden;
+  }
+
+  .sidebar-head { padding: 1.5rem; border-bottom: 1px solid var(--edge); background: var(--brand-soft); }
+  .search-box {
+    background: white; border: 1px solid var(--edge); border-radius: 10px;
+    padding: 8px 12px; width: 100%; font-size: 0.85rem;
+  }
+
+  .user-scroll { flex: 1; overflow-y: auto; padding: 1rem; }
+  .user-item {
+    padding: 0.8rem 1rem; border-radius: 12px; cursor: pointer; transition: 0.2s;
+    display: flex; align-items: center; gap: 12px; margin-bottom: 0.4rem;
+  }
+  .user-item:hover { background: var(--brand-soft); }
+  .user-item.active { background: var(--brand-primary); color: white; }
+
+  .avatar-circle {
+    width: 36px; height: 36px; background: var(--brand-secondary); color: white;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem;
+  }
+
+  .dashboard-main { overflow-y: auto; padding-right: 0.5rem; }
+
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; margin-bottom: 1.5rem; }
+  .kpi-card { background: var(--surface); padding: 1.25rem; border-radius: var(--radius); border: 1px solid var(--edge); }
+  .kpi-label { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
+  .kpi-value { font-size: 1.75rem; font-weight: 900; color: var(--brand-primary); margin-top: 0.2rem; }
+  .kpi-sub { font-size: 10px; color: var(--brand-secondary); font-weight: 700; }
+
+  .chart-container {
+    background: var(--surface);
+    border: 1px solid var(--edge);
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    box-shadow: 0 10px 40px rgba(87,69,69,0.06);
+    margin-bottom: 1.5rem;
+  }
+
+  .empty-note {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: var(--brand-soft);
+    border: 1px dashed rgba(87,69,69,0.18);
+    border-radius: 12px;
+    padding: 12px 14px;
+  }
+
+  .slide-panel {
+    position: fixed; top: 0; right: -550px; width: 500px; height: 100vh;
+    background: white; z-index: 2000; box-shadow: -20px 0 60px rgba(0,0,0,0.1);
+    transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); padding: 2.5rem; overflow-y: auto;
+  }
+  .slide-panel.open { right: 0; }
+
+  table.table td, table.table th { vertical-align: middle; }
+</style>
+
+<div class="admin-wrapper">
+  <aside class="explorer-sidebar">
+    <div class="sidebar-head">
+      <h6 class="fw-800 m-0" style="color: var(--brand-primary)">Participant Explorer</h6>
+      <p class="text-muted small mb-3" style="font-size: 10px">Search username in research records</p>
+      <input type="text" id="usernameInput" class="search-box" placeholder="Enter username..." onkeyup="filterUsers()">
+    </div>
+    <div class="user-scroll" id="userList"></div>
+  </aside>
+
+  <main class="dashboard-main">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+      <div>
+        <h2 class="fw-900 mb-1" style="color: var(--brand-primary)">Research Intelligence</h2>
+        <p class="text-muted small">Trajectory analysis & IHL adherence metrics (Research Only · Static Research Data Only)</p>
+      </div>
+      <button class="btn btn-dark btn-sm px-4 fw-800"
+              style="background: var(--brand-primary); border-radius: 10px;"
+              onclick="refreshDashboard()">Sync Console</button>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi-card">
+          <div class="kpi-label">Completion Status</div>
+          <div class="kpi-value" id="kCompleted">0 / 0</div>
+          <div class="kpi-sub">Users with finished run</div>
+      </div>
+      <div class="kpi-card">
+          <div class="kpi-label">Group Pulse</div>
+          <div class="kpi-value" id="kSent">0.00</div>
+          <div class="kpi-sub">Avg final-step ethics index</div>
+      </div>
+      <div class="kpi-card">
+          <div class="kpi-label">Popular Path</div>
+          <div class="kpi-value" id="kChoice" style="font-size: 1.05rem; line-height: 1.1;">--</div>
+          <div class="kpi-sub">Most frequent full path</div>
+      </div>
+      <div class="kpi-card">
+          <div class="kpi-label">Recent Activity</div>
+          <div class="kpi-value" id="kRecent" style="font-size: 1.1rem; overflow: hidden; white-space: nowrap;">--</div>
+          <div class="kpi-sub">Latest participant</div>
+      </div>
+    </div>
+
+    <div class="chart-container">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h5 class="fw-800 m-0" style="color: var(--brand-primary)">Ethical Trajectory Analysis</h5>
+          <span class="text-muted small">Each line = one participant’s latest finished research run. Hover points to see step title + chosen action.</span>
+        </div>
+      </div>
+
+      <div id="trajEmpty" class="empty-note d-none">
+        No finished research runs yet. Once participants complete the research scenario, trajectories will appear here.
+      </div>
+
+      <div style="height: 450px;"><canvas id="trajectoryChart"></canvas></div>
+    </div>
+
+    <div class="chart-container">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h6 class="fw-800 mb-1">Most Common Decision Paths</h6>
+          <div class="text-muted small">Counts across users (latest finished run only)</div>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-sm align-middle mb-0">
+          <thead>
+            <tr>
+              <th style="width:55%">Path</th>
+              <th style="width:20%">Users</th>
+              <th style="width:25%">Meaning</th>
+            </tr>
+          </thead>
+          <tbody id="topPathsTable">
+            <tr><td colspan="3" class="text-muted small">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="chart-container">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h6 class="fw-800 m-0">Global IHL Radar</h6>
+                  <span class="text-muted" style="font-size:11px;">Avg final-step scores</span>
+                </div>
+                <div id="radarEmpty" class="empty-note d-none">No radar data yet.</div>
+                <div style="height: 300px;"><canvas id="radarChart"></canvas></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="chart-container">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h6 class="fw-800 m-0">Age Distribution</h6>
+                  <span class="text-muted" style="font-size:11px;">Users with finished run</span>
+                </div>
+                <div id="ageEmpty" class="empty-note d-none">No age data yet.</div>
+                <div style="height: 300px;"><canvas id="barChart"></canvas></div>
+            </div>
+        </div>
+    </div>
+  </main>
+</div>
+
+<div id="detailPanel" class="slide-panel">
+  <span class="float-end cursor-pointer fw-900 text-muted" style="font-size: 1.5rem;" onclick="closePanel()">&times;</span>
+  <div id="panelContent"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+  let activeCharts = {};
+  let timer = null;
+
+  function showEl(id, on) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.toggle("d-none", !on);
+  }
+
+  function fmtPathLetters(path) {
+    if (!path) return "--";
+    return path.split("").join(" → ");
+  }
+
+  async function refreshDashboard() {
+    // KPI + aggregate charts
+    const res = await fetch('/admin/api/research_stats');
+    const data = await res.json();
+
+    if (data.counts) {
+      document.getElementById('kCompleted').innerText = `${data.counts.completed_users} / ${data.counts.users_with_any_research}`;
+      document.getElementById('kSent').innerText = (data.avg_final_ethics_index ?? 0).toFixed(2);
+      document.getElementById('kChoice').innerText = data.popular_path ? fmtPathLetters(data.popular_path) : "--";
+      document.getElementById('kRecent').innerText = data.recent_user || "--";
+    }
+
+    renderGlobalCharts(data);
+
+    // Trajectories + table
+    await renderTrajectories();
+
+    // Sidebar
+    await loadUserList();
+  }
+
+  function renderGlobalCharts(data) {
+    // Radar (avg final-step dims)
+    const radarCanvas = document.getElementById('radarChart');
+    const radarCtx = radarCanvas.getContext("2d");
+    if (activeCharts.radar) activeCharts.radar.destroy();
+
+    const dims = data.avg_dims || null; // {Distinction:..., Proportionality:..., Necessity:..., Precaution:...}
+
+    if (dims && Object.keys(dims).length) {
+      showEl("radarEmpty", false);
+      activeCharts.radar = new Chart(radarCtx, {
+        type: 'radar',
+        data: {
+          labels: ['Distinction', 'Proportionality', 'Necessity', 'Precaution'],
+          datasets: [{
+            label: "Group Average",
+            data: [
+              dims.Distinction ?? 0,
+              dims.Proportionality ?? 0,
+              dims.Necessity ?? 0,
+              dims.Precaution ?? 0
+            ],
+            borderColor: '#574545',
+            backgroundColor: 'rgba(87,69,69,0.10)',
+            pointBackgroundColor: '#574545'
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { r: { beginAtZero: true, suggestedMax: 4 } }
+        }
+      });
+    } else {
+      showEl("radarEmpty", true);
+      // draw empty chart (so canvas isn't dead)
+      activeCharts.radar = new Chart(radarCtx, {
+        type: 'radar',
+        data: { labels: ['Distinction','Proportionality','Necessity','Precaution'], datasets:[{ data:[0,0,0,0] }] },
+        options: { maintainAspectRatio:false, plugins:{ legend:{display:false} }, scales:{ r:{ beginAtZero:true, suggestedMax:4 } } }
+      });
+    }
+
+    // Age bar
+    const barCanvas = document.getElementById('barChart');
+    const barCtx = barCanvas.getContext("2d");
+    if (activeCharts.bar) activeCharts.bar.destroy();
+
+    const byAge = data.by_age || null; // {"13-15": 2, "16-18": 5, ...}
+
+    if (byAge && Object.keys(byAge).length) {
+      showEl("ageEmpty", false);
+      activeCharts.bar = new Chart(barCtx, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(byAge),
+          datasets: [{
+            data: Object.values(byAge),
+            backgroundColor: '#574545',
+            borderRadius: 8
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } }
+        }
+      });
+    } else {
+      showEl("ageEmpty", true);
+      activeCharts.bar = new Chart(barCtx, {
+        type: 'bar',
+        data: { labels: ['--'], datasets:[{ data:[0], backgroundColor:'#574545', borderRadius:8 }] },
+        options: { maintainAspectRatio:false, plugins:{ legend:{display:false} } }
+      });
+    }
+  }
+
+  async function renderTrajectories() {
+    const res = await fetch('/admin/api/research_trajectory');
+    const data = await res.json();
+
+    const has = data.all_data && data.all_data.length > 0;
+    showEl("trajEmpty", !has);
+
+    // ---- Top Paths table ----
+    const tbody = document.getElementById("topPathsTable");
+
+    const meaningHint = (p) => {
+      const counts = {A:0,B:0,C:0,D:0};
+      (p || "").split("").forEach(ch => { if (counts[ch] != null) counts[ch]++; });
+      const top = Object.entries(counts).sort((a,b)=>b[1]-a[1])[0]?.[0];
+      const map = {
+        A: "More communal care",
+        B: "More future utility",
+        C: "More loyalty/close ties",
+        D: "More self-preservation"
+      };
+      return map[top] || "--";
+    };
+
+    tbody.innerHTML = (data.top_paths || []).map(row => `
+      <tr>
+        <td class="fw-bold">${fmtPathLetters(row.path || "")}</td>
+        <td>${row.count || 0}</td>
+        <td class="text-muted small">${meaningHint(row.path || "")}</td>
+      </tr>
+    `).join("") || `<tr><td colspan="3" class="text-muted small">No path summary yet.</td></tr>`;
+
+    // ---- Trajectory chart ----
+    const canvas = document.getElementById('trajectoryChart');
+    const ctx = canvas.getContext("2d");
+    if (activeCharts.traj) activeCharts.traj.destroy();
+
+    if (!has) {
+      // keep an empty chart so UI looks alive
+      activeCharts.traj = new Chart(ctx, {
+        type:'line',
+        data:{ labels:['Step 1','Step 2','Step 3','Step 4'], datasets:[{ data:[0,0,0,0], borderColor:'#574545' }] },
+        options:{ maintainAspectRatio:false, plugins:{ legend:{display:false} } }
+      });
+      return;
+    }
+
+    const maxSteps = Math.max(...data.all_data.map(u => (u.path || []).length));
+    const labels = Array.from({length:maxSteps}, (_,i)=>`Step ${i+1}`);
+
+    const palette = ["#574545", "#ab8e8e", "#8e7a7a", "#d4c5c5", "#3f2f2f", "#c8b1b1"];
+
+    const datasets = data.all_data.map((u, idx) => {
+      const color = palette[idx % palette.length];
+      return {
+        label: `${u.username}${u.path_letters ? ` (${u.path_letters})` : ""}`,
+        data: (u.path || []).map(p => p.total),
+        borderColor: color,
+        backgroundColor: color + "1A",
+        borderWidth: 2,
+        pointRadius: 3,
+        tension: 0.35,
+        _meta: u.path
+      };
+    });
+
+    activeCharts.traj = new Chart(ctx, {
+      type: 'line',
+      data: { labels, datasets },
+      options: {
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: (items) => {
+                const it = items[0];
+                const ds = it.dataset;
+                const stepIndex = it.dataIndex;
+                const meta = (ds._meta || [])[stepIndex];
+                if (!meta) return `Step ${stepIndex+1}`;
+                return `${meta.step_title}  •  ${ds.label}`;
+              },
+              label: (it) => {
+                const ds = it.dataset;
+                const stepIndex = it.dataIndex;
+                const meta = (ds._meta || [])[stepIndex];
+                if (!meta) return `Total adherence: ${it.formattedValue}`;
+
+                const dim = meta.scores || {};
+                return [
+                  `Choice: ${meta.chosen_letter} — ${meta.chosen_label || "(no label)"}`,
+                  `Ethics index: ${meta.total}`,
+                  `Distinction: ${dim.Distinction ?? 0}`,
+                  `Proportionality: ${dim.Proportionality ?? 0}`,
+                  `Necessity: ${dim.Necessity ?? 0}`,
+                  `Precaution: ${dim.Precaution ?? 0}`,
+                ];
+              }
+            }
+          }
+        },
+        scales: {
+          y: { beginAtZero: true, title: { display: true, text: 'Ethics Index (sum of 4 dimensions)' },
+               grid: { color: "rgba(0,0,0,0.06)" } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  function filterUsers() {
+    clearTimeout(timer);
+    timer = setTimeout(async () => {
+      const query = document.getElementById('usernameInput').value;
+      const res = await fetch(`/admin/api/users?q=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      populateList(data.users);
+    }, 300);
+  }
+
+  async function loadUserList() {
+    const res = await fetch('/admin/api/users');
+    const data = await res.json();
+    populateList(data.users);
+  }
+
+  function populateList(users) {
+    const list = document.getElementById('userList');
+    list.innerHTML = (users || []).map(u => `
+      <div class="user-item" onclick="viewUser('${u.username}')">
+        <div class="avatar-circle">${(u.username || "?")[0].toUpperCase()}</div>
+        <div style="overflow:hidden">
+          <div class="fw-bold small text-truncate">${u.username}</div>
+          <div class="text-muted" style="font-size: 9px">${u.age_group || "--"} · ${u.gender || "--"}</div>
+        </div>
+      </div>
+    `).join('') || `<div class="text-muted small px-2">No users yet.</div>`;
+  }
+
+  async function viewUser(username) {
+    const panel = document.getElementById('detailPanel');
+    const content = document.getElementById('panelContent');
+    panel.classList.add('open');
+    content.innerHTML = '<p class="text-center py-5">Loading behavior analysis...</p>';
+
+    const res = await fetch(`/admin/api/user_detail/${encodeURIComponent(username)}`);
+    const data = await res.json();
+
+    content.innerHTML = `
+      <h3 class="fw-900 mb-4" style="color: var(--brand-primary)">${username}</h3>
+
+      <div style="background: var(--brand-soft); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem;">
+        <h6 class="fw-800">Behavioral Persona</h6>
+        <p class="mb-0 small text-muted">"${data.persona || "—"}"</p>
+      </div>
+
+      <h6 class="fw-800 mb-3">Decision History (Research Runs)</h6>
+
+      ${(data.runs || []).map(run => `
+        <div style="border-left: 2px solid var(--brand-secondary); padding-left: 1rem; margin-bottom: 1.5rem;">
+          <div class="fw-bold small">${run.title || "Research Run"}</div>
+          <div class="text-muted" style="font-size: 10px;">${run.started_at || ""}</div>
+
+          ${(run.decisions || []).map(d => `
+            <div class="p-2 mb-1 bg-light rounded" style="font-size:11px;">
+              <b>${d.step_title || ("Step " + d.step_index)}:</b> ${d.chosen_label || "—"}
+            </div>
+          `).join('')}
+        </div>
+      `).join('') || `<div class="text-muted small">No runs found for this user.</div>`}
+    `;
+  }
+
+  function closePanel() {
+    document.getElementById('detailPanel').classList.remove('open');
+  }
+
+  refreshDashboard();
+</script>
+
+{% endblock %}

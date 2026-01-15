@@ -2,475 +2,454 @@
   "A": {
     "id": "A",
     "title": "Ukraine Civilian Ethics — Empathy Path",
-    "intro": "Yarova, Ukraine. A winter blast tears through the queue for the supply van. You survive only because you ran back inside for bandages for Lena, a seventy‑three‑year‑old widow. Hidden beneath your floorboards lies one last sealed medical kit. Across the road, a boy bleeds into his mother’s coat. No medics. No certainty. Only choices.",
+    "intro": "Yarova, Ukraine. A winter blast tears through the queue for the supply van. You survive only because you ran back inside for bandages for Lena, a seventy-three-year-old widow. Hidden beneath your floorboards lies one last sealed medical kit. Across the road, a boy bleeds into his mother’s coat. No medics. No certainty. Only choices.",
+    "scenarioImage": "static/scenarios/A.jpg",
+    "resolutions": {
+      "A": {
+        "title": "The Path of Radical Empathy",
+        "resolution": "Your decisions were anchored in the preservation of the community's most vulnerable. By consistently choosing communal care over individual survival, you maintained the social fabric of Yarova. While your own safety was frequently jeopardized, you emerged as a moral anchor in a landscape of chaos."
+      },
+      "B": {
+        "title": "The Path of Generational Duty",
+        "resolution": "Your logic focused on long-term utility. By prioritizing the youth, you opted for 'Generational Survival.' You accepted the tragic loss of the past (the elderly) to secure a foothold for the future. You acted as a necessary, heavy-hearted pragmatist."
+      },
+      "C": {
+        "title": "The Path of Kinship & Loyalty",
+        "resolution": "Your ethics were defined by proximity and history. In a world where systems failed, you leaned on the ancient law of the neighbor, protecting the 'known' against the 'unknown.' You preserved the bonds of home at the cost of broader fairness."
+      },
+      "D": {
+        "title": "The Path of Calculated Survival",
+        "resolution": "You chose the path of self-preservation and calculated silence. By hoarding resources and severing ties, you maximized your own safety and assimilation into a new life. While you survived physically, you exist in a permanent psychological exile from your origins."
+      }
+    },
     "steps": [
       {
         "id": 1,
         "title": "One Kit, Two Lives",
-        "situation": "The street is glassed with ice and dust. Shrapnel ticks as it cools. Lena’s leg is swollen and angry red; the boy’s breaths are shallow and fast. Your sister whispers, “What do we do?” The kit in your hands feels heavier than steel.",
+        "situation": "The street is glassed with ice and dust. Shrapnel ticks as it cools. Lena’s leg is swollen and angry red; the boy’s breaths are shallow and fast. Your sister whispers, 'What do we do?' The kit in your hands feels heavier than steel.",
         "question": "Who receives the last medical kit?",
         "options": [
           {
             "value": "A1",
             "label": "Split the kit between Lena and the boy",
-            "consequence": "You divide ointment, gauze, and pills with surgical care, knowing it may be too little for both. Lena squeezes your wrist in thanks; the boy’s mother mouths a silent prayer. Dawn will test whether ‘fair’ was also ‘effective’. When the sun rises, if transport appears and offers only one civilian seat, do you advocate for the boy, for Lena, for yourself—or for no one?"
+            "consequence": "You divide ointment and gauze knowing it may be too little for both. Dawn will test if 'fair' was also 'effective'.",
+            "scores": { "Distinction": 5, "Proportionality": 4, "Necessity": 3, "Precaution": 4 },
+            "ethicsIndex": 16
           },
           {
             "value": "B1",
             "label": "Give the full kit to the boy",
-            "consequence": "You clean the wound, medicate, and bind until his breaths lengthen. Across the road, Lena looks away and nods, as if granting permission you never sought. By nightfall, fever breaks for the boy; infection deepens for Lena. Tomorrow a convoy may allow one seat—if that moment comes, will you go with the boy, send him alone, choose Lena instead, or take the seat yourself?"
+            "consequence": "You prioritize the child. By nightfall, fever breaks for the boy; infection deepens for Lena.",
+            "scores": { "Distinction": 5, "Proportionality": 3, "Necessity": 4, "Precaution": 3 },
+            "ethicsIndex": 15
           },
           {
             "value": "C1",
             "label": "Give the full kit to Lena",
-            "consequence": "You flush the wound, pack gauze, and wrap her leg. She weeps—a sound like a memory cracking. The boy’s mother turns, holding him closer. By morning he is colder; Lena is warmer. If an evacuation truck later offers exactly one seat, do you stand by Lena, send the boy, send yourself, or refuse to choose?"
+            "consequence": "You honor the elder. Lena is warmer by morning, but the boy grows colder. His mother's silence is deafening.",
+            "scores": { "Distinction": 5, "Proportionality": 3, "Necessity": 4, "Precaution": 3 },
+            "ethicsIndex": 15
           },
           {
             "value": "D1",
             "label": "Keep the kit hidden",
-            "consequence": "You say you have nothing. The lie lingers in the air like smoke. By dawn the boy is gone; by the third day Lena fades. Your sister stops speaking to you. When evacuation finally comes and asks for your story, do you donate the still‑sealed kit, destroy it, keep it, or send it—along with the truth—to your sister?"
+            "consequence": "You say you have nothing. By dawn the boy is gone; by the third day Lena fades. You have the kit, but lost your sister's trust.",
+            "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 2, "Precaution": 1 },
+            "ethicsIndex": 5
           }
         ]
       },
       {
         "id": 2,
         "title": "One Seat on the Truck",
-        "situation": "Word spreads: a Red Cross–UN convoy can take exactly one more civilian. A medic points to you: “You’ve been helping. You decide.” Engines idle. Snow begins again.",
+        "situation": "Word spreads: a UN convoy can take exactly one more civilian. A medic points to you: 'You decide who goes.' Engines idle. Snow begins again.",
         "question": "Who boards the final seat?",
         "options": [
           {
             "value": "A2",
-            "label": "The boy—and you go with him to advocate at arrival.",
-            "consequence": "You lift him in, promising his mother you’ll argue his case. Kilometers later, in Lviv, surgery is possible—but so is forgetting the faces you left behind. A coordinator asks for one more choice: return east escorting a medical shipment, send supplies only, stay silent, or lie about your origin to ease asylum?"
+            "label": "The boy — and you go with him.",
+            "consequence": "You lift him in. In Lviv, surgery is possible—but so is forgetting the faces you left behind.",
+            "scores": { "Distinction": 4, "Proportionality": 3, "Necessity": 4, "Precaution": 3 },
+            "ethicsIndex": 14
           },
           {
             "value": "B2",
-            "label": "Lena—and you accompany her through checkpoints.",
-            "consequence": "You steady her up the tailgate as documents blur under a soldier’s stare. At a field hospital, a doctor whispers: wait weeks for surgery, push for priority, or arrange a risky transfer to Poland. Which path will you take when compassion collides with capacity?"
+            "label": "Lena — and you accompany her.",
+            "consequence": "You steady her up the tailgate. At a field hospital, a doctor warns that age makes her low priority.",
+            "scores": { "Distinction": 4, "Proportionality": 3, "Necessity": 4, "Precaution": 3 },
+            "ethicsIndex": 14
           },
           {
             "value": "C2",
             "label": "Place the boy on the truck alone; you remain.",
-            "consequence": "The medic wraps him in a blanket as the truck lurches away. Night fire returns; basements become lungs. A rumor of a westbound convoy forces another call: walk slowly together, run ahead to secure spots, send your sister ahead and stay with Lena, or refuse the road and wait?"
+            "consequence": "He vanishes into the snow. You stay behind to face the night fire with your sister.",
+            "scores": { "Distinction": 4, "Proportionality": 4, "Necessity": 3, "Precaution": 4 },
+            "ethicsIndex": 15
           },
           {
             "value": "D2",
             "label": "Take the seat yourself; tell no one.",
-            "consequence": "Truck steel swallows you. Silence follows you to Dnipro, then Lviv, then abroad. Months later a TV frame finds your sister alive in a camp. Will you contact her, help anonymously, travel to her, or continue the lie you began at the tailgate?"
+            "consequence": "Truck steel swallows you. Months later you see your sister's hollow eyes on a TV news segment from a camp.",
+            "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 3, "Precaution": 1 },
+            "ethicsIndex": 6
           }
         ]
       },
       {
         "id": 3,
-        "title": "Distance, Duty, and Stories We Tell",
-        "situation": "Shelter offers food and forms—but also choices that fix your story in ink. A coordinator asks for help that risks your progress; a doctor asks for favors you cannot guarantee; your radio or phone can still reach those you left.",
-        "question": "How do you use safety and distance?",
+        "title": "Distance, Duty, and Silence",
+        "situation": "Shelter offers safety, but also choices that fix your story in ink. A coordinator asks for help that risks your progress; your phone can still reach the Yarova basements.",
+        "question": "How do you use your new safety?",
         "options": [
           {
             "value": "A3",
             "label": "Return east escorting medical shipments",
-            "consequence": "At dawn you ride past craters and burned fields. You deliver crates and find your sister thinner but alive; the boy steadier; Lena gone. The medics offer you a ride back out in two hours—leave with your sister, stay to rebuild, send her alone, or disappear before choosing again?"
+            "consequence": "You ride past craters. You find your sister alive, but Lena is gone. The medics offer one ride back out.",
+            "scores": { "Distinction": 5, "Proportionality": 4, "Necessity": 4, "Precaution": 4 },
+            "ethicsIndex": 17
           },
           {
             "value": "B3",
-            "label": "Stay but mobilize aid: messages, money, logistics, and advocacy.",
-            "consequence": "Your letters and packages arrive late but alive. One day, a plea: another child needs surgery you might arrange. Do you dive fully into coordination, give only money, write regrets, or go quiet to protect your fragile stability?"
+            "label": "Stay but mobilize aid: money and logistics.",
+            "consequence": "You become a digital lifeline. Your packages arrive late but alive. One day, a plea for a specific surgery arrives.",
+            "scores": { "Distinction": 5, "Proportionality": 4, "Necessity": 4, "Precaution": 4 },
+            "ethicsIndex": 17
           },
           {
             "value": "C3",
-            "label": "Stay silent; build a new life and let memory blur.",
-            "consequence": "You learn the language of elevators, pay stubs, and quiet. News from Yarova breaks through—a list with your sister’s name. Do you call, write, send money without a name, or do nothing and keep the wall intact?"
+            "label": "Stay silent; build a new life.",
+            "consequence": "You learn the language of quiet elevators and pay stubs. News from Yarova breaks through—a list with your sister's name.",
+            "scores": { "Distinction": 3, "Proportionality": 2, "Necessity": 4, "Precaution": 2 },
+            "ethicsIndex": 11
           },
           {
             "value": "D3",
-            "label": "Lie about your hometown to ease asylum; sever ties cleanly.",
-            "consequence": "Paperwork moves faster; nights grow longer. When a colleague seeks anyone from Yarova, the lie constricts. Do you confess and help, search privately, contact a reconnection NGO anonymously, or double down on the lie?"
+            "label": "Lie about your hometown to ease asylum.",
+            "consequence": "Paperwork moves faster, but nights grow longer. When a colleague seeks anyone from Yarova, your lie constricts.",
+            "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 4, "Precaution": 1 },
+            "ethicsIndex": 7
           }
         ]
       },
       {
         "id": 4,
         "title": "What Your Choices Make of You",
-        "situation": "Time does not heal so much as accumulate. Aid routes shift. Front lines breathe. You have seen what fairness, loyalty, pragmatism, and fear each purchase.",
-        "question": "Given everything, how do you close this chapter—for now?",
+        "situation": "Time accumulates. Front lines breathe. You have seen what fairness, loyalty, pragmatism, and fear each purchase.",
+        "question": "Given everything, how do you close this chapter?",
         "options": [
           {
             "value": "A4",
             "label": "Leave again with your sister",
-            "consequence": "You board together and do not look back until the road bends. You learn to cook for two in a new city and to memorialize the third at the table. Your story becomes service: you translate intake forms, steady trembling hands at clinics, and keep one empty chair on holidays. On quiet nights, you revisit the first blast only to confirm that the love you protected is still here—and that you did not stop loving those you could not save."
+            "consequence": "You learn to cook for two in a new city and to memorialize the third at the table. Love remains protected.",
+            "scores": { "Distinction": 4, "Proportionality": 4, "Necessity": 4, "Precaution": 4 },
+            "ethicsIndex": 16
           },
           {
             "value": "B4",
-            "label": "Stay and rebuild Yarova—caretaker of graves and beginnings.",
-            "consequence": "You map wells, list names, and plant onions between shell holes. When convoys come, you teach triage that centers dignity: label kits, post windows, publish loops. You become the person you needed—one who makes the next decider’s load slightly lighter."
+            "label": "Stay and rebuild Yarova.",
+            "consequence": "You map wells and plant onions in shell holes. You become the person you once needed.",
+            "scores": { "Distinction": 5, "Proportionality": 4, "Necessity": 4, "Precaution": 5 },
+            "ethicsIndex": 18
           },
           {
             "value": "C4",
-            "label": "Help from the shadows; keep certain truths unsent.",
-            "consequence": "You route donations, arrange transfers, and let thank‑you notes pile up with no return address. Your silence protects some people and imprisons others. Years later, you tell the whole story to a counselor—or to your child—and discover that absolution was never the goal; accountability was."
+            "label": "Help from the shadows.",
+            "consequence": "You route donations anonymously. Years later, you realize absolution was never the goal; accountability was.",
+            "scores": { "Distinction": 4, "Proportionality": 4, "Necessity": 4, "Precaution": 4 },
+            "ethicsIndex": 16
           },
           {
             "value": "D4",
-            "label": "Cut ties; survive; let history judge",
-            "consequence": "You keep your head down, build credit, and master a language that lacks words for what happened. One day at a fundraiser someone displays a sealed kit like the one you once hid. You step outside before the applause. On the walk home you realize that forgetting is a muscle: it strengthens with use, but it cannot lift what love chose to carry."
+            "label": "Cut ties; survive.",
+            "consequence": "You build credit and master a language that lacks words for the past. Forgetting is a muscle.",
+            "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 4, "Precaution": 1 },
+            "ethicsIndex": 7
           }
         ]
       }
     ]
   },
+
   "B": {
     "id": "B",
-    "title": "Ukraine Civilian Ethics — Child‑First Path",
-    "intro": "Yarova, Ukraine. A winter blast tears through the queue for the supply van. You survive only because you ran back inside for bandages for Lena, a seventy‑three‑year‑old widow. Hidden beneath your floorboards lies one last sealed medical kit. Across the road, a boy bleeds into his mother’s coat. No medics. No certainty. Only choices.",
+    "title": "Siege Logistics — Efficiency Path",
+    "intro": "The city of Mariupol is a cage of iron and smoke. You are in charge of a small neighborhood basement shelter. Food is a math problem; water is a miracle. A supply run has returned with enough for ten people, but there are fifteen in your care. Your decisions will dictate who sees the spring.",
+    "scenarioImage": "static/scenarios/B.jpg",
+    "resolutions": {
+      "A": { "title": "The Path of Ethical Equity", "resolution": "You refused to play God. By stretching every resource to the breaking point, you ensured everyone felt valued, even as the cold grew more intense. Your leadership was defined by a shared fate." },
+      "B": { "title": "The Path of Strategic Hardness", "resolution": "You prioritized the strong and the contributors. While painful, your efficiency ensured the group's functional survival. You sacrificed individual comfort for the collective's ability to endure the siege." },
+      "C": { "title": "The Path of Tribal Protection", "resolution": "You protected your immediate circle above all else. In the dark of the basement, you found that blood is thicker than shared geography. You kept your promises to your family, whatever the cost to others." },
+      "D": { "title": "The Path of the Shadow Broker", "resolution": "You hoarded reserves for the final breakout. Your silence and secrecy were tools of survival. You emerged from the city alone but alive, carrying the weight of the unused rations in your memory." }
+    },
     "steps": [
       {
         "id": 1,
-        "title": "One Kit, Two Lives",
-        "situation": "The street is glassed with ice and dust. Shrapnel ticks as it cools. Lena’s leg is swollen and angry red; the boy’s breaths are shallow and fast. Your sister whispers, “What do we do?” The kit in your hands feels heavier than steel.",
-        "question": "Who receives the last medical kit?",
+        "title": "The Bread Dilemma",
+        "situation": "Five loaves of bread remain. The children need strength, but the men digging the rubble to clear the exit need calories to work. The elderly watch in silence.",
+        "question": "How do you distribute the bread?",
         "options": [
           {
             "value": "A1",
-            "label": "Split the kit between Lena and the boy",
-            "consequence": "You divide ointment, gauze, and pills with surgical care, knowing it may be too little for both. Lena squeezes your wrist in thanks; the boy’s mother mouths a silent prayer. Dawn will test whether ‘fair’ was also ‘effective’. When the sun rises, if transport appears and offers only one civilian seat, do you advocate for the boy, for Lena, for yourself—or for no one?"
+            "label": "Tiny portions for everyone",
+            "consequence": "Hunger is universal, but no one feels abandoned. The work on the exit slows to a crawl as strength fades.",
+            "scores": { "Distinction": 5, "Proportionality": 4, "Necessity": 3, "Precaution": 4 },
+            "ethicsIndex": 16
           },
           {
             "value": "B1",
-            "label": "Give the full kit to the boy",
-            "consequence": "You clean the wound, medicate, and bind until his breaths lengthen. Across the road, Lena looks away and nods, as if granting permission you never sought. By nightfall, fever breaks for the boy; infection deepens for Lena. Tomorrow a convoy may allow one seat—if that moment comes, will you go with the boy, send him alone, choose Lena instead, or take the seat yourself?"
+            "label": "Full portions for the laborers",
+            "consequence": "The exit is cleared faster, but the children's cries become a constant, haunting background noise.",
+            "scores": { "Distinction": 4, "Proportionality": 3, "Necessity": 4, "Precaution": 3 },
+            "ethicsIndex": 14
           },
           {
             "value": "C1",
-            "label": "Give the full kit to Lena",
-            "consequence": "You flush the wound, pack gauze, and wrap her leg. She weeps—a sound like a memory cracking. The boy’s mother turns, holding him closer. By morning he is colder; Lena is warmer. If an evacuation truck later offers exactly one seat, do you stand by Lena, send the boy, send yourself, or refuse to choose?"
+            "label": "Prioritize your own family",
+            "consequence": "Your daughter smiles as she eats, but the neighbor who lost everything avoids your gaze in the dark.",
+            "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 },
+            "ethicsIndex": 10
           },
           {
             "value": "D1",
-            "label": "Keep the kit hidden",
-            "consequence": "You say you have nothing. The lie lingers in the air like smoke. By dawn the boy is gone; by the third day Lena fades. Your sister stops speaking to you. When evacuation finally comes and asks for your story, do you donate the still‑sealed kit, destroy it, keep it, or send it—along with the truth—to your sister?"
+            "label": "Hide two loaves for the journey out",
+            "consequence": "You tell them only three were found. The laborers grow weak, but you have a secret insurance policy.",
+            "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 4, "Precaution": 1 },
+            "ethicsIndex": 7
           }
         ]
       },
       {
         "id": 2,
-        "title": "One Seat on the Truck",
-        "situation": "Word spreads: a Red Cross–UN convoy can take exactly one more civilian. A medic points to you: “You’ve been helping. You decide.” Engines idle. Snow begins again.",
-        "question": "Who boards the final seat?",
+        "title": "The Fuel Shortage",
+        "situation": "The generator has one hour of fuel left. It can either power the medical fridge for insulin or the radio to listen for evacuation coordinates.",
+        "question": "Where does the power go?",
         "options": [
           {
             "value": "A2",
-            "label": "The boy—and you go with him to advocate at arrival.",
-            "consequence": "You lift him in, promising his mother you’ll argue his case. Kilometers later, in Lviv, surgery is possible—but so is forgetting the faces you left behind. A coordinator asks for one more choice: return east escorting a medical shipment, send supplies only, stay silent, or lie about your origin to ease asylum?"
+            "label": "Alternate 30 mins each",
+            "consequence": "The insulin is compromised and the radio signal is patchy. You gamble on 'middle ground' and risk both.",
+            "scores": { "Distinction": 4, "Proportionality": 2, "Necessity": 3, "Precaution": 2 },
+            "ethicsIndex": 11
           },
           {
             "value": "B2",
-            "label": "Lena—and you accompany her through checkpoints.",
-            "consequence": "You steady her up the tailgate as documents blur under a soldier’s stare. At a field hospital, a doctor whispers: wait weeks for surgery, push for priority, or arrange a risky transfer to Poland. Which path will you take when compassion collides with capacity?"
+            "label": "Full hour for the radio",
+            "consequence": "You hear the coordinates clearly, but Lena’s uncle slips into a coma by nightfall without his medicine.",
+            "scores": { "Distinction": 4, "Proportionality": 2, "Necessity": 4, "Precaution": 2 },
+            "ethicsIndex": 12
           },
           {
             "value": "C2",
-            "label": "Place the boy on the truck alone; you remain.",
-            "consequence": "The medic wraps him in a blanket as the truck lurches away. Night fire returns; basements become lungs. A rumor of a westbound convoy forces another call: walk slowly together, run ahead to secure spots, send your sister ahead and stay with Lena, or refuse the road and wait?"
+            "label": "Full hour for the medical fridge",
+            "consequence": "The uncle lives, but you miss the window for the UN safe passage announcement. You are trapped longer.",
+            "scores": { "Distinction": 5, "Proportionality": 3, "Necessity": 4, "Precaution": 3 },
+            "ethicsIndex": 15
           },
           {
             "value": "D2",
-            "label": "Take the seat yourself; tell no one.",
-            "consequence": "Truck steel swallows you. Silence follows you to Dnipro, then Lviv, then abroad. Months later a TV frame finds your sister alive in a camp. Will you contact her, help anonymously, travel to her, or continue the lie you began at the tailgate?"
+            "label": "Siphon the fuel for a getaway bike",
+            "consequence": "The basement goes dark immediately. You wait for the moment to move while others believe the fuel simply ran out.",
+            "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 4, "Precaution": 1 },
+            "ethicsIndex": 7
           }
         ]
       },
       {
         "id": 3,
-        "title": "Distance, Duty, and Stories We Tell",
-        "situation": "Shelter offers food and forms—but also choices that fix your story in ink. A coordinator asks for help that risks your progress; a doctor asks for favors you cannot guarantee; your radio or phone can still reach those you left.",
-        "question": "How do you use safety and distance?",
+        "title": "The Informant",
+        "situation": "A soldier from the opposing side is found injured in the stairwell. He has a map of the minefields. The group wants to leave him; the medic wants to save him.",
+        "question": "What is the soldier's fate?",
         "options": [
           {
             "value": "A3",
-            "label": "Return east escorting medical shipments",
-            "consequence": "At dawn you ride past craters and burned fields. You deliver crates and find your sister thinner but alive; the boy steadier; Lena gone. The medics offer you a ride back out in two hours—leave with your sister, stay to rebuild, send her alone, or disappear before choosing again?"
+            "label": "Treat him and trade for information",
+            "consequence": "He lives and gives you the map. Half the group thinks you are a traitor; the other half thinks you are a genius.",
+            "scores": { "Distinction": 4, "Proportionality": 4, "Necessity": 4, "Precaution": 4 },
+            "ethicsIndex": 16
           },
           {
             "value": "B3",
-            "label": "Stay but mobilize aid: messages, money, logistics, and advocacy.",
-            "consequence": "Your letters and packages arrive late but alive. One day, a plea: another child needs surgery you might arrange. Do you dive fully into coordination, give only money, write regrets, or go quiet to protect your fragile stability?"
+            "label": "Take the map and leave him",
+            "consequence": "You get the information without using medical supplies, but the moral atmosphere in the basement turns cold.",
+            "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 },
+            "ethicsIndex": 10
           },
           {
             "value": "C3",
-            "label": "Stay silent; build a new life and let memory blur.",
-            "consequence": "You learn the language of elevators, pay stubs, and quiet. News from Yarova breaks through—a list with your sister’s name. Do you call, write, send money without a name, or do nothing and keep the wall intact?"
+            "label": "Protect him as a prisoner of war",
+            "consequence": "You follow the rules of IHL, but he consumes a ration that could have gone to the children.",
+            "scores": { "Distinction": 4, "Proportionality": 3, "Necessity": 3, "Precaution": 4 },
+            "ethicsIndex": 14
           },
           {
             "value": "D3",
-            "label": "Lie about your hometown to ease asylum; sever ties cleanly.",
-            "consequence": "Paperwork moves faster; nights grow longer. When a colleague seeks anyone from Yarova, the lie constricts. Do you confess and help, search privately, contact a reconnection NGO anonymously, or double down on the lie?"
+            "label": "Ignore him and focus on your exit",
+            "consequence": "You don't risk the map being a trap. You leave him to the silence of the building.",
+            "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 4, "Precaution": 1 },
+            "ethicsIndex": 7
           }
         ]
       },
       {
         "id": 4,
-        "title": "What Your Choices Make of You",
-        "situation": "Time does not heal so much as accumulate. Aid routes shift. Front lines breathe. You have seen what fairness, loyalty, pragmatism, and fear each purchase.",
-        "question": "Given everything, how do you close this chapter—for now?",
+        "title": "The Final Exit",
+        "situation": "The shelling has stopped briefly. The path to the 'Green Corridor' is open, but only if you move now. Two people are too weak to walk.",
+        "question": "How do you handle the evacuation?",
         "options": [
           {
             "value": "A4",
-            "label": "Leave again with your sister",
-            "consequence": "You board together and do not look back until the road bends. You learn to cook for two in a new city and to memorialize the third at the table. Your story becomes service: you translate intake forms, steady trembling hands at clinics, and keep one empty chair on holidays. On quiet nights, you revisit the first blast only to confirm that the love you protected is still here—and that you did not stop loving those you could not save."
+            "label": "Carry them at the cost of speed",
+            "consequence": "You move as a unit. You reach the bus just as it prepares to leave. You are the last ones on.",
+            "scores": { "Distinction": 5, "Proportionality": 4, "Necessity": 4, "Precaution": 4 },
+            "ethicsIndex": 17
           },
           {
             "value": "B4",
-            "label": "Stay and rebuild Yarova—caretaker of graves and beginnings.",
-            "consequence": "You map wells, list names, and plant onions between shell holes. When convoys come, you teach triage that centers dignity: label kits, post windows, publish loops. You become the person you needed—one who makes the next decider’s load slightly lighter."
+            "label": "Leave them with the remaining supplies",
+            "consequence": "The group moves fast and reaches safety easily. The silence during the ride is your only punishment.",
+            "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 },
+            "ethicsIndex": 10
           },
           {
             "value": "C4",
-            "label": "Help from the shadows; keep certain truths unsent.",
-            "consequence": "You route donations, arrange transfers, and let thank‑you notes pile up with no return address. Your silence protects some people and imprisons others. Years later, you tell the whole story to a counselor—or to your child—and discover that absolution was never the goal; accountability was."
+            "label": "Stay behind with those who can't move",
+            "consequence": "You send your family ahead. You sit in the dark and wait for the next miracle or the final end.",
+            "scores": { "Distinction": 4, "Proportionality": 3, "Necessity": 3, "Precaution": 3 },
+            "ethicsIndex": 13
           },
           {
             "value": "D4",
-            "label": "Cut ties; survive; let history judge",
-            "consequence": "You keep your head down, build credit, and master a language that lacks words for what happened. One day at a fundraiser someone displays a sealed kit like the one you once hid. You step outside before the applause. On the walk home you realize that forgetting is a muscle: it strengthens with use, but it cannot lift what love chose to carry."
+            "label": "Run ahead to secure your own spot",
+            "consequence": "You are the first to safety. You watch the horizon for the others, realizing the distance you've put between you.",
+            "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 4, "Precaution": 1 },
+            "ethicsIndex": 7
           }
         ]
       }
     ]
   },
+
   "C": {
     "id": "C",
-    "title": "Ukraine Civilian Ethics — Loyalty Path",
-    "intro": "Yarova, Ukraine. A winter blast tears through the queue for the supply van. You survive only because you ran back inside for bandages for Lena, a seventy‑three‑year‑old widow. Hidden beneath your floorboards lies one last sealed medical kit. Across the road, a boy bleeds into his mother’s coat. No medics. No certainty. Only choices.",
+    "title": "Frontier Justice — Loyalty Path",
+    "intro": "The borderlands are a lawless gray zone. Retreating forces have left behind a cache of documents that could expose collaborators. You are a local teacher who knows everyone’s secrets. A resistance group wants the names; the families of the accused beg for mercy. You hold the book of truth.",
+    "scenarioImage": "static/scenarios/C.jpg",
+    "resolutions": {
+      "A": { "title": "The Path of Truth & Reconciliation", "resolution": "You chose transparency over vengeance. By exposing the truth but advocating for due process, you prevented a cycle of blood-feuds. You remained the teacher, even when the world wanted a judge." },
+      "B": { "title": "The Path of National Duty", "resolution": "You handed the documents to the authorities immediately. You prioritized the security of the future state over the safety of individuals. Your loyalty to the idea of justice was absolute." },
+      "C": { "title": "The Path of Community Shield", "resolution": "You protected your neighbors, even the flawed ones. You believed that healing a village is more important than punishing a crime. You burned the evidence to save the future." },
+      "D": { "title": "The Path of the Silent Archivist", "resolution": "You kept the documents for yourself. Information is the only currency you trust. You moved away with the files, a quiet man with the power to change history if you ever choose to speak." }
+    },
     "steps": [
       {
         "id": 1,
-        "title": "One Kit, Two Lives",
-        "situation": "The street is glassed with ice and dust. Shrapnel ticks as it cools. Lena’s leg is swollen and angry red; the boy’s breaths are shallow and fast. Your sister whispers, “What do we do?” The kit in your hands feels heavier than steel.",
-        "question": "Who receives the last medical kit?",
+        "title": "The Ledger",
+        "situation": "You find the ledger in the abandoned school. It lists those who took extra rations in exchange for information. Your cousin’s name is on page four.",
+        "question": "What do you do with the ledger?",
         "options": [
-          {
-            "value": "A1",
-            "label": "Split the kit between Lena and the boy",
-            "consequence": "You divide ointment, gauze, and pills with surgical care, knowing it may be too little for both. Lena squeezes your wrist in thanks; the boy’s mother mouths a silent prayer. Dawn will test whether ‘fair’ was also ‘effective’. When the sun rises, if transport appears and offers only one civilian seat, do you advocate for the boy, for Lena, for yourself—or for no one?"
-          },
-          {
-            "value": "B1",
-            "label": "Give the full kit to the boy",
-            "consequence": "You clean the wound, medicate, and bind until his breaths lengthen. Across the road, Lena looks away and nods, as if granting permission you never sought. By nightfall, fever breaks for the boy; infection deepens for Lena. Tomorrow a convoy may allow one seat—if that moment comes, will you go with the boy, send him alone, choose Lena instead, or take the seat yourself?"
-          },
-          {
-            "value": "C1",
-            "label": "Give the full kit to Lena",
-            "consequence": "You flush the wound, pack gauze, and wrap her leg. She weeps—a sound like a memory cracking. The boy’s mother turns, holding him closer. By morning he is colder; Lena is warmer. If an evacuation truck later offers exactly one seat, do you stand by Lena, send the boy, send yourself, or refuse to choose?"
-          },
-          {
-            "value": "D1",
-            "label": "Keep the kit hidden",
-            "consequence": "You say you have nothing. The lie lingers in the air like smoke. By dawn the boy is gone; by the third day Lena fades. Your sister stops speaking to you. When evacuation finally comes and asks for your story, do you donate the still‑sealed kit, destroy it, keep it, or send it—along with the truth—to your sister?"
-          }
+          { "value": "A1", "label": "Publicly announce the discovery", "consequence": "The village is in an uproar. Transparency creates immediate tension but stops the rumors.", "scores": { "Distinction": 4, "Proportionality": 3, "Necessity": 4, "Precaution": 3 }, "ethicsIndex": 14 },
+          { "value": "B1", "label": "Give it to the Resistance commander", "consequence": "They take it and begin 'interviews' by nightfall. You have done your duty, but the air is thick with fear.", "scores": { "Distinction": 3, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 11 },
+          { "value": "C1", "label": "Tear out your cousin’s page", "consequence": "You protect your blood. The rest of the truth remains, but your integrity is now a secret debt.", "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 10 },
+          { "value": "D1", "label": "Hide it in the school rafters", "consequence": "You wait to see who wins the war before deciding which truth is most useful.", "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 4, "Precaution": 1 }, "ethicsIndex": 7 }
         ]
       },
       {
         "id": 2,
-        "title": "One Seat on the Truck",
-        "situation": "Word spreads: a Red Cross–UN convoy can take exactly one more civilian. A medic points to you: “You’ve been helping. You decide.” Engines idle. Snow begins again.",
-        "question": "Who boards the final seat?",
+        "title": "The Accused Neighbor",
+        "situation": "A crowd has gathered around Old Marek. They say he signaled the planes. Marek says he was just drying his laundry. They ask you to verify his character.",
+        "question": "What is your testimony?",
         "options": [
-          {
-            "value": "A2",
-            "label": "The boy—and you go with him to advocate at arrival.",
-            "consequence": "You lift him in, promising his mother you’ll argue his case. Kilometers later, in Lviv, surgery is possible—but so is forgetting the faces you left behind. A coordinator asks for one more choice: return east escorting a medical shipment, send supplies only, stay silent, or lie about your origin to ease asylum?"
-          },
-          {
-            "value": "B2",
-            "label": "Lena—and you accompany her through checkpoints.",
-            "consequence": "You steady her up the tailgate as documents blur under a soldier’s stare. At a field hospital, a doctor whispers: wait weeks for surgery, push for priority, or arrange a risky transfer to Poland. Which path will you take when compassion collides with capacity?"
-          },
-          {
-            "value": "C2",
-            "label": "Place the boy on the truck alone; you remain.",
-            "consequence": "The medic wraps him in a blanket as the truck lurches away. Night fire returns; basements become lungs. A rumor of a westbound convoy forces another call: walk slowly together, run ahead to secure spots, send your sister ahead and stay with Lena, or refuse the road and wait?"
-          },
-          {
-            "value": "D2",
-            "label": "Take the seat yourself; tell no one.",
-            "consequence": "Truck steel swallows you. Silence follows you to Dnipro, then Lviv, then abroad. Months later a TV frame finds your sister alive in a camp. Will you contact her, help anonymously, travel to her, or continue the lie you began at the tailgate?"
-          }
+          { "value": "A2", "label": "State only the facts you saw", "consequence": "You remain neutral. Marek is kept under guard, but not harmed. The crowd is unsatisfied.", "scores": { "Distinction": 4, "Proportionality": 4, "Necessity": 3, "Precaution": 4 }, "ethicsIndex": 15 },
+          { "value": "B2", "label": "Condemn him for his past ties", "consequence": "You use your influence to remove a potential threat. Marek is taken away. The village feels 'safer' but crueler.", "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 10 },
+          { "value": "C2", "label": "Vouch for him to save his life", "consequence": "You save a man who might be guilty because you cannot bear to see a lynching. He owes you his life.", "scores": { "Distinction": 4, "Proportionality": 3, "Necessity": 4, "Precaution": 3 }, "ethicsIndex": 14 },
+          { "value": "D2", "label": "Refuse to speak and walk away", "consequence": "You don't let the mob use your name. Whatever happens to Marek, it isn't on your hands—officially.", "scores": { "Distinction": 3, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 11 }
         ]
       },
       {
         "id": 3,
-        "title": "Distance, Duty, and Stories We Tell",
-        "situation": "Shelter offers food and forms—but also choices that fix your story in ink. A coordinator asks for help that risks your progress; a doctor asks for favors you cannot guarantee; your radio or phone can still reach those you left.",
-        "question": "How do you use safety and distance?",
+        "title": "The Bribe",
+        "situation": "A wealthy businessman whose name is in the ledger offers you a car and safe passage for your sister if you destroy the book.",
+        "question": "Do you take the deal?",
         "options": [
-          {
-            "value": "A3",
-            "label": "Return east escorting medical shipments",
-            "consequence": "At dawn you ride past craters and burned fields. You deliver crates and find your sister thinner but alive; the boy steadier; Lena gone. The medics offer you a ride back out in two hours—leave with your sister, stay to rebuild, send her alone, or disappear before choosing again?"
-          },
-          {
-            "value": "B3",
-            "label": "Stay but mobilize aid: messages, money, logistics, and advocacy.",
-            "consequence": "Your letters and packages arrive late but alive. One day, a plea: another child needs surgery you might arrange. Do you dive fully into coordination, give only money, write regrets, or go quiet to protect your fragile stability?"
-          },
-          {
-            "value": "C3",
-            "label": "Stay silent; build a new life and let memory blur.",
-            "consequence": "You learn the language of elevators, pay stubs, and quiet. News from Yarova breaks through—a list with your sister’s name. Do you call, write, send money without a name, or do nothing and keep the wall intact?"
-          },
-          {
-            "value": "D3",
-            "label": "Lie about your hometown to ease asylum; sever ties cleanly.",
-            "consequence": "Paperwork moves faster; nights grow longer. When a colleague seeks anyone from Yarova, the lie constricts. Do you confess and help, search privately, contact a reconnection NGO anonymously, or double down on the lie?"
-          }
+          { "value": "A3", "label": "Refuse and report the bribe", "consequence": "You stay for the fallout. Your sister remains in danger, but the truth is not for sale.", "scores": { "Distinction": 4, "Proportionality": 4, "Necessity": 4, "Precaution": 4 }, "ethicsIndex": 16 },
+          { "value": "B3", "label": "Take the deal but keep a copy", "consequence": "You get your sister out and keep the leverage. You are playing a dangerous game of double-cross.", "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 10 },
+          { "value": "C3", "label": "Burn the book for the family's sake", "consequence": "You destroy the evidence to save your own. Peace returns to the village, but it is built on a lie.", "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 4, "Precaution": 1 }, "ethicsIndex": 7 },
+          { "value": "D3", "label": "Negotiate for more resources", "consequence": "If the world is ending, you will ensure you have the means to start again elsewhere.", "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 10 }
         ]
       },
       {
         "id": 4,
-        "title": "What Your Choices Make of You",
-        "situation": "Time does not heal so much as accumulate. Aid routes shift. Front lines breathe. You have seen what fairness, loyalty, pragmatism, and fear each purchase.",
-        "question": "Given everything, how do you close this chapter—for now?",
+        "title": "The Aftermath",
+        "situation": "The regular army returns. They ask for the ledger to begin official trials. The village is divided between those who want to forget and those who want to hang.",
+        "question": "How do you hand over the history?",
         "options": [
-          {
-            "value": "A4",
-            "label": "Leave again with your sister",
-            "consequence": "You board together and do not look back until the road bends. You learn to cook for two in a new city and to memorialize the third at the table. Your story becomes service: you translate intake forms, steady trembling hands at clinics, and keep one empty chair on holidays. On quiet nights, you revisit the first blast only to confirm that the love you protected is still here—and that you did not stop loving those you could not save."
-          },
-          {
-            "value": "B4",
-            "label": "Stay and rebuild Yarova—caretaker of graves and beginnings.",
-            "consequence": "You map wells, list names, and plant onions between shell holes. When convoys come, you teach triage that centers dignity: label kits, post windows, publish loops. You become the person you needed—one who makes the next decider’s load slightly lighter."
-          },
-          {
-            "value": "C4",
-            "label": "Help from the shadows; keep certain truths unsent.",
-            "consequence": "You route donations, arrange transfers, and let thank‑you notes pile up with no return address. Your silence protects some people and imprisons others. Years later, you tell the whole story to a counselor—or to your child—and discover that absolution was never the goal; accountability was."
-          },
-          {
-            "value": "D4",
-            "label": "Cut ties; survive; let history judge",
-            "consequence": "You keep your head down, build credit, and master a language that lacks words for what happened. One day at a fundraiser someone displays a sealed kit like the one you once hid. You step outside before the applause. On the walk home you realize that forgetting is a muscle: it strengthens with use, but it cannot lift what love chose to carry."
-          }
+          { "value": "A4", "label": "Hand it over with a plea for mercy", "consequence": "Trials begin. They are slow and painful, but the rule of law is restored to the frontier.", "scores": { "Distinction": 4, "Proportionality": 4, "Necessity": 4, "Precaution": 4 }, "ethicsIndex": 16 },
+          { "value": "B4", "label": "Identify the worst offenders only", "consequence": "You focus the punishment on the few to save the many. A surgical justice.", "scores": { "Distinction": 3, "Proportionality": 3, "Necessity": 4, "Precaution": 3 }, "ethicsIndex": 13 },
+          { "value": "C4", "label": "Claim the book was lost in fire", "consequence": "You let the village heal through forgetting. You remain the teacher in a town of ghosts.", "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 10 },
+          { "value": "D4", "label": "Sell the information to the highest bidder", "consequence": "You use the war's end as your own beginning. You leave the frontier behind forever.", "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 4, "Precaution": 1 }, "ethicsIndex": 7 }
         ]
       }
     ]
   },
+
   "D": {
     "id": "D",
-    "title": "Ukraine Civilian Ethics — Self‑Preservation Path",
-    "intro": "Yarova, Ukraine. A winter blast tears through the queue for the supply van. You survive only because you ran back inside for bandages for Lena, a seventy‑three‑year‑old widow. Hidden beneath your floorboards lies one last sealed medical kit. Across the road, a boy bleeds into his mother’s coat. No medics. No certainty. Only choices.",
+    "title": "Supply Chain — Self-Preservation Path",
+    "intro": "You are a contractor in a conflict-adjacent city. You manage the warehouse for international aid. The front line has shifted, and the roads are cut off. You have the last shipment of antibiotics. The local hospital is desperate, but your company orders you to hold the stock for a high-value evacuation team.",
+    "scenarioImage": "static/scenarios/D.jpg",
+    "resolutions": {
+      "A": { "title": "The Path of Corporate Defiance", "resolution": "You chose people over protocols. By redirecting life-saving medicine to the local population, you saved hundreds of lives but ended your professional career. You left with nothing but a clear conscience." },
+      "B": { "title": "The Path of Standard Operating Procedure", "resolution": "You followed the chain of command. Your discipline ensured the evacuation team was successful, though the local hospital suffered. You are a reliable cog in a complex machine." },
+      "C": { "title": "The Path of the Local Patron", "resolution": "You used your position to protect your city. You funneled just enough supplies to keep the locals alive while keeping your bosses satisfied. You are the master of the gray market." },
+      "D": { "title": "The Path of Maximum Profit", "resolution": "You saw opportunity in the scarcity. By controlling the flow of goods, you secured your financial future in a collapsing economy. You survived the war by becoming a merchant of it." }
+    },
     "steps": [
       {
         "id": 1,
-        "title": "One Kit, Two Lives",
-        "situation": "The street is glassed with ice and dust. Shrapnel ticks as it cools. Lena’s leg is swollen and angry red; the boy’s breaths are shallow and fast. Your sister whispers, “What do we do?” The kit in your hands feels heavier than steel.",
-        "question": "Who receives the last medical kit?",
+        "title": "The Urgent Request",
+        "situation": "The hospital director is at your gate. He needs five crates of amoxicillin. Your manifest says those crates are reserved for the 'Global Response Team' arriving in 48 hours.",
+        "question": "Do you release the crates?",
         "options": [
-          {
-            "value": "A1",
-            "label": "Split the kit between Lena and the boy",
-            "consequence": "You divide ointment, gauze, and pills with surgical care, knowing it may be too little for both. Lena squeezes your wrist in thanks; the boy’s mother mouths a silent prayer. Dawn will test whether ‘fair’ was also ‘effective’. When the sun rises, if transport appears and offers only one civilian seat, do you advocate for the boy, for Lena, for yourself—or for no one?"
-          },
-          {
-            "value": "B1",
-            "label": "Give the full kit to the boy",
-            "consequence": "You clean the wound, medicate, and bind until his breaths lengthen. Across the road, Lena looks away and nods, as if granting permission you never sought. By nightfall, fever breaks for the boy; infection deepens for Lena. Tomorrow a convoy may allow one seat—if that moment comes, will you go with the boy, send him alone, choose Lena instead, or take the seat yourself?"
-          },
-          {
-            "value": "C1",
-            "label": "Give the full kit to Lena",
-            "consequence": "You flush the wound, pack gauze, and wrap her leg. She weeps—a sound like a memory cracking. The boy’s mother turns, holding him closer. By morning he is colder; Lena is warmer. If an evacuation truck later offers exactly one seat, do you stand by Lena, send the boy, send yourself, or refuse to choose?"
-          },
-          {
-            "value": "D1",
-            "label": "Keep the kit hidden",
-            "consequence": "You say you have nothing. The lie lingers in the air like smoke. By dawn the boy is gone; by the third day Lena fades. Your sister stops speaking to you. When evacuation finally comes and asks for your story, do you donate the still‑sealed kit, destroy it, keep it, or send it—along with the truth—to your sister?"
-          }
+          { "value": "A1", "label": "Release all requested crates", "consequence": "The director weeps with relief. Your digital inventory logs an immediate red flag at headquarters.", "scores": { "Distinction": 5, "Proportionality": 4, "Necessity": 4, "Precaution": 4 }, "ethicsIndex": 17 },
+          { "value": "B1", "label": "Refuse and follow the manifest", "consequence": "The hospital turns away patients by evening. You sit in your air-conditioned office and wait for the VIPs.", "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 10 },
+          { "value": "C1", "label": "Give him one 'damaged' crate", "consequence": "A compromise. It helps the most critical cases, and you can hide the discrepancy in the paperwork.", "scores": { "Distinction": 4, "Proportionality": 3, "Necessity": 4, "Precaution": 3 }, "ethicsIndex": 14 },
+          { "value": "D1", "label": "Ask what he can trade for it", "consequence": "You realize the hospital has fuel you might need later. A fair trade for survival.", "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 10 }
         ]
       },
       {
         "id": 2,
-        "title": "One Seat on the Truck",
-        "situation": "Word spreads: a Red Cross–UN convoy can take exactly one more civilian. A medic points to you: “You’ve been helping. You decide.” Engines idle. Snow begins again.",
-        "question": "Who boards the final seat?",
+        "title": "The Inspection",
+        "situation": "A local militia group hears about the supplies and demands an inspection. They offer 'protection' in exchange for a share of the medical kits.",
+        "question": "How do you handle the militia?",
         "options": [
-          {
-            "value": "A2",
-            "label": "The boy—and you go with him to advocate at arrival.",
-            "consequence": "You lift him in, promising his mother you’ll argue his case. Kilometers later, in Lviv, surgery is possible—but so is forgetting the faces you left behind. A coordinator asks for one more choice: return east escorting a medical shipment, send supplies only, stay silent, or lie about your origin to ease asylum?"
-          },
-          {
-            "value": "B2",
-            "label": "Lena—and you accompany her through checkpoints.",
-            "consequence": "You steady her up the tailgate as documents blur under a soldier’s stare. At a field hospital, a doctor whispers: wait weeks for surgery, push for priority, or arrange a risky transfer to Poland. Which path will you take when compassion collides with capacity?"
-          },
-          {
-            "value": "C2",
-            "label": "Place the boy on the truck alone; you remain.",
-            "consequence": "The medic wraps him in a blanket as the truck lurches away. Night fire returns; basements become lungs. A rumor of a westbound convoy forces another call: walk slowly together, run ahead to secure spots, send your sister ahead and stay with Lena, or refuse the road and wait?"
-          },
-          {
-            "value": "D2",
-            "label": "Take the seat yourself; tell no one.",
-            "consequence": "Truck steel swallows you. Silence follows you to Dnipro, then Lviv, then abroad. Months later a TV frame finds your sister alive in a camp. Will you contact her, help anonymously, travel to her, or continue the lie you began at the tailgate?"
-          }
+          { "value": "A2", "label": "Refuse and risk a standoff", "consequence": "You maintain the kits' integrity, but your warehouse becomes a target for the rest of the week.", "scores": { "Distinction": 4, "Proportionality": 3, "Necessity": 4, "Precaution": 3 }, "ethicsIndex": 14 },
+          { "value": "B2", "label": "Call the company security line", "consequence": "They tell you to handle it locally. They won't risk their own men for a warehouse. You are on your own.", "scores": { "Distinction": 3, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 11 },
+          { "value": "C2", "label": "Give them the non-essential kits", "consequence": "You buy their loyalty with bandages and saline. The antibiotics remain safe for now.", "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 10 },
+          { "value": "D2", "label": "Hire them to guard the perimeter", "consequence": "You turn the threat into an asset. You are now the most powerful person in the district.", "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 10 }
         ]
       },
       {
         "id": 3,
-        "title": "Distance, Duty, and Stories We Tell",
-        "situation": "Shelter offers food and forms—but also choices that fix your story in ink. A coordinator asks for help that risks your progress; a doctor asks for favors you cannot guarantee; your radio or phone can still reach those you left.",
-        "question": "How do you use safety and distance?",
+        "title": "The High-Value Team",
+        "situation": "The Global Response Team arrives. They don't need all the medicine, but they want it loaded on their plane anyway 'just in case'. The hospital is now under direct fire.",
+        "question": "Where does the medicine go?",
         "options": [
-          {
-            "value": "A3",
-            "label": "Return east escorting medical shipments",
-            "consequence": "At dawn you ride past craters and burned fields. You deliver crates and find your sister thinner but alive; the boy steadier; Lena gone. The medics offer you a ride back out in two hours—leave with your sister, stay to rebuild, send her alone, or disappear before choosing again?"
-          },
-          {
-            "value": "B3",
-            "label": "Stay but mobilize aid: messages, money, logistics, and advocacy.",
-            "consequence": "Your letters and packages arrive late but alive. One day, a plea: another child needs surgery you might arrange. Do you dive fully into coordination, give only money, write regrets, or go quiet to protect your fragile stability?"
-          },
-          {
-            "value": "C3",
-            "label": "Stay silent; build a new life and let memory blur.",
-            "consequence": "You learn the language of elevators, pay stubs, and quiet. News from Yarova breaks through—a list with your sister’s name. Do you call, write, send money without a name, or do nothing and keep the wall intact?"
-          },
-          {
-            "value": "D3",
-            "label": "Lie about your hometown to ease asylum; sever ties cleanly.",
-            "consequence": "Paperwork moves faster; nights grow longer. When a colleague seeks anyone from Yarova, the lie constricts. Do you confess and help, search privately, contact a reconnection NGO anonymously, or double down on the lie?"
-          }
+          { "value": "A3", "label": "Defy the team and send it to the hospital", "consequence": "You physically block the loading. The team leaves without you. You are stuck in a war zone with a clear heart.", "scores": { "Distinction": 5, "Proportionality": 4, "Necessity": 4, "Precaution": 4 }, "ethicsIndex": 17 },
+          { "value": "B3", "label": "Load it all as ordered", "consequence": "You get a seat on the plane. You watch the hospital burn from the window, knowing you did your job.", "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 10 },
+          { "value": "C3", "label": "Hide half the crates for the locals", "consequence": "You tell the team the shipment was smaller than expected. You smuggle the rest to the director by night.", "scores": { "Distinction": 4, "Proportionality": 3, "Necessity": 4, "Precaution": 3 }, "ethicsIndex": 14 },
+          { "value": "D3", "label": "Charge the team for 'handling fees'", "consequence": "If they want it all, they can pay for the extra logistics. You collect your bonus in cash.", "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 4, "Precaution": 1 }, "ethicsIndex": 7 }
         ]
       },
       {
         "id": 4,
-        "title": "What Your Choices Make of You",
-        "situation": "Time does not heal so much as accumulate. Aid routes shift. Front lines breathe. You have seen what fairness, loyalty, pragmatism, and fear each purchase.",
-        "question": "Given everything, how do you close this chapter—for now?",
+        "title": "The Final Balance",
+        "situation": "The city has fallen. You are at the border. You have a suitcase and a set of keys to a warehouse that no longer exists in a country that is changing names.",
+        "question": "How do you walk into your new life?",
         "options": [
-          {
-            "value": "A4",
-            "label": "Leave again with your sister",
-            "consequence": "You board together and do not look back until the road bends. You learn to cook for two in a new city and to memorialize the third at the table. Your story becomes service: you translate intake forms, steady trembling hands at clinics, and keep one empty chair on holidays. On quiet nights, you revisit the first blast only to confirm that the love you protected is still here—and that you did not stop loving those you could not save."
-          },
-          {
-            "value": "B4",
-            "label": "Stay and rebuild Yarova—caretaker of graves and beginnings.",
-            "consequence": "You map wells, list names, and plant onions between shell holes. When convoys come, you teach triage that centers dignity: label kits, post windows, publish loops. You become the person you needed—one who makes the next decider’s load slightly lighter."
-          },
-          {
-            "value": "C4",
-            "label": "Help from the shadows; keep certain truths unsent.",
-            "consequence": "You route donations, arrange transfers, and let thank‑you notes pile up with no return address. Your silence protects some people and imprisons others. Years later, you tell the whole story to a counselor—or to your child—and discover that absolution was never the goal; accountability was."
-          },
-          {
-            "value": "D4",
-            "label": "Cut ties; survive; let history judge",
-            "consequence": "You keep your head down, build credit, and master a language that lacks words for what happened. One day at a fundraiser someone displays a sealed kit like the one you once hid. You step outside before the applause. On the walk home you realize that forgetting is a muscle: it strengthens with use, but it cannot lift what love chose to carry."
-          }
+          { "value": "A4", "label": "Join an NGO to fix what you saw", "consequence": "You use your logistics skills for good, forever trying to make up for theManifest.", "scores": { "Distinction": 4, "Proportionality": 4, "Necessity": 4, "Precaution": 4 }, "ethicsIndex": 16 },
+          { "value": "B4", "label": "Apply for a promotion at headquarters", "consequence": "You proved you can follow orders under pressure. Your career is set.", "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 10 },
+          { "value": "C4", "label": "Open your own supply consultancy", "consequence": "You know how the world really works now. You will never be without resources again.", "scores": { "Distinction": 3, "Proportionality": 3, "Necessity": 4, "Precaution": 3 }, "ethicsIndex": 13 },
+          { "value": "D4", "label": "Change your name and disappear", "consequence": "You have the money. You just need to find a place where no one knows where it came from.", "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 4, "Precaution": 1 }, "ethicsIndex": 7 }
         ]
       }
     ]

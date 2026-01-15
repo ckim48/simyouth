@@ -1,199 +1,351 @@
+{# templates/gpt_scenario_prefs.html (FULL UPDATED — adds Custom/Fiction War mode) #}
 {% extends "base.html" %}
 {% block content %}
 
 <style>
 :root {
-  --ink:#2b2b2b;
-  --muted:#6b6b6b;
-  --primary:#574545;
-  --secondary:#ab8e8e;
-  --bg:#fdfcfc;
-  --surface:#ffffff;
-  --edge:#e8e3e3;
-  --shadow:0 8px 24px rgba(87,69,69,0.08);
+  --ink: #1e293b;
+  --muted: #64748b;
+  --primary: #574545;
+  --secondary: #ab8e8e;
+  --accent: #f1f5f9;
+  --bg: #f8fafc;
+  --surface: rgba(255, 255, 255, 0.85);
+  --edge: rgba(0, 0, 0, 0.08);
+  --shadow: 0 12px 40px rgba(0, 0, 0, 0.04);
 }
-body { background:linear-gradient(180deg,#faf9f9 0%, #f5f2f2 100%); color:var(--ink); font-family:'Inter', system-ui, sans-serif; }
-.page { max-width:960px; margin:0 auto; padding:1.5rem; }
+body {
+  background: radial-gradient(circle at top left, #fdfcfc, #f5f2f2);
+  color: var(--ink);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+.page { max-width: 850px; margin: 0 auto; padding: 3rem 1.5rem; }
+.header-section { margin-bottom: 3rem; text-align: center; }
+.header-section h1 { font-weight: 850; font-size: 2.25rem; color: var(--primary); letter-spacing: -0.03em; }
+.header-section p { color: var(--muted); font-size: 1.1rem; max-width: 600px; margin: 0.5rem auto; }
+.config-card {
+  background: var(--surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--edge);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  padding: 2.5rem;
+}
+.form-label { font-weight: 700; color: var(--primary); margin-bottom: 0.5rem; font-size: 0.95rem; display: block; }
+.modern-input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 2px solid #edf2f7;
+  border-radius: 14px;
+  background: #fff;
+  transition: all 0.2s ease;
+  color: var(--ink);
+  font-size: 1rem;
+}
+.modern-input:focus {
+  outline: none;
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 4px rgba(171, 142, 142, 0.15);
+}
+.mode-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8fafc;
+  padding: 1.25rem;
+  border-radius: 16px;
+  border: 1px solid var(--edge);
+  margin-top: 1rem;
+}
+.switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; cursor: pointer; inset: 0;
+  background-color: #cbd5e1;
+  transition: .4s; border-radius: 34px;
+}
+.slider:before {
+  position: absolute; content: ""; height: 18px; width: 18px;
+  left: 4px; bottom: 4px; background-color: white;
+  transition: .4s; border-radius: 50%;
+}
+input:checked + .slider { background-color: var(--primary); }
+input:checked + .slider:before { transform: translateX(24px); }
 
-.page-head{ display:flex; justify-content:space-between; align-items:end; flex-wrap:wrap; gap:1rem; margin-bottom:1.25rem; }
-.title-wrap h1{ font-weight:800; color:var(--primary); margin:0; letter-spacing:.15px; }
-.title-wrap p{ color:var(--muted); margin:.3rem 0 0; font-size:.95rem; }
+.grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.full-width { grid-column: span 2; }
 
-.card{ background:var(--surface); border:1px solid var(--edge); border-radius:16px; box-shadow:var(--shadow); }
-.card-body{ padding:1.5rem; }
-
-.form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
-.form-grid .full{ grid-column:1 / -1; }
-label{ font-weight:700; color:var(--primary); margin-bottom:.25rem; display:block; }
-select, input[type="text"]{
-  width:100%; padding:.7rem .9rem; border:1px solid var(--edge); border-radius:10px; background:#fff; color:var(--ink);
+.btn-generate {
+  width: 100%;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 1.1rem;
+  border-radius: 16px;
+  font-weight: 800;
+  font-size: 1.1rem;
+  margin-top: 2rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+.btn-generate:hover {
+  background: #3f3434;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(87, 69, 69, 0.25);
 }
 
-.small{ font-size:.9rem; color:var(--muted); }
-
-.btn-primary{
-  background:var(--primary); color:#fff; border:none; border-radius:10px; padding:.75rem 1.2rem; font-weight:700; letter-spacing:.2px;
-  transition:all .2s ease;
+/* Custom war section */
+.custom-war-wrap {
+  border: 1px solid var(--edge);
+  background: rgba(255,255,255,0.7);
+  border-radius: 18px;
+  padding: 1.25rem;
 }
-.btn-primary:hover{ background:var(--secondary); box-shadow:0 6px 18px rgba(171,142,142,0.35); transform:translateY(-1px); }
+.badge-mini{
+  display:inline-flex;
+  gap:.4rem;
+  align-items:center;
+  padding:.25rem .6rem;
+  border-radius:999px;
+  border:1px solid var(--edge);
+  background:#fff;
+  color:var(--muted);
+  font-size:.8rem;
+  font-weight:700;
+}
+.hint{
+  color:var(--muted);
+  font-size:.92rem;
+  margin:.35rem 0 0;
+}
+.hr-soft{
+  height:1px; border:0; background:rgba(0,0,0,.06); margin:1rem 0;
+}
 
-.help{ color:var(--muted); font-size:.9rem; margin-top:.25rem; }
-@media (max-width:768px){ .form-grid{ grid-template-columns:1fr; } }
+/* Hide helper */
+.hidden { display: none !important; }
 
-/* Loading overlay */
-#loading-overlay{ display:none; position:fixed; inset:0; background:rgba(253,252,252,.88); z-index:9999; }
-.spinner{ width:56px; height:56px; border:5px solid #e8e3e3; border-top-color:#ab8e8e; border-radius:50%; animation:spin 1s linear infinite; margin:0 auto; }
-@keyframes spin { to { transform: rotate(360deg); } }
+@media (max-width: 640px) {
+  .grid-container { grid-template-columns: 1fr; }
+  .full-width { grid-column: span 1; }
+}
+#loading-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(255, 255, 255, 0.9);
+  z-index: 10000;
+  backdrop-filter: blur(10px);
+}
 </style>
 
 <div class="page">
-  <div class="page-head">
-    <div class="title-wrap">
-      <h1>Create a New War Scenario</h1>
-      <p>Choose a historical war and context. We’ll generate a <strong>5-step</strong>, age-appropriate scenario with paragraph-length backgrounds and <strong>4 choices per step</strong>.</p>
-    </div>
+  <div class="header-section">
+    <h1>Scenario Architect</h1>
+    <p>Configure a custom AI-driven ethical experience. Choose your perspective and witness the human side of history.</p>
   </div>
 
-  <div class="card">
-    <div class="card-body">
-      <form method="post" action="{{ url_for('gpt_scenario_prefs') }}" onsubmit="
-        document.getElementById('loading-overlay').style.display='block';
-        this.querySelector('button[type=submit]').disabled = true;
-      ">
-        <div class="form-grid">
-          <!-- War (historical) -->
-          <div>
-            <label for="war">Historical War <span class="small">(required)</span></label>
-            <select id="war" name="war" required>
-              <option value="" disabled selected>Select a war</option>
-              <option value="ww1">World War I (1914–1918)</option>
+  <div class="config-card">
+    <form method="post" action="{{ url_for('gpt_scenario_prefs') }}" onsubmit="return beforeSubmit();">
+      <div class="grid-container">
+
+        <div class="full-width">
+          <label class="form-label" for="war">Historical Context</label>
+          <select id="war" name="war" class="modern-input" required>
+            <option value="" disabled selected>Select a historical conflict</option>
+
+            <optgroup label="Custom">
+              <option value="custom-war">Custom / Fictional War</option>
+            </optgroup>
+
+            <optgroup label="Modern Era">
               <option value="ww2">World War II (1939–1945)</option>
               <option value="korean-war">Korean War (1950–1953)</option>
               <option value="vietnam-war">Vietnam War (1955–1975)</option>
-              <option value="gulf-war-1991">Gulf War (1990–1991)</option>
               <option value="bosnian-war">Bosnian War (1992–1995)</option>
               <option value="iraq-war-2003">Iraq War (2003–2011)</option>
-              <option value="afghanistan-war">War in Afghanistan (2001–2021)</option>
-              <option value="falklands-war">Falklands War (1982)</option>
-              <option value="spanish-civil-war">Spanish Civil War (1936–1939)</option>
+            </optgroup>
+
+            <optgroup label="Historical Era">
+              <option value="ww1">World War I (1914–1918)</option>
               <option value="american-civil-war">American Civil War (1861–1865)</option>
-              <option value="crimean-war">Crimean War (1853–1856)</option>
               <option value="napoleonic-wars">Napoleonic Wars (1803–1815)</option>
-              <option value="thirty-years-war">Thirty Years’ War (1618–1648)</option>
-              <option value="peloponnesian-war">Peloponnesian War (431–404 BCE)</option>
-            </select>
-            <div class="help">Educational, neutral framing—no graphic detail; focus on ethics (distinction, proportionality, IHL).</div>
-          </div>
+              <option value="peloponnesian-war">Peloponnesian War (Ancient Greece)</option>
+            </optgroup>
+          </select>
+        </div>
 
-          <!-- Theatre / Front auto-fills from war -->
-          <div>
-            <label for="theatre">Theatre / Front <span class="small">(auto-suggested)</span></label>
-            <select id="theatre" name="theatre">
-              <option value="" selected>Auto (suggest for me)</option>
-            </select>
-            <div class="help">We’ll prefill based on the selected war; you can leave it as Auto.</div>
-          </div>
+        <div>
+          <label class="form-label" for="role">Your Perspective</label>
+          <select id="role" name="role" class="modern-input">
+            <option value="student" selected>School Student (Yarova school life)</option>
+            <option value="field-commander">Field Commander</option>
+            <option value="medic">Field Medic</option>
+            <option value="war-reporter">War Reporter</option>
+            <option value="humanitarian-coordinator">Relief Worker</option>
+          </select>
+        </div>
 
-          <!-- Role -->
-          <div>
-            <label for="role">Perspective / Role</label>
-            <select id="role" name="role">
-              <option value="field-commander" selected>Field commander</option>
-              <option value="medic">Medic</option>
-              <option value="intelligence-officer">Intelligence officer</option>
-              <option value="humanitarian-coordinator">Humanitarian coordinator</option>
-              <option value="war-reporter">War reporter (embedded)</option>
-            </select>
-            <div class="help">Affects the type of dilemmas you’ll face.</div>
-          </div>
+        <div id="theatreSelectWrap">
+          <label class="form-label" for="theatre">Specific Front</label>
+          <select id="theatre" name="theatre" class="modern-input">
+            <option value="" selected>Auto-suggested by AI</option>
+          </select>
+        </div>
 
-          <!-- Civilians -->
-          <div>
-            <label for="civilians">Civilians</label>
-            <select id="civilians" name="civilians">
-              <option value="present" selected>present</option>
-              <option value="evacuated">evacuated</option>
-              <option value="unknown status">unknown status</option>
-            </select>
-          </div>
+        <div id="theatreCustomWrap" class="hidden">
+          <label class="form-label" for="custom_theatre">Front / Region Name</label>
+          <input id="custom_theatre" name="custom_theatre" type="text" class="modern-input"
+                 placeholder="e.g. North River Corridor, Iron Coast, District-7 Perimeter">
+        </div>
 
-          <!-- Tone -->
-          <div>
-            <label for="tone">Tone</label>
-            <select id="tone" name="tone">
-              <option value="serious & age-appropriate" selected>serious & age-appropriate</option>
-              <option value="reflective">reflective</option>
-              <option value="case-study">case-study</option>
-            </select>
-          </div>
+        <div>
+          <label class="form-label" for="tone">Narrative Style</label>
+          <select id="tone" name="tone" class="modern-input">
+            <option value="serious & age-appropriate" selected>Educational & Serious</option>
+            <option value="reflective">Deeply Reflective</option>
+            <option value="case-study">Clinical Case Study</option>
+          </select>
+        </div>
 
-          <!-- Optional learning goal -->
-          <div class="full">
-            <label for="goal">Learning Goal (optional)</label>
-            <input id="goal" name="goal" type="text" placeholder="e.g., practice proportionality vs. mission urgency">
-          </div>
+        <div>
+          <label class="form-label" for="goal">Learning Focus</label>
+          <input id="goal" name="goal" type="text" class="modern-input" placeholder="e.g. Civilians in crossfire">
+        </div>
 
-          <!-- Generate cover image (optional) -->
-          <div class="full" style="margin-top:.25rem;">
-            <label for="make_image" style="display:flex; align-items:center; gap:.6rem; font-weight:700; color:var(--primary);">
-              <input id="make_image" name="make_image" type="checkbox" value="1"
-                     style="width:1.05rem; height:1.05rem; accent-color: var(--primary); border-radius:6px;">
-              Generate cover image
+        {# --- Custom War Panel (shown only when war == custom-war) --- #}
+        <div id="customWarPanel" class="full-width hidden">
+          <div class="custom-war-wrap">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; flex-wrap:wrap;">
+              <div>
+                <div class="badge-mini">Custom Mode</div>
+                <p class="hint" style="margin-top:.5rem;">
+                  Define a fictional conflict setting. Keep it realistic but invented (no real current battlefield names needed).
+                </p>
+              </div>
+            </div>
+
+            <hr class="hr-soft"/>
+
+            <div class="grid-container">
+              <div>
+                <label class="form-label" for="custom_war_name">War / Conflict Name</label>
+                <input id="custom_war_name" name="custom_war_name" type="text" class="modern-input"
+                       placeholder="e.g. The Ashfall Conflict">
+              </div>
+
+              <div>
+                <label class="form-label" for="custom_era">Era / Tech Level</label>
+                <select id="custom_era" name="custom_era" class="modern-input">
+                  <option value="" selected>Choose (optional)</option>
+                  <option value="early-1900s">Early 1900s</option>
+                  <option value="mid-1900s">Mid 1900s</option>
+                  <option value="modern">Modern</option>
+                  <option value="near-future">Near Future</option>
+                  <option value="far-future">Far Future</option>
+                </select>
+              </div>
+
+              <div class="full-width">
+                <label class="form-label" for="custom_setting">Setting Summary</label>
+                <textarea id="custom_setting" name="custom_setting" class="modern-input" rows="3"
+                          placeholder="1–3 sentences: where, why the conflict started, and what civilians are facing."></textarea>
+              </div>
+
+              <div>
+                <label class="form-label" for="custom_faction_a">Faction A (optional)</label>
+                <input id="custom_faction_a" name="custom_faction_a" type="text" class="modern-input"
+                       placeholder="e.g. Coastal Union">
+              </div>
+
+              <div>
+                <label class="form-label" for="custom_faction_b">Faction B (optional)</label>
+                <input id="custom_faction_b" name="custom_faction_b" type="text" class="modern-input"
+                       placeholder="e.g. Inland Directorate">
+              </div>
+
+              <div class="full-width">
+                <label class="form-label" for="custom_constraints">Boundaries (optional)</label>
+                <input id="custom_constraints" name="custom_constraints" type="text" class="modern-input"
+                       placeholder="e.g. avoid gore; focus on ethical dilemmas in evacuation, rationing, truth vs safety">
+                <p class="hint">This helps keep the story age-appropriate and aligned with your research goal.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="full-width">
+          <div class="mode-toggle">
+            <div>
+              <span style="font-weight: 700; color: var(--primary); display: block;">Visual Experience</span>
+              <small class="text-muted">Show images only if you enable this mode</small>
+            </div>
+            <label class="switch">
+              <input type="checkbox" name="make_image" id="make_image" value="1">
+              <span class="slider"></span>
             </label>
-            <div class="help">Creates one age-appropriate, non-graphic illustration based on your selections.</div>
           </div>
         </div>
 
-        <div style="text-align:right; margin-top:1rem;">
-          <button class="btn-primary" type="submit">Generate Scenario</button>
-        </div>
-      </form>
+      </div>
 
-      <p class="small" style="margin-top:.75rem;">
-        Note: We present dilemmas respectfully and avoid graphic detail. Scenarios are adapted for learning ethics, not simulating violence.
-      </p>
-    </div>
+      <button class="btn-generate" type="submit" id="submitBtn">Initialize Generation</button>
+    </form>
   </div>
 </div>
 
-<!-- Loading overlay -->
 <div id="loading-overlay">
   <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center;">
-    <div class="spinner"></div>
-    <p style="margin-top:12px; color:#574545; font-weight:700;">Generating your scenario…</p>
-    <p style="margin:0; color:#6b6b6b; font-size:.9rem;">This usually takes a few seconds.</p>
+    <p style="margin-top:1.5rem; color:var(--primary); font-weight:800; font-size:1.2rem;">Architecting Scenario...</p>
+    <p class="text-muted">Analyzing historical data and ethical dilemmas.</p>
   </div>
 </div>
 
 <script>
-/**
- * Populate theatre/front options based on selected war.
- */
+function showLoading() {
+  document.getElementById('loading-overlay').style.display = 'block';
+  document.getElementById('submitBtn').disabled = true;
+}
+
 const WAR_THEATRES = {
-  "ww1": ["Western Front", "Eastern Front", "Gallipoli", "Italian Front", "Middle East"],
-  "ww2": ["Europe", "Pacific", "North Africa", "Eastern Front", "Italy"],
-  "korean-war": ["Korean Peninsula", "Pusan Perimeter", "Incheon–Seoul", "Chosin Reservoir"],
-  "vietnam-war": ["Central Highlands", "Mekong Delta", "DMZ Region", "Hanoi–Haiphong"],
-  "gulf-war-1991": ["Kuwait Theatre", "Iraq Desert", "Saudi Border"],
-  "bosnian-war": ["Sarajevo", "Eastern Bosnia", "Mostar Region"],
-  "iraq-war-2003": ["Baghdad", "Anbar Province", "Basra", "Nineveh"],
-  "afghanistan-war": ["Kabul", "Kandahar", "Helmand", "Kunar–Nangarhar"],
-  "falklands-war": ["East Falkland", "West Falkland", "Surrounding Seas"],
-  "spanish-civil-war": ["Madrid Front", "Aragon Front", "Ebro", "Andalusia"],
-  "american-civil-war": ["Eastern Theater", "Western Theater", "Trans-Mississippi"],
-  "crimean-war": ["Crimean Peninsula", "Sevastopol", "Balaklava"],
-  "napoleonic-wars": ["Iberian Peninsula", "Central Europe", "Russia Campaign", "Italy"],
-  "thirty-years-war": ["Central Europe", "Bohemia", "The Rhineland"],
-  "peloponnesian-war": ["Attica", "Peloponnese", "Sicily"]
+  "ww1": ["Western Front", "Eastern Front", "Gallipoli"],
+  "ww2": ["Europe", "Pacific", "North Africa", "Eastern Front"],
+  "korean-war": ["Pusan Perimeter", "Incheon", "Chosin Reservoir"],
+  "vietnam-war": ["Central Highlands", "Mekong Delta", "DMZ"],
+  "bosnian-war": ["Sarajevo", "Srebrenica", "Mostar"],
+  "iraq-war-2003": ["Baghdad", "Fallujah", "Basra"],
+  "american-civil-war": ["Gettysburg", "Vicksburg", "Richmond"],
+  "napoleonic-wars": ["Iberian Peninsula", "Waterloo", "Russia"],
+  "peloponnesian-war": ["Attica", "Sicily", "Hellespont"]
 };
 
 const warSel = document.getElementById('war');
 const theatreSel = document.getElementById('theatre');
+const theatreSelectWrap = document.getElementById('theatreSelectWrap');
+const theatreCustomWrap = document.getElementById('theatreCustomWrap');
+const customWarPanel = document.getElementById('customWarPanel');
 
-function repopulateTheatres() {
-  const war = warSel.value;
-  const options = WAR_THEATRES[war] || [];
-  theatreSel.innerHTML = '<option value="" selected>Auto (suggest for me)</option>';
+function setCustomMode(isCustom){
+  // Show custom war panel
+  customWarPanel.classList.toggle('hidden', !isCustom);
+
+  // Swap theatre UI:
+  // - real wars: dropdown theatres
+  // - custom war: free text region/front
+  theatreSelectWrap.classList.toggle('hidden', isCustom);
+  theatreCustomWrap.classList.toggle('hidden', !isCustom);
+
+  // For custom, don't force theatre dropdown; for real wars, clear custom theatre
+  if(isCustom){
+    theatreSel.value = "";
+  } else {
+    const ct = document.getElementById('custom_theatre');
+    if(ct) ct.value = "";
+  }
+}
+
+function populateTheatresForWarKey(warKey){
+  const options = WAR_THEATRES[warKey] || [];
+  theatreSel.innerHTML = '<option value="" selected>Auto-suggested by AI</option>';
   options.forEach(t => {
     const opt = document.createElement('option');
     opt.value = t;
@@ -202,8 +354,45 @@ function repopulateTheatres() {
   });
 }
 
-if (warSel && theatreSel) {
-  warSel.addEventListener('change', repopulateTheatres);
+warSel.addEventListener('change', () => {
+  const isCustom = (warSel.value === "custom-war");
+  setCustomMode(isCustom);
+
+  if(!isCustom){
+    populateTheatresForWarKey(warSel.value);
+  }
+});
+
+// Ensure correct initial state (in case browser restores form values)
+(function init(){
+  const isCustom = (warSel.value === "custom-war");
+  setCustomMode(isCustom);
+  if(!isCustom && warSel.value){
+    populateTheatresForWarKey(warSel.value);
+  }
+})();
+
+function beforeSubmit(){
+  showLoading();
+
+  // Soft validation: if custom-war chosen, at least one of the custom fields should be non-empty
+  if(warSel.value === "custom-war"){
+    const name = (document.getElementById('custom_war_name').value || "").trim();
+    const setting = (document.getElementById('custom_setting').value || "").trim();
+    const theatre = (document.getElementById('custom_theatre').value || "").trim();
+
+    // Not hard required, but helps avoid empty custom mode submissions
+    if(!name && !setting && !theatre){
+      // Allow submit, but could be annoying; better to guide:
+      // We'll just re-enable button + hide overlay and prevent submit.
+      document.getElementById('loading-overlay').style.display = 'none';
+      document.getElementById('submitBtn').disabled = false;
+      alert("For Custom / Fictional War, please fill at least one field (Conflict Name, Setting Summary, or Front/Region).");
+      return false;
+    }
+  }
+
+  return true;
 }
 </script>
 

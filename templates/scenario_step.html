@@ -3,164 +3,182 @@
 
 <style>
 :root {
-  --ink:#2b2b2b; --muted:#6b6b6b; --primary:#574545; --secondary:#ab8e8e;
-  --bg:#fdfcfc; --surface:#ffffff; --edge:#e8e3e3; --shadow:0 8px 24px rgba(87,69,69,0.08);
+  --ink: #1a1515;
+  --muted: #736b6b;
+  --primary: #4a3b3b;
+  --secondary: #967d7d;
+  --accent: #e5dada;
+  --bg: #f8f7f7;
+  --surface: #ffffff;
+  --edge: rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.06);
+  --radius-lg: 24px;
+  --radius-md: 16px;
 }
-body { background:linear-gradient(180deg,#faf9f9 0%, #f5f2f2 100%); font-family:'Inter', system-ui, sans-serif; color:var(--ink); }
 
-/* Layout / Head */
-.page { max-width:960px; margin:0 auto; padding:1.5rem; }
-.page-head{ display:flex; justify-content:space-between; align-items:end; flex-wrap:wrap; gap:1rem; margin-bottom:1.25rem; }
-.title-wrap h1{ font-weight:800; color:var(--primary); margin:0; letter-spacing:.15px; }
-.title-wrap p{ color:var(--muted); margin:.3rem 0 0; font-size:.95rem; }
-.stepper{ width:250px; text-align:right; }
-.stepper .count{ color:var(--muted); font-weight:600; }
-.progress{ height:8px; background:#e8e3e3; border-radius:999px; overflow:hidden; margin-top:.3rem; }
-.progress-bar{ background:var(--secondary); }
-
-/* Hero image */
-.hero {
-  margin-bottom: 1rem;
+body {
+  background-color: var(--bg);
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  color: var(--ink);
+  margin: 0;
 }
-.hero-img {
-  background: var(--surface);
-  border: 1px solid var(--edge);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
+
+/* --- Layout Structure --- */
+.split-container {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  min-height: 100vh;
+}
+
+/* --- Left Column: Narrative Context --- */
+.narrative-col {
+  background: white;
+  border-right: 1px solid var(--edge);
+  padding: 2rem;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  z-index: 10;
+}
+
+.hero-img-wrap {
+  width: 100%;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
   overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--edge);
+  background: #fdfcfc;
+  margin-bottom: 1.5rem;
 }
-.hero-img img {
-  display:block; width:100%; height:auto;
+.hero-img-wrap img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
-/* Drawer */
-.drawer{ background:var(--surface); border:1px solid var(--edge); border-radius:16px; box-shadow:var(--shadow); margin-bottom:1.2rem; transition:all .25s ease; }
-.drawer-header{ display:flex; justify-content:space-between; align-items:center; padding:.9rem 1.1rem; cursor:pointer; }
-.drawer-header h4{ font-weight:700; margin:0; color:var(--primary); font-size:1rem; }
-.drawer-body{ display:none; border-top:1px solid var(--edge); padding:1rem 1.3rem; color:var(--muted); line-height:1.6; }
-.drawer.open .drawer-body{ display:block; }
-
-/* Card / Content */
-.card{ background:var(--surface); border:1px solid var(--edge); border-radius:16px; box-shadow:var(--shadow); }
-.card-body{ padding:1.5rem; }
-
-/* Situation & Question */
-.situation h2{ font-size:1.1rem; color:var(--primary); font-weight:700; margin-bottom:.5rem; }
-.situation p{ color:var(--muted); margin:0 0 1rem; line-height:1.6; }
-.q-chip{ display:inline-block; background:#f8f3f3; color:var(--primary); padding:.25rem .6rem; border-radius:999px; font-weight:700; font-size:.75rem; text-transform:uppercase; letter-spacing:.25px; border:1px solid #e6dcdc; }
-
-/* Options */
-.options{ display:flex; flex-direction:column; gap:.9rem; margin-top:1rem; }
-.option{
-  display:flex; align-items:flex-start; gap:.8rem;
-  border:1px solid var(--edge); background:#fff; border-radius:14px; padding:1rem 1.1rem;
-  transition:all .18s ease; position:relative;
+.story-sofar {
+  background: #fafafa;
+  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--edge);
+  flex-grow: 1;
 }
-.option:hover{ transform:translateY(-2px); box-shadow:0 10px 20px rgba(87,69,69,0.12); }
-.option:has(input:checked){ border-color:var(--secondary);
-  background:linear-gradient(90deg, #fdf9f9 0%, #fff3f3 100%); box-shadow:0 0 0 3px #f1e5e5; }
-.option:has(input:checked)::before{
-  content:""; position:absolute; left:0; top:0; bottom:0; width:6px; border-radius:14px 0 0 14px; background:var(--secondary);
+.story-sofar h4 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--secondary);
+  margin-bottom: 0.8rem;
+  font-weight: 800;
 }
-.option input{
-  appearance:none; -webkit-appearance:none; width:22px; height:22px; margin-top:.25rem;
-  border:2px solid #c8bfbf; border-radius:50%; cursor:pointer; transition:all .15s ease; box-shadow:0 0 0 3px transparent;
+.story-sofar p { font-size: 0.95rem; color: var(--muted); line-height: 1.6; margin: 0; }
+
+/* --- Right Column: Interaction --- */
+.interaction-col {
+  padding: 4rem 10%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-.option input:checked{ border-color:var(--secondary); box-shadow:0 0 0 5px rgba(171,142,142,0.35);
-  background:radial-gradient(circle at center, var(--secondary) 45%, transparent 46%); }
-.o-main{ flex:1; }
-.o-title{ font-weight:700; color:var(--primary); margin:0; font-size:1rem; }
-.o-hint{ color:var(--muted); margin:.25rem 0 0; font-size:.95rem; }
 
-/* Action */
-.actions{ text-align:right; margin-top:1.4rem; }
-.btn-custom{
-  background:var(--primary); color:#fff; border:none; border-radius:10px; padding:.7rem 1.3rem;
-  font-weight:700; font-size:.95rem; letter-spacing:.3px; transition:all .2s ease;
+.content-width { width: 100%; max-width: 650px; }
+
+.step-meta { margin-bottom: 2.5rem; }
+.count { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: var(--secondary); letter-spacing: 0.05em; }
+.progress-track { height: 6px; background: #e8e3e3; border-radius: 10px; margin-top: 8px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--secondary); transition: width 0.8s ease; }
+
+.situation-box h1 { font-size: 2.25rem; font-weight: 850; color: var(--primary); letter-spacing: -0.03em; margin-bottom: 1rem; }
+.situation-text { font-size: 1.15rem; line-height: 1.7; color: #444; margin-bottom: 2rem; }
+
+/* --- Options --- */
+.options-list { display: flex; flex-direction: column; gap: 1rem; }
+.option-label {
+  display: flex; gap: 1.2rem; padding: 1.5rem; border: 2px solid transparent;
+  background: white; border-radius: var(--radius-md); cursor: pointer;
+  transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.03);
 }
-.btn-custom:hover{ background:var(--secondary); transform:translateY(-1px); box-shadow:0 6px 18px rgba(171,142,142,0.35); }
+.option-label:hover { transform: translateX(8px); border-color: var(--accent); }
+.option-label:has(input:checked) { border-color: var(--secondary); background: #fffcfc; }
 
-/* Modal theme */
-.modal-content{ border-radius:16px; border:1px solid var(--edge); }
-.modal-header{ border-bottom:1px solid var(--edge); }
-.modal-footer{ border-top:1px solid var(--edge); }
-.form-check-label{ color:var(--ink); }
-.form-textarea{ width:100%; border:1px solid var(--edge); border-radius:12px; padding:.6rem .8rem; min-height:110px; }
+.option-label input {
+  appearance: none; width: 22px; height: 22px; flex-shrink: 0;
+  border: 2px solid #dcdcdc; border-radius: 50%; margin-top: 2px;
+}
+.option-label input:checked {
+  background: var(--secondary); border-color: var(--secondary);
+  box-shadow: inset 0 0 0 4px white;
+}
 
-/* Validation helpers */
-.form-textarea.is-invalid,
-.form-check-input.is-invalid { border-color:#dc3545 !important; box-shadow:0 0 0 .2rem rgba(220,53,69,.15) !important; }
-.invalid-hint{ color:#dc3545; font-size:.9rem; margin-top:.35rem; }
+.o-title { font-weight: 800; margin: 0 0 0.35rem; color: var(--primary); }
+.o-hint { margin: 0; color: var(--muted); line-height: 1.55; }
 
-/* Loading overlay */
+.btn-submit {
+  width: 100%; margin-top: 3rem; padding: 1.25rem; border-radius: 14px; background: var(--primary);
+  color: white; border: none; font-weight: 800; font-size: 1.1rem; cursor: pointer;
+}
+
+/* --- Modals & Validation --- */
+.form-textarea { width: 100%; border: 1px solid var(--edge); border-radius: 12px; padding: 1rem; min-height: 120px; }
+.form-textarea.is-invalid { border-color: #dc3545; background-color: #fff8f8; }
+.invalid-hint { color: #dc3545; font-size: 0.85rem; margin-top: 0.5rem; display: none; }
+.invalid-hint.show { display: block; }
+
 .loading-overlay {
-  position: fixed; inset: 0; background: rgba(253,252,252,0.85);
-  display: none; align-items: center; justify-content: center; z-index: 2000;
+  position: fixed; inset: 0; background: rgba(255,255,255,0.9);
+  display: none; align-items: center; justify-content: center; z-index: 9999;
 }
 .loading-overlay.show { display: flex; }
-.loading-card {
-  background: var(--surface); border:1px solid var(--edge); border-radius:16px;
-  box-shadow:var(--shadow); padding:1.25rem 1.5rem; text-align:center; max-width: 360px;
-}
-.loading-card p { margin: .75rem 0 0; color: var(--muted); }
 
-@media (max-width:768px){ .stepper{ width:100%; text-align:left; } }
+@media (max-width: 1024px) {
+  .split-container { grid-template-columns: 1fr; }
+  .narrative-col { height: auto; position: relative; border-right: none; padding: 1.5rem; }
+}
 </style>
 
-<div class="page">
-  <div class="page-head">
-    <div class="title-wrap">
-      <h1>{{ scenario_title }}</h1>
-      <p>One ethical choice at a time. Reflect carefully, then decide.</p>
-    </div>
-    <div class="stepper">
-      <div class="count">Step {{ step_index }} / {{ total_steps }}</div>
-      <div class="progress">
-        <div class="progress-bar" style="width: {{ (step_index / total_steps * 100) | round(0) }}%"></div>
+<div class="split-container">
+  <aside class="narrative-col">
+    {% if hero_image %}
+      <div class="hero-img-wrap">
+        <img id="scenarioHeroImg" src="{{ url_for('static', filename=hero_image) }}" alt="Context">
       </div>
-    </div>
-  </div>
+    {% else %}
+      <div class="hero-img-wrap">
+        <img id="scenarioHeroImg" src="https://via.placeholder.com/1024x1024?text=Scenario" alt="Context">
+      </div>
+    {% endif %}
 
-  {% if cover_image %}
-  <div class="hero">
-    <div class="hero-img">
-      <img class="img-fluid d-block mx-auto" src="{{ url_for('static', filename=cover_image) }}" alt="Scenario cover image" style="width:60%;">
-    </div>
-  </div>
-  {% endif %}
+    <div class="story-sofar">
+      <h4>Story So Far</h4>
+      <p>{{ story_so_far or "Your journey begins..." }}</p>
 
-  <div class="drawer" id="drawer">
-    <div class="drawer-header" id="drawerBtn">
-      <h4>Story & Recap</h4>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M7 10l5 5 5-5" stroke="#574545" stroke-width="2" stroke-linecap="round"/></svg>
-    </div>
-    <div class="drawer-body">
-      <h5 style="margin-top:0;">Story so far</h5>
-      {% if story_so_far %}<p>{{ story_so_far }}</p>{% else %}
-        <p>Your stitched narrative will appear here after your first choice.</p>
-      {% endif %}
       {% if prev_recap %}
-      <hr>
-      <p><strong>Previous step:</strong> {{ prev_recap.step_title }}</p>
-      <p><strong>Decision:</strong> {{ prev_recap.chosen_label }}</p>
-      <p><strong>Consequence:</strong> {{ prev_recap.chosen_consequence }}</p>
+      <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--edge); font-size: 0.9rem;">
+        <p><strong>Last choice:</strong> {{ prev_recap.chosen_label }}</p>
+      </div>
       {% endif %}
     </div>
-  </div>
+  </aside>
 
-  <div class="card">
-    <div class="card-body">
-      <div class="situation">
-        <h2>{{ step.title }}</h2>
-        <p>{{ situation_text }}</p>
-        <div class="q-chip">Decision</div>
-        <p style="font-weight:700; color:var(--primary); margin-top:.4rem;">
-          {{ question_text or "What will you do?" }}
-        </p>
-      </div>
+  <main class="interaction-col">
+    <div class="content-width">
+      <header class="step-meta">
+        <span class="count">Step {{ step_index }} / {{ total_steps }}</span>
+        <div class="progress-track">
+          <div class="progress-fill" style="width: {{ (step_index / total_steps * 100) | round(0) }}%"></div>
+        </div>
+      </header>
+
+      <section class="situation-box">
+        <h1>{{ step.title }}</h1>
+        <p class="situation-text">{{ situation_text }}</p>
+      </section>
 
       <form id="decisionForm" method="post">
-        <!-- hidden fields for modal payloads -->
         <input type="hidden" name="pre_kind" id="pre_kind">
         <input type="hidden" name="pre_question" id="pre_question">
         <input type="hidden" name="pre_text" id="pre_text">
@@ -173,294 +191,159 @@ body { background:linear-gradient(180deg,#faf9f9 0%, #f5f2f2 100%); font-family:
         <input type="hidden" name="post_choice_value" id="post_choice_value">
         <input type="hidden" name="post_choice_label" id="post_choice_label">
 
-        <fieldset>
-          <legend class="visually-hidden">{{ question_text }}</legend>
-          <div class="options">
-            {% for opt in step.options %}
-            <label class="option">
+        <div class="options-list">
+          {% for opt in step.options %}
+            <label class="option-label">
               <input type="radio" name="choice" value="{{ opt.value }}" {% if selected == opt.value %}checked{% endif %}>
-              <div class="o-main">
+              <div class="o-body">
                 <p class="o-title">{{ opt.label }}</p>
                 <p class="o-hint">{{ opt.consequence }}</p>
               </div>
             </label>
-            {% endfor %}
-          </div>
-        </fieldset>
-
-        <div class="actions">
-          <button class="btn-custom" id="continueBtn" type="button">
-            {{ 'Finish' if is_last else 'Continue' }}
-          </button>
+          {% endfor %}
         </div>
+
+        <button class="btn-submit" id="continueBtn" type="button">
+          Continue
+        </button>
       </form>
     </div>
-  </div>
+  </main>
 </div>
 
-<!-- Loading overlay -->
-<div id="loadingOverlay" class="loading-overlay" aria-hidden="true">
-  <div class="loading-card">
-    <div class="spinner-border" role="status" aria-label="Loading"></div>
-    <p id="loadingMsg">Finalizing your result…</p>
-  </div>
-</div>
-
-<!-- ===== Pre-Survey Modal (required) ===== -->
-<div class="modal fade" id="preModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog"><div class="modal-content">
-    <div class="modal-header">
-      <h5 class="modal-title">Quick check (before you decide)</h5>
-      <button type="button" class="btn-close" aria-label="Close"></button>
-    </div>
-    <div class="modal-body">
-      {% if pre_survey %}
-        <p class="mb-2"><strong>{{ pre_survey.question }}</strong></p>
-        {% if pre_survey.kind == 'mcq' %}
-          <div class="vstack gap-2" id="pre_mcq_group">
+<!-- PRE MODAL -->
+<div class="modal fade" id="preModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius:20px; padding:1.5rem;">
+      <div class="modal-body">
+        {% if pre_survey %}
+          <h5 class="fw-bold mb-3">{{ pre_survey.question }}</h5>
+          {% if pre_survey.kind == 'mcq' %}
             {% for label, val in pre_survey.choices %}
-              <div class="form-check">
+              <div class="form-check mb-2">
                 <input class="form-check-input" type="radio" name="pre_mcq" id="pre_{{ loop.index }}" value="{{ val }}" data-label="{{ label }}">
                 <label class="form-check-label" for="pre_{{ loop.index }}">{{ label }}</label>
               </div>
             {% endfor %}
-          </div>
-          <div id="preError" class="invalid-hint d-none">Please choose an option.</div>
-        {% else %}
-          <textarea class="form-textarea" id="pre_textarea" placeholder="Write a short thought (≥ 20 characters)..."></textarea>
-          <div id="preError" class="invalid-hint d-none">Please write at least 20 characters.</div>
+          {% else %}
+            <textarea class="form-textarea" id="pre_textarea" placeholder="Minimum 20 characters..."></textarea>
+          {% endif %}
+          <div id="preError" class="invalid-hint">Please provide a complete answer (min 20 characters if text).</div>
         {% endif %}
-      {% else %}
-        <p class="text-muted">No pre-survey this step.</p>
-      {% endif %}
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" id="preConfirm" class="btn btn-dark w-100 py-3">Next</button>
+      </div>
     </div>
-    <div class="modal-footer">
-      <!-- programmatic close after validation -->
-      <button type="button" id="preConfirm" class="btn btn-dark">Save</button>
-    </div>
-  </div></div>
+  </div>
 </div>
 
-<!-- ===== Post-Reflection Modal (required) ===== -->
-<div class="modal fade" id="postModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog"><div class="modal-content">
-    <div class="modal-header">
-      <h5 class="modal-title">Quick reflection (after your choice)</h5>
-      <button type="button" class="btn-close" aria-label="Close"></button>
-    </div>
-    <div class="modal-body">
-      {% if post_survey %}
-        <p class="mb-2"><strong>{{ post_survey.question }}</strong></p>
-        {% if post_survey.kind == 'mcq' %}
-          <div class="vstack gap-2" id="post_mcq_group">
+<!-- POST MODAL -->
+<div class="modal fade" id="postModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius:20px; padding:1.5rem;">
+      <div class="modal-body">
+        {% if post_survey %}
+          <h5 class="fw-bold mb-3">{{ post_survey.question }}</h5>
+          {% if post_survey.kind == 'mcq' %}
             {% for label, val in post_survey.choices %}
-              <div class="form-check">
+              <div class="form-check mb-2">
                 <input class="form-check-input" type="radio" name="post_mcq" id="post_{{ loop.index }}" value="{{ val }}" data-label="{{ label }}">
                 <label class="form-check-label" for="post_{{ loop.index }}">{{ label }}</label>
               </div>
             {% endfor %}
-          </div>
-          <div id="postError" class="invalid-hint d-none">Please choose an option.</div>
-        {% else %}
-          <textarea class="form-textarea" id="post_textarea" placeholder="Write a short reflection (≥ 20 characters)..."></textarea>
-          <div id="postError" class="invalid-hint d-none">Please write at least 20 characters.</div>
+          {% else %}
+            <textarea class="form-textarea" id="post_textarea" placeholder="Minimum 20 characters..."></textarea>
+          {% endif %}
+          <div id="postError" class="invalid-hint">Please provide a complete reflection (min 20 characters if text).</div>
         {% endif %}
-      {% else %}
-        <p class="text-muted">No post-reflection this step.</p>
-      {% endif %}
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" id="postConfirm" class="btn btn-dark w-100 py-3">Submit Decision</button>
+      </div>
     </div>
-    <div class="modal-footer">
-      <!-- programmatic close after validation -->
-      <button type="button" id="postConfirm" class="btn btn-dark">
-        {{ 'Save & Finish' if is_last else 'Save & Continue' }}
-      </button>
-    </div>
-  </div></div>
+  </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<div id="loadingOverlay" class="loading-overlay">
+  <div class="text-center">
+    <div class="spinner-border mb-2"></div>
+    <p>Processing...</p>
+  </div>
+</div>
 
 <script>
-const drawer = document.getElementById('drawer');
-const btn = document.getElementById('drawerBtn');
-if(btn){
-  btn.addEventListener('click',()=>{
-    drawer.classList.toggle('open');
-    const path = btn.querySelector('path');
-    path.setAttribute('d', drawer.classList.contains('open') ? 'M7 14l5-5 5 5' : 'M7 10l5 5 5-5');
-  });
-}
-
 const hasPre = {{ 'true' if pre_survey else 'false' }};
 const hasPost = {{ 'true' if post_survey else 'false' }};
 const preKind = "{{ pre_survey.kind if pre_survey else '' }}";
 const postKind = "{{ post_survey.kind if post_survey else '' }}";
 const preQuestion = "{{ pre_survey.question|e if pre_survey else '' }}";
 const postQuestion = "{{ post_survey.question|e if post_survey else '' }}";
-const isLast = {{ 'true' if is_last else 'false' }};
-const isGpt  = "{{ scenario_id }}" === "G";
 
-const df = document.getElementById('decisionForm');
-const continueBtn = document.getElementById('continueBtn');
+const preModal = new bootstrap.Modal(document.getElementById('preModal'));
+const postModal = new bootstrap.Modal(document.getElementById('postModal'));
 
-// ---------- Helpers ----------
-function showError(id){ const el = document.getElementById(id); if(el) el.classList.remove('d-none'); }
-function hideError(id){ const el = document.getElementById(id); if(el) el.classList.add('d-none'); }
+function validate(kind, prefix) {
+  const err = document.getElementById(prefix + 'Error');
+  let valid = false;
 
-function validatePre(){
-  if(!hasPre) return true;
-  hideError('preError');
-
-  if(preKind === 'mcq'){
-    const chosen = document.querySelector('input[name="pre_mcq"]:checked');
-    document.querySelectorAll('input[name="pre_mcq"]').forEach(r=>r.classList.remove('is-invalid'));
-    if(!chosen){
-      const first = document.querySelector('input[name="pre_mcq"]');
-      if(first) first.classList.add('is-invalid');
-      showError('preError');
-      return false;
+  if(kind === 'mcq') {
+    valid = !!document.querySelector(`input[name="${prefix}_mcq"]:checked`);
+  } else {
+    const el = document.getElementById(prefix + '_textarea');
+    const val = (el?.value || "").trim();
+    valid = val.length >= 20;
+    if(el) {
+      if(!valid) el.classList.add('is-invalid');
+      else el.classList.remove('is-invalid');
     }
-    return true;
-  }else if(preKind === 'text'){
-    const ta = document.getElementById('pre_textarea');
-    ta?.classList.remove('is-invalid');
-    const val = (ta?.value || '').trim();
-    if(val.length < 20){
-      ta?.classList.add('is-invalid');
-      showError('preError');
-      return false;
-    }
-    return true;
   }
-  return true;
+
+  if(err) valid ? err.classList.remove('show') : err.classList.add('show');
+  return valid;
 }
 
-function validatePost(){
-  if(!hasPost) return true;
-  hideError('postError');
+function sync(prefix, kind, question) {
+  document.getElementById(prefix + '_kind').value = kind;
+  document.getElementById(prefix + '_question').value = question;
 
-  if(postKind === 'mcq'){
-    const chosen = document.querySelector('input[name="post_mcq"]:checked');
-    document.querySelectorAll('input[name="post_mcq"]').forEach(r=>r.classList.remove('is-invalid'));
-    if(!chosen){
-      const first = document.querySelector('input[name="post_mcq"]');
-      if(first) first.classList.add('is-invalid');
-      showError('postError');
-      return false;
-    }
-    return true;
-  }else if(postKind === 'text'){
-    const ta = document.getElementById('post_textarea');
-    ta?.classList.remove('is-invalid');
-    const val = (ta?.value || '').trim();
-    if(val.length < 20){
-      ta?.classList.add('is-invalid');
-      showError('postError');
-      return false;
-    }
-    return true;
-  }
-  return true;
-}
-
-// Hidden field fillers
-function fillHiddenPre(){
-  document.getElementById('pre_kind').value = preKind || '';
-  document.getElementById('pre_question').value = preQuestion || '';
-  if(preKind === 'text'){
-    document.getElementById('pre_text').value = (document.getElementById('pre_textarea')?.value || '').trim();
-  }else if(preKind === 'mcq'){
-    const chosen = document.querySelector('input[name="pre_mcq"]:checked');
-    if(chosen){
-      document.getElementById('pre_choice_value').value = chosen.value;
-      document.getElementById('pre_choice_label').value = chosen.getAttribute('data-label') || '';
-    }
+  if(kind === 'text') {
+    document.getElementById(prefix + '_text').value =
+      (document.getElementById(prefix + '_textarea')?.value || "").trim();
+  } else {
+    const el = document.querySelector(`input[name="${prefix}_mcq"]:checked`);
+    document.getElementById(prefix + '_choice_value').value = el.value;
+    document.getElementById(prefix + '_choice_label').value = el.dataset.label;
   }
 }
 
-function fillHiddenPost(){
-  document.getElementById('post_kind').value = postKind || '';
-  document.getElementById('post_question').value = postQuestion || '';
-  if(postKind === 'text'){
-    document.getElementById('post_text').value = (document.getElementById('post_textarea')?.value || '').trim();
-  }else if(postKind === 'mcq'){
-    const chosen = document.querySelector('input[name="post_mcq"]:checked');
-    if(chosen){
-      document.getElementById('post_choice_value').value = chosen.value;
-      document.getElementById('post_choice_label').value = chosen.getAttribute('data-label') || '';
-    }
+document.getElementById('continueBtn').onclick = () => {
+  if(!document.querySelector('input[name="choice"]:checked')) {
+    return alert("Select an option first.");
   }
+  hasPre ? preModal.show() : (hasPost ? postModal.show() : finish());
+};
+
+document.getElementById('preConfirm').onclick = () => {
+  if(!hasPre) return;
+  if(!validate(preKind, 'pre')) return;
+  sync('pre', preKind, preQuestion);
+  preModal.hide();
+  hasPost ? postModal.show() : finish();
+};
+
+document.getElementById('postConfirm').onclick = () => {
+  if(!hasPost) return;
+  if(!validate(postKind, 'post')) return;
+  sync('post', postKind, postQuestion);
+  postModal.hide();
+  finish();
+};
+
+function finish() {
+  document.getElementById('loadingOverlay').classList.add('show');
+  document.getElementById('decisionForm').submit();
 }
-
-function showLoadingIfLast(){
-  if(isLast){
-    const overlay = document.getElementById('loadingOverlay');
-    const msg = document.getElementById('loadingMsg');
-    if (msg) msg.textContent = isGpt
-      ? "Generating your reflective journal…"
-      : "Finalizing your result…";
-    overlay.classList.add('show');
-    continueBtn.disabled = true;
-  }
-}
-
-// ---------- Modal setup (static + guarded close) ----------
-let preModal, postModal;
-
-document.addEventListener('DOMContentLoaded', ()=>{
-  if(hasPre){
-    const preEl = document.getElementById('preModal');
-    preModal = new bootstrap.Modal(preEl, { backdrop: 'static', keyboard: false });
-    preModal.show();
-
-    // Guard close on X/ESC/backdrop
-    preEl.addEventListener('hide.bs.modal', (ev)=>{
-      if(!validatePre()){ ev.preventDefault(); }
-    });
-
-    document.getElementById('preConfirm')?.addEventListener('click', ()=>{
-      if(validatePre()){
-        fillHiddenPre();
-        preModal.hide();
-      }
-    });
-  }
-
-  if(hasPost){
-    const postEl = document.getElementById('postModal');
-    postModal = new bootstrap.Modal(postEl, { backdrop: 'static', keyboard: false });
-
-    // Guard close on X/ESC/backdrop
-    postEl.addEventListener('hide.bs.modal', (ev)=>{
-      if(!validatePost()){ ev.preventDefault(); }
-    });
-
-    document.getElementById('postConfirm')?.addEventListener('click', ()=>{
-      if(validatePost()){
-        fillHiddenPost();
-        postModal.hide();
-        showLoadingIfLast();
-        df.submit();
-      }
-    });
-  }
-});
-
-// ---------- Continue button flow ----------
-continueBtn.addEventListener('click', ()=>{
-  const selected = document.querySelector('input[name="choice"]:checked');
-  if(!selected){
-    alert('Please select one option.');
-    return;
-  }
-
-  if(hasPost){
-    postModal?.show();
-  }else{
-    showLoadingIfLast();
-    document.getElementById('decisionForm').submit();
-  }
-});
 </script>
 
 {% endblock %}

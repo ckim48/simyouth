@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+  :root {
+    --brand: #574545;
+    --brand-light: #ab8e8e;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --bg: #f8fafc;
+    --line: rgba(0, 0, 0, 0.06);
+    --glass: rgba(255, 255, 255, 0.7);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  .library-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+  }
+
+  /* --- Header Area --- */
+  .lib-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .lib-header h1 {
+    font-weight: 850;
+    font-size: clamp(2rem, 5vw, 3rem);
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+  }
+
+  .search-wrapper {
+    max-width: 600px;
+    margin: 2rem auto 0;
+    position: relative;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 1.25rem 1.5rem;
+    padding-right: 100px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    transition: var(--transition);
+    font-size: 1rem;
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--brand-light);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.06);
+  }
+
+  .search-btn {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    bottom: 8px;
+    padding: 0 1.5rem;
+    background: var(--brand);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+
+  /* --- Grid & Cards --- */
+  .scenario-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 2rem;
+  }
+
+  .scenario-card {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scenario-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    border-color: var(--brand-light);
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+  }
+
+  .tag-group {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.4rem 0.8rem;
+    background: var(--bg);
+    border-radius: 8px;
+    color: var(--muted);
+  }
+
+  .tag-highlight {
+    background: rgba(87, 69, 69, 0.1);
+    color: var(--brand);
+  }
+
+  .scenario-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    line-height: 1.3;
+    margin-bottom: 1rem;
+    color: var(--ink);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .scenario-intro {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    flex-grow: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .author-info {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .author-name {
+    display: block;
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  .btn-try {
+    background: var(--brand);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: var(--transition);
+  }
+
+  .btn-try:hover {
+    background: var(--ink);
+    transform: scale(1.05);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 5rem 2rem;
+    background: white;
+    border-radius: 32px;
+    border: 2px dashed var(--line);
+    grid-column: 1 / -1;
+  }
+
+  @media (max-width: 600px) {
+    .scenario-grid { grid-template-columns: 1fr; }
+    .search-btn { padding: 0 1rem; font-size: 0.8rem; }
+  }
+</style>
+
+<div class="library-container">
+  <header class="lib-header">
+    <div class="badge-main" style="background: rgba(87, 69, 69, 0.1); color: var(--brand); font-weight: 700; padding: 0.5rem 1.2rem; border-radius: 999px; margin-bottom: 1rem; display: inline-block; font-size: 0.75rem;">Community Explorations</div>
+    <h1>Scenario Library</h1>
+
+    <form class="search-wrapper" method="GET" action="{{ url_for('library') }}">
+      <input type="text" name="q" value="{{ q }}" class="search-input" placeholder="Find a role, conflict, or author...">
+      <button type="submit" class="search-btn">Search</button>
+    </form>
+  </header>
+
+  <div class="scenario-grid">
+    {% if scenarios and scenarios|length > 0 %}
+      {% for s in scenarios %}
+      <article class="scenario-card">
+        <div class="card-top">
+          <div class="tag-group">
+            <span class="tag tag-highlight">{{ s.steps_count }} Steps</span>
+            {% if s.prefs and s.prefs.war %}
+              <span class="tag">{{ s.prefs.war }}</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <h2 class="scenario-title">{{ s.title }}</h2>
+        <p class="scenario-intro">{{ s.intro }}</p>
+
+        <div class="card-footer">
+          <div class="author-info">
+            Created by <span class="author-name">{{ s.author }}</span>
+          </div>
+          <form method="POST" action="{{ url_for('library_try', source_run_id=s.run_id) }}">
+            <button class="btn-try" type="submit">Launch</button>
+          </form>
+        </div>
+      </article>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <h3 style="font-weight: 800; color: var(--ink);">No scenarios found</h3>
+        <p style="color: var(--muted);">Be the first to create and share an AI-driven simulation.</p>
+        <a href="{{ url_for('gpt_scenario_prefs') }}" class="btn-try" style="display: inline-block; margin-top: 1rem;">Create Scenario</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

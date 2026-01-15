@@ -1,0 +1,42 @@
+{# templates/library_view.html #}
+{% extends "base.html" %}
+{% block content %}
+
+<div style="max-width:900px;margin:0 auto;padding:2rem 1.25rem;">
+  <h1 style="margin:0 0 .5rem; font-weight:900; color:#574545;">{{ s.title }}</h1>
+  <p style="margin:0 0 1.25rem; color:#64748b;">
+    {{ s.war_label }} {% if s.theatre %}· {{ s.theatre }}{% endif %} · {{ s.role }} · {{ s.tone }}
+  </p>
+
+  {% if s.make_image and s.cover_image_path %}
+    <img src="{{ s.cover_image_path }}" alt="cover" style="width:100%;border-radius:18px;border:1px solid rgba(0,0,0,.08);margin-bottom:1.25rem;">
+  {% endif %}
+
+  {% if scenario %}
+    {% if scenario.intro %}
+      <p style="color:#334155; line-height:1.6;">{{ scenario.intro }}</p>
+    {% endif %}
+
+    {% if scenario.steps %}
+      <hr style="border:0;height:1px;background:rgba(0,0,0,.08);margin:1.5rem 0;">
+      {% for step in scenario.steps %}
+        <div style="padding:1rem;border:1px solid rgba(0,0,0,.08);border-radius:16px;margin-bottom:1rem;background:rgba(255,255,255,.85);">
+          <h3 style="margin:0 0 .35rem; color:#1e293b; font-weight:900;">Step {{ step.id }} — {{ step.title }}</h3>
+          <p style="margin:.25rem 0 .75rem; color:#475569;">{{ step.situation }}</p>
+          <div style="font-weight:800;color:#574545;margin-bottom:.4rem;">{{ step.question }}</div>
+          <ul style="margin:.25rem 0 0; color:#334155;">
+            {% for opt in step.options %}
+              <li>{{ opt.label }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% else %}
+    <div style="padding:1rem;border:1px solid rgba(0,0,0,.12);border-radius:14px;color:#64748b;">
+      Scenario content could not be loaded.
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}
