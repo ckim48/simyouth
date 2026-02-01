@@ -1,0 +1,122 @@
+{# templates/admin_gpt_branch_editor.html #}
+{% extends "base.html" %}
+{% block content %}
+<style>
+  :root{ --ink:#1e293b; --muted:#64748b; --primary:#574545; --edge:rgba(0,0,0,.08); --bg:#f8fafc; }
+  body{ background:var(--bg); }
+  .wrap{max-width:1200px;margin:0 auto;padding:2.5rem 1.25rem}
+  .grid{display:grid;grid-template-columns:420px 1fr;gap:14px}
+  .card{background:#fff;border:1px solid var(--edge);border-radius:18px;padding:18px}
+  .title{font-weight:950;color:var(--primary);margin:0 0 8px}
+  .muted{color:var(--muted)}
+  .pill{display:inline-flex;gap:.4rem;align-items:center;border:1px solid rgba(0,0,0,.12);padding:.2rem .6rem;border-radius:999px;font-weight:900;font-size:.82rem}
+  .btn{border:0;border-radius:14px;padding:.85rem 1rem;font-weight:950;background:var(--primary);color:#fff;cursor:pointer}
+  .btn:hover{background:#3f3434}
+  .btn.gray{background:#111827}
+  .btn.gray:hover{background:#0b1220}
+  select,input{width:100%;padding:.7rem .9rem;border:1px solid rgba(0,0,0,.12);border-radius:14px}
+  pre{white-space:pre-wrap;background:#0b1220;color:#e5e7eb;border-radius:14px;padding:12px;font-size:.92rem}
+  a{color:var(--primary);font-weight:950;text-decoration:none}
+  .pathlist{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+  .pathitem{border:1px solid rgba(0,0,0,.08);border-radius:14px;padding:10px}
+  .pathitem a{display:block}
+</style>
+
+<div class="wrap">
+  <div class="card" style="margin-bottom:14px">
+    <div class="title">Branch Editor — Template #{{ template.id }}</div>
+    <div class="muted">{{ template.title }} · Total steps: {{ total_steps }}</div>
+    <div class="muted">Goal: {{ prefs.goal }} · Role: {{ prefs.role }} · Tone: {{ prefs.tone }}</div>
+    <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
+      <a class="pill" href="{{ url_for('admin_gpt_templates') }}">Back to Templates</a>
+      <a class="pill" href="{{ url_for('gpt_scenario_start_from_template', template_id=template.id) }}">Play as User (from Template)</a>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="title" style="font-size:1.05rem">Select which step/path to curate</div>
+
+      <form method="get" action="{{ url_for('admin_gpt_branch_editor', template_id=template.id) }}">
+        <input type="hidden" name="path" value="{{ path }}">
+        <label class="muted" style="font-weight:900;margin-top:8px">Step to curate</label>
+        <select name="step_index">
+          {% for s in range(2, total_steps+1) %}
+            <option value="{{ s }}" {% if s==step_index %}selected{% endif %}>Step {{ s }}</option>
+          {% endfor %}
+        </select>
+        <button class="btn gray" type="submit" style="width:100%;margin-top:10px">Change Step</button>
+      </form>
+
+      <div style="margin-top:14px">
+        <div class="pill">Current target</div>
+        <div style="margin-top:8px;font-weight:950">Step {{ step_index }}</div>
+        <div class="muted">Path (choices leading here): <strong>{{ path or "(none yet)" }}</strong></div>
+        <div class="muted">Expected path length: {{ expected_len }}</div>
+      </div>
+
+      <hr style="border:0;height:1px;background:rgba(0,0,0,.06);margin:14px 0">
+
+      <div class="title" style="font-size:1.0rem">Next possible paths</div>
+      <div class="muted">Click one to set the correct path for this step.</div>
+
+      <div class="pathlist">
+        {% if step_index == 2 %}
+          {% for opt in step1_options %}
+            <div class="pathitem">
+              <a href="{{ url_for('admin_gpt_branch_editor', template_id=template.id, step_index=2, path=opt.value) }}">
+                <span class="pill">Path {{ opt.value }}</span>
+                <div style="margin-top:6px;font-weight:950">{{ opt.label }}</div>
+              </a>
+            </div>
+          {% endfor %}
+        {% else %}
+          {% if next_paths %}
+            {% for p in next_paths %}
+              <div class="pathitem">
+                <a href="{{ url_for('admin_gpt_branch_editor', template_id=template.id, step_index=step_index, path=p.value) }}">
+                  <span class="pill">Path {{ p.value }}</span>
+                  <div class="muted" style="margin-top:6px">{{ p.label }}</div>
+                </a>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="muted" style="margin-top:8px">No next paths yet. Build earlier steps first (Step {{ step_index-1 }}).</div>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="title">Approved Step {{ step_index }} for path “{{ path }}”</div>
+
+      {% if current_updated_at %}
+        <div class="muted">Last approved update: {{ current_updated_at }}</div>
+      {% else %}
+        <div class="muted">No approved step saved yet for this path.</div>
+      {% endif %}
+
+      <form method="post" action="{{ url_for('admin_gpt_branch_regen', template_id=template.id) }}" style="margin-top:12px">
+        <input type="hidden" name="step_index" value="{{ step_index }}">
+        <input type="hidden" name="path" value="{{ path }}">
+        <button class="btn" type="submit" style="width:100%">Regenerate & Save (Approve)</button>
+      </form>
+
+      <hr style="border:0;height:1px;background:rgba(0,0,0,.06);margin:14px 0">
+
+      {% if current_approved_step %}
+        <div class="title" style="font-size:1.0rem">Preview JSON</div>
+        <pre>{{ current_approved_step | tojson(indent=2) }}</pre>
+      {% else %}
+        <div class="muted">Click “Regenerate & Save” to create an approved step for this path.</div>
+      {% endif %}
+
+      <hr style="border:0;height:1px;background:rgba(0,0,0,.06);margin:14px 0">
+
+      <div class="title" style="font-size:1.0rem">Context (what the model sees)</div>
+      <div class="muted" style="margin-bottom:10px">This is the built sequence up to your current path (used for story continuity).</div>
+      <pre>{{ seq_for_path | tojson(indent=2) }}</pre>
+    </div>
+  </div>
+</div>
+{% endblock %}

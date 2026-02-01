@@ -5,6 +5,15 @@
   :root {
     --brand: #574545;
     --brand-light: #ab8e8e;
+
+    /* warm accent (replaces all blue) */
+    --accent: #c2410c;        /* clay / burnt orange */
+
+    /* Launch button (warm orangish-reddish-brownish) */
+    --launch: #b45309;        /* terracotta */
+    --launch-dark: #92400e;   /* deep clay */
+    --launch-ring: rgba(180,83,9,0.28);
+
     --ink: #0f172a;
     --muted: #64748b;
     --bg: #f8fafc;
@@ -35,7 +44,19 @@
     font-weight: 850;
     font-size: clamp(2rem, 5vw, 3rem);
     letter-spacing: -0.03em;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
+    position: relative;
+  }
+
+  .lib-header h1::after {
+    content: "";
+    display: block;
+    width: 48px;
+    height: 4px;
+    margin: 0.75rem auto 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--brand), var(--accent));
+    opacity: 0.85;
   }
 
   .search-wrapper {
@@ -59,7 +80,9 @@
   .search-input:focus {
     outline: none;
     border-color: var(--brand-light);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.06);
+    box-shadow:
+      0 15px 40px rgba(0,0,0,0.06),
+      0 0 0 4px rgba(194,65,12,0.12);
   }
 
   .search-btn {
@@ -75,6 +98,11 @@
     font-weight: 700;
     font-size: 0.9rem;
     cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .search-btn:hover {
+    box-shadow: 0 0 0 4px rgba(194,65,12,0.14);
   }
 
   /* --- Grid & Cards --- */
@@ -88,12 +116,21 @@
     background: white;
     border: 1px solid var(--line);
     border-radius: 24px;
-    padding: 2rem;
+    padding: 1.7rem;
     display: flex;
     flex-direction: column;
     transition: var(--transition);
     position: relative;
     overflow: hidden;
+  }
+
+  .scenario-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--brand), var(--accent));
+    opacity: 0.8;
   }
 
   .scenario-card:hover {
@@ -129,6 +166,11 @@
   .tag-highlight {
     background: rgba(87, 69, 69, 0.1);
     color: var(--brand);
+  }
+
+  .tag-accent {
+    background: rgba(194,65,12,0.12);
+    color: var(--accent);
   }
 
   .scenario-title {
@@ -174,8 +216,9 @@
     font-weight: 700;
   }
 
+  /* ===== Launch button (warm terracotta) ===== */
   .btn-try {
-    background: var(--brand);
+    background: var(--launch);
     color: white;
     border: none;
     padding: 0.8rem 1.5rem;
@@ -184,11 +227,19 @@
     font-size: 0.9rem;
     text-decoration: none;
     transition: var(--transition);
+    box-shadow: 0 10px 22px rgba(146,64,14,0.28);
   }
 
   .btn-try:hover {
-    background: var(--ink);
-    transform: scale(1.05);
+    background: var(--launch-dark);
+    transform: translateY(-1px) scale(1.04);
+    box-shadow:
+      0 14px 30px rgba(146,64,14,0.34),
+      0 0 0 4px var(--launch-ring);
+  }
+
+  .btn-try:active {
+    transform: translateY(0) scale(1.02);
   }
 
   .empty-state {
@@ -225,7 +276,7 @@
           <div class="tag-group">
             <span class="tag tag-highlight">{{ s.steps_count }} Steps</span>
             {% if s.prefs and s.prefs.war %}
-              <span class="tag">{{ s.prefs.war }}</span>
+              <span class="tag tag-accent">{{ s.prefs.war }}</span>
             {% endif %}
           </div>
         </div>

@@ -1,457 +1,272 @@
 {
   "A": {
     "id": "A",
-    "title": "Ukraine Civilian Ethics — Empathy Path",
-    "intro": "Yarova, Ukraine. A winter blast tears through the queue for the supply van. You survive only because you ran back inside for bandages for Lena, a seventy-three-year-old widow. Hidden beneath your floorboards lies one last sealed medical kit. Across the road, a boy bleeds into his mother’s coat. No medics. No certainty. Only choices.",
-    "scenarioImage": "static/scenarios/A.jpg",
+    "title": "Yarova Crisis",
+    "steps": [
+      {
+        "id": 1,
+        "title": "Triage in the Snow",
+        "situation": "Yarova, Ukraine. A winter blast has ripped through a supply line. Across the street, a boy is bleeding heavily. Beside you, 73-year-old Lena is gasping for breath. You open the last medical kit—enough to fully treat one person, or partially stabilize two.",
+        "question": "Who do you help?",
+        "options": [
+          {
+            "label": "Try to help both",
+            "value": "A1",
+            "consequence": "Both survive the night but remain weak.",
+            "story_line": "In the freezing supply line, with the boy bleeding out and Lena barely breathing, I split the last medical kit between them—saving both for the night, but leaving them fragile."
+          },
+          {
+            "label": "Prioritize the boy",
+            "value": "B1",
+            "consequence": "The boy stabilizes; Lena deteriorates.",
+            "story_line": "In the snow and panic, I chose the boy’s bleeding first and used the last kit on him; he stabilized, while Lena’s breaths grew thinner beside me."
+          },
+          {
+            "label": "Prioritize Lena",
+            "value": "C1",
+            "consequence": "Lena stabilizes; the boy worsens.",
+            "story_line": "With Lena’s chest struggling to rise, I treated her first with the last kit; she stabilized enough to hold on, but the boy’s condition worsened across the street."
+          },
+          {
+            "label": "Save the supplies for yourself",
+            "value": "D1",
+            "consequence": "You remain unharmed; the others may not.",
+            "story_line": "Holding the last kit while the boy bled and Lena gasped, I kept the supplies for myself—staying safe, while the people around me paid the price."
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": {
+          "byPrev": {
+            "A1": "One Seat, Two Survivors",
+            "B1": "One Seat, A Failing Breath",
+            "C1": "One Seat, A Worsening Child",
+            "D1": "One Seat, Broken Trust"
+          }
+        },
+        "situation": {
+          "byPrev": {
+            "A1": "Both the boy and Lena are alive but fragile. Your sister spent the night switching compresses and whispering encouragement. When the UN convoy arrives, the medic scans both patients and says, 'Only one can ride. You decide.'",
+            "B1": "The boy can stand on his own now, shaking but mobile. Lena is barely conscious, her breathing shallow. When the UN convoy arrives, the medic’s eyes linger on Lena and then on you: 'One seat. You decide.'",
+            "C1": "Lena can move with support, her color slightly improved. The boy is worse; his mother’s crying has gone quiet. When the UN convoy arrives, the crowd’s attention shifts to you. The medic makes it official: 'One seat. You decide.'",
+            "D1": "You are visibly the healthiest person in the room. People notice. Your sister avoids your eyes. When the UN convoy arrives, the medic skips debate and points at you: 'One seat. You decide.'"
+          }
+        },
+        "question": {
+          "byPrev": {
+            "A1": "With both still alive, what do you do now?",
+            "B1": "Lena is failing. The boy can walk. What do you do?",
+            "C1": "The boy is failing. Lena can move. What do you do?",
+            "D1": "Trust is broken. The convoy offers one seat. What do you do?"
+          }
+        },
+        "options": {
+          "byPrev": {
+            "A1": [
+              {
+                "label": "Send the boy (he’s lighter to transport later)",
+                "value": "A2",
+                "consequence": "The boy escapes; you and Lena remain behind.",
+                "story_line": "With both survivors still weak and the medic demanding a single name, I chose to send the boy on the UN convoy—staying behind with Lena as the engine carried him away."
+              },
+              {
+                "label": "Send Lena (she may not survive another night)",
+                "value": "B2",
+                "consequence": "Lena escapes; you and the boy remain behind.",
+                "story_line": "Facing one seat and two fragile lives, I chose Lena for the convoy—watching her disappear into the truck while I remained with the boy in the falling snow."
+              },
+              {
+                "label": "Refuse to choose and stay with both",
+                "value": "C2",
+                "consequence": "No one takes the seat; you keep both close.",
+                "story_line": "When the medic insisted I pick one person for the convoy, I refused to choose at all—letting the seat go unused so I could stay with both the boy and Lena."
+              },
+              {
+                "label": "Take the seat yourself to scout safety",
+                "value": "D2",
+                "consequence": "You leave alone to seek help/resources.",
+                "story_line": "With the convoy offering one seat and everyone staring at me for a decision, I took the seat myself—leaving the boy and Lena behind while telling myself I would find help."
+              }
+            ],
+            "B1": [
+              {
+                "label": "Send Lena (she’s critical)",
+                "value": "A2",
+                "consequence": "Lena escapes; the boy remains behind.",
+                "story_line": "With Lena fading fast and the convoy allowing only one, I chose to send Lena—watching the boy remain behind as her shallow breathing finally moved toward warmth."
+              },
+              {
+                "label": "Send the boy (he can make it across)",
+                "value": "B2",
+                "consequence": "The boy escapes; Lena remains behind.",
+                "story_line": "With the boy able to walk and Lena barely conscious, I chose to send the boy on the convoy—leaving Lena behind as the engine noise swallowed my sister’s silence."
+              },
+              {
+                "label": "Trade your seat to secure a medic visit for Lena",
+                "value": "C2",
+                "consequence": "You stay; a medic agrees to return briefly.",
+                "story_line": "With Lena failing and the medic demanding one name, I refused the seat and bargained instead—trading the convoy spot for a brief return visit from medical staff."
+              },
+              {
+                "label": "Take the seat yourself (survive first)",
+                "value": "D2",
+                "consequence": "You leave alone.",
+                "story_line": "With Lena’s breaths shallow and the convoy door open, I chose myself—taking the seat and leaving both Lena and the boy behind with the cold."
+              }
+            ],
+            "C1": [
+              {
+                "label": "Send the boy (despite the risk)",
+                "value": "A2",
+                "consequence": "The boy escapes; Lena remains behind.",
+                "story_line": "With the boy worsening and one convoy seat available, I chose to send him despite the risk—leaving Lena behind as the truck carried him out of Yarova."
+              },
+              {
+                "label": "Send Lena (she can travel now)",
+                "value": "B2",
+                "consequence": "Lena escapes; the boy remains behind.",
+                "story_line": "With Lena able to move and the boy fading, I chose Lena again for the convoy—watching the boy remain behind as the crowd judged my consistency."
+              },
+              {
+                "label": "Ask the convoy to take the boy as a medical priority",
+                "value": "C2",
+                "consequence": "You plead for an exception; outcome is uncertain.",
+                "story_line": "With one seat available and the boy slipping away, I pleaded for an exception—trying to bend the convoy rules so medical urgency, not politics, would decide."
+              },
+              {
+                "label": "Take the seat yourself (find help fast)",
+                "value": "D2",
+                "consequence": "You leave alone to reach aid sooner.",
+                "story_line": "With the boy worsening and the convoy door open, I took the seat myself—choosing speed and distance to reach help, while leaving the consequences behind."
+              }
+            ],
+            "D1": [
+              {
+                "label": "Take the seat immediately",
+                "value": "A2",
+                "consequence": "You leave alone; others stare as the door shuts.",
+                "story_line": "After keeping the supplies earlier, the convoy’s single seat felt like permission; I took it immediately—leaving alone while the room’s distrust shut in behind the door."
+              },
+              {
+                "label": "Give the seat to the boy to reduce backlash",
+                "value": "B2",
+                "consequence": "The boy escapes; you remain behind.",
+                "story_line": "With everyone watching me and trust already broken, I gave the convoy seat to the boy—staying behind to face the people I’d disappointed."
+              },
+              {
+                "label": "Give the seat to Lena to reduce backlash",
+                "value": "C2",
+                "consequence": "Lena escapes; you remain behind.",
+                "story_line": "With my sister refusing to meet my eyes and the medic waiting for an answer, I gave the convoy seat to Lena—staying behind as the judgment in the room remained."
+              },
+              {
+                "label": "Offer your supplies for a place on the next truck",
+                "value": "D2",
+                "consequence": "You bargain; the convoy staff may agree.",
+                "story_line": "With the convoy allowing only one seat, I tried to buy time and a future ride—offering what supplies I had left in exchange for a spot on the next truck."
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "Border Processing",
+        "situation": {
+          "byPrev": {
+            "A2": "Border Processing. You arrive with the consequences of your decision visible in who is (or isn’t) beside you. Floodlights cut through the night as aid workers ask for your statement.",
+            "B2": "Border Processing. The line moves slowly, but the absence you created moves with you faster than any paperwork. An aid worker looks at your wristband and asks, 'Who didn’t come with you?'",
+            "C2": "Border Processing. You stayed, negotiated, or refused the convoy’s terms. When you finally reach the checkpoint, you are exhausted and late. An aid worker says, 'Start from the beginning—what did you choose back there?'",
+            "D2": "Border Processing. Whether you left alone or made a hard bargain, you arrive carrying a story people will judge. A volunteer hands you forms and asks you to explain your decision clearly."
+          }
+        },
+        "question": "How do you describe your decision?",
+        "options": [
+          {
+            "label": "Tell the full truth",
+            "value": "A3",
+            "consequence": "You accept the moral complexity openly.",
+            "story_line": "Under floodlights at the border, with aid workers demanding a clean explanation, I told the full truth about what I chose and who paid for it."
+          },
+          {
+            "label": "Present yourself as a hero",
+            "value": "B3",
+            "consequence": "You simplify the story.",
+            "story_line": "At the border checkpoint, I turned the messy truth into a heroic version—making my decision sound noble enough to pass quickly."
+          },
+          {
+            "label": "Refuse to talk about it",
+            "value": "C3",
+            "consequence": "You protect yourself through silence.",
+            "story_line": "At the border, when they asked me to explain my decision, I refused—choosing silence over a story that would expose me."
+          },
+          {
+            "label": "Blame the system",
+            "value": "D3",
+            "consequence": "You redirect responsibility outward.",
+            "story_line": "At the border, when they asked what happened, I blamed the system—the rules, the shortages, the single-seat logic—so my decision wouldn’t stand alone."
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "The Invitation",
+        "situation": {
+          "byPrev": {
+            "A3": "Years later, an invitation arrives for a rebuilding ceremony in Yarova. Because you told the truth, your name is linked to testimony rather than legend. You are asked to return as a witness.",
+            "B3": "Years later, the Yarova invitation arrives. Because you shaped a heroic version, your name carries praise—and risk. The invitation feels like a place where your story could be questioned.",
+            "C3": "Years later, the Yarova invitation breaks years of avoidance. Because you stayed silent, the past never fully settled. Now it returns in an envelope with your name.",
+            "D3": "Years later, the Yarova invitation challenges you to enter a space meant for healing. Because you blamed the system loudly, your name is remembered alongside anger and controversy."
+          }
+        },
+        "question": "Do you return to Yarova?",
+        "options": [
+          {
+            "label": "Return and help rebuild",
+            "value": "A4",
+            "consequence": "You rejoin the community.",
+            "story_line": "Years later, when Yarova called me back through an invitation, I returned to rebuild—choosing to face my decisions where they began."
+          },
+          {
+            "label": "Return anonymously",
+            "value": "B4",
+            "consequence": "You face the past quietly.",
+            "story_line": "When the invitation arrived years later, I returned quietly and anonymously—letting the place hold the truth without forcing anyone to hear it."
+          },
+          {
+            "label": "Do not return",
+            "value": "C4",
+            "consequence": "You keep your distance.",
+            "story_line": "When Yarova invited me back years later, I didn’t return—choosing distance over reopening the decisions I never fully resolved."
+          },
+          {
+            "label": "Return and speak publicly",
+            "value": "D4",
+            "consequence": "You shape how it is remembered.",
+            "story_line": "When the rebuilding ceremony invited me back, I returned and spoke publicly—trying to shape what the story meant before it shaped me."
+          }
+        ]
+      }
+    ],
+    "intro": "Yarova, Ukraine. In a collapsing winter supply chain, every decision reshapes who survives, who remembers, and what you can live with later.",
     "resolutions": {
       "A": {
-        "title": "The Path of Radical Empathy",
-        "resolution": "Your decisions were anchored in the preservation of the community's most vulnerable. By consistently choosing communal care over individual survival, you maintained the social fabric of Yarova. While your own safety was frequently jeopardized, you emerged as a moral anchor in a landscape of chaos."
+        "title": "Shared Risk, Shared Care",
+        "resolution": "Your path leaned toward keeping people included—even when resources were thin. You tried to distribute help, speak honestly, and return to repair what you could. The outcome is imperfect, but your choices reduce isolation and keep accountability close."
       },
       "B": {
-        "title": "The Path of Generational Duty",
-        "resolution": "Your logic focused on long-term utility. By prioritizing the youth, you opted for 'Generational Survival.' You accepted the tragic loss of the past (the elderly) to secure a foothold for the future. You acted as a necessary, heavy-hearted pragmatist."
+        "title": "Decisive Rescue Under Pressure",
+        "resolution": "Your choices favored fast, concrete action: saving the most viable person, moving with the convoy, and crafting a clear narrative to survive the system. The benefit is speed and clarity; the cost is the unresolved weight of who was left behind."
       },
       "C": {
-        "title": "The Path of Kinship & Loyalty",
-        "resolution": "Your ethics were defined by proximity and history. In a world where systems failed, you leaned on the ancient law of the neighbor, protecting the 'known' against the 'unknown.' You preserved the bonds of home at the cost of broader fairness."
+        "title": "Refusal to Trade Lives",
+        "resolution": "Your path resisted being forced into a single-seat logic. You negotiated, delayed, or stayed with people when the system demanded a clean answer. The result protects dignity in the moment, but often increases uncertainty and personal burden later."
       },
       "D": {
-        "title": "The Path of Calculated Survival",
-        "resolution": "You chose the path of self-preservation and calculated silence. By hoarding resources and severing ties, you maximized your own safety and assimilation into a new life. While you survived physically, you exist in a permanent psychological exile from your origins."
+        "title": "Self-Preservation and System Friction",
+        "resolution": "Your path prioritized safety, leverage, or distance when the situation felt impossible. Sometimes this creates survival and future capacity; other times it fractures trust. Your ending asks whether survival without repair becomes a second kind of loss."
       }
-    },
-    "steps": [
-      {
-        "id": 1,
-        "title": "One Kit, Two Lives",
-        "situation": "The street is glassed with ice and dust. Shrapnel ticks as it cools. Lena’s leg is swollen and angry red; the boy’s breaths are shallow and fast. Your sister whispers, 'What do we do?' The kit in your hands feels heavier than steel.",
-        "question": "Who receives the last medical kit?",
-        "options": [
-          {
-            "value": "A1",
-            "label": "Split the kit between Lena and the boy",
-            "consequence": "You divide ointment and gauze knowing it may be too little for both. Dawn will test if 'fair' was also 'effective'.",
-            "scores": { "Distinction": 5, "Proportionality": 4, "Necessity": 3, "Precaution": 4 },
-            "ethicsIndex": 16
-          },
-          {
-            "value": "B1",
-            "label": "Give the full kit to the boy",
-            "consequence": "You prioritize the child. By nightfall, fever breaks for the boy; infection deepens for Lena.",
-            "scores": { "Distinction": 5, "Proportionality": 3, "Necessity": 4, "Precaution": 3 },
-            "ethicsIndex": 15
-          },
-          {
-            "value": "C1",
-            "label": "Give the full kit to Lena",
-            "consequence": "You honor the elder. Lena is warmer by morning, but the boy grows colder. His mother's silence is deafening.",
-            "scores": { "Distinction": 5, "Proportionality": 3, "Necessity": 4, "Precaution": 3 },
-            "ethicsIndex": 15
-          },
-          {
-            "value": "D1",
-            "label": "Keep the kit hidden",
-            "consequence": "You say you have nothing. By dawn the boy is gone; by the third day Lena fades. You have the kit, but lost your sister's trust.",
-            "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 2, "Precaution": 1 },
-            "ethicsIndex": 5
-          }
-        ]
-      },
-      {
-        "id": 2,
-        "title": "One Seat on the Truck",
-        "situation": "Word spreads: a UN convoy can take exactly one more civilian. A medic points to you: 'You decide who goes.' Engines idle. Snow begins again.",
-        "question": "Who boards the final seat?",
-        "options": [
-          {
-            "value": "A2",
-            "label": "The boy — and you go with him.",
-            "consequence": "You lift him in. In Lviv, surgery is possible—but so is forgetting the faces you left behind.",
-            "scores": { "Distinction": 4, "Proportionality": 3, "Necessity": 4, "Precaution": 3 },
-            "ethicsIndex": 14
-          },
-          {
-            "value": "B2",
-            "label": "Lena — and you accompany her.",
-            "consequence": "You steady her up the tailgate. At a field hospital, a doctor warns that age makes her low priority.",
-            "scores": { "Distinction": 4, "Proportionality": 3, "Necessity": 4, "Precaution": 3 },
-            "ethicsIndex": 14
-          },
-          {
-            "value": "C2",
-            "label": "Place the boy on the truck alone; you remain.",
-            "consequence": "He vanishes into the snow. You stay behind to face the night fire with your sister.",
-            "scores": { "Distinction": 4, "Proportionality": 4, "Necessity": 3, "Precaution": 4 },
-            "ethicsIndex": 15
-          },
-          {
-            "value": "D2",
-            "label": "Take the seat yourself; tell no one.",
-            "consequence": "Truck steel swallows you. Months later you see your sister's hollow eyes on a TV news segment from a camp.",
-            "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 3, "Precaution": 1 },
-            "ethicsIndex": 6
-          }
-        ]
-      },
-      {
-        "id": 3,
-        "title": "Distance, Duty, and Silence",
-        "situation": "Shelter offers safety, but also choices that fix your story in ink. A coordinator asks for help that risks your progress; your phone can still reach the Yarova basements.",
-        "question": "How do you use your new safety?",
-        "options": [
-          {
-            "value": "A3",
-            "label": "Return east escorting medical shipments",
-            "consequence": "You ride past craters. You find your sister alive, but Lena is gone. The medics offer one ride back out.",
-            "scores": { "Distinction": 5, "Proportionality": 4, "Necessity": 4, "Precaution": 4 },
-            "ethicsIndex": 17
-          },
-          {
-            "value": "B3",
-            "label": "Stay but mobilize aid: money and logistics.",
-            "consequence": "You become a digital lifeline. Your packages arrive late but alive. One day, a plea for a specific surgery arrives.",
-            "scores": { "Distinction": 5, "Proportionality": 4, "Necessity": 4, "Precaution": 4 },
-            "ethicsIndex": 17
-          },
-          {
-            "value": "C3",
-            "label": "Stay silent; build a new life.",
-            "consequence": "You learn the language of quiet elevators and pay stubs. News from Yarova breaks through—a list with your sister's name.",
-            "scores": { "Distinction": 3, "Proportionality": 2, "Necessity": 4, "Precaution": 2 },
-            "ethicsIndex": 11
-          },
-          {
-            "value": "D3",
-            "label": "Lie about your hometown to ease asylum.",
-            "consequence": "Paperwork moves faster, but nights grow longer. When a colleague seeks anyone from Yarova, your lie constricts.",
-            "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 4, "Precaution": 1 },
-            "ethicsIndex": 7
-          }
-        ]
-      },
-      {
-        "id": 4,
-        "title": "What Your Choices Make of You",
-        "situation": "Time accumulates. Front lines breathe. You have seen what fairness, loyalty, pragmatism, and fear each purchase.",
-        "question": "Given everything, how do you close this chapter?",
-        "options": [
-          {
-            "value": "A4",
-            "label": "Leave again with your sister",
-            "consequence": "You learn to cook for two in a new city and to memorialize the third at the table. Love remains protected.",
-            "scores": { "Distinction": 4, "Proportionality": 4, "Necessity": 4, "Precaution": 4 },
-            "ethicsIndex": 16
-          },
-          {
-            "value": "B4",
-            "label": "Stay and rebuild Yarova.",
-            "consequence": "You map wells and plant onions in shell holes. You become the person you once needed.",
-            "scores": { "Distinction": 5, "Proportionality": 4, "Necessity": 4, "Precaution": 5 },
-            "ethicsIndex": 18
-          },
-          {
-            "value": "C4",
-            "label": "Help from the shadows.",
-            "consequence": "You route donations anonymously. Years later, you realize absolution was never the goal; accountability was.",
-            "scores": { "Distinction": 4, "Proportionality": 4, "Necessity": 4, "Precaution": 4 },
-            "ethicsIndex": 16
-          },
-          {
-            "value": "D4",
-            "label": "Cut ties; survive.",
-            "consequence": "You build credit and master a language that lacks words for the past. Forgetting is a muscle.",
-            "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 4, "Precaution": 1 },
-            "ethicsIndex": 7
-          }
-        ]
-      }
-    ]
-  },
-
-  "B": {
-    "id": "B",
-    "title": "Siege Logistics — Efficiency Path",
-    "intro": "The city of Mariupol is a cage of iron and smoke. You are in charge of a small neighborhood basement shelter. Food is a math problem; water is a miracle. A supply run has returned with enough for ten people, but there are fifteen in your care. Your decisions will dictate who sees the spring.",
-    "scenarioImage": "static/scenarios/B.jpg",
-    "resolutions": {
-      "A": { "title": "The Path of Ethical Equity", "resolution": "You refused to play God. By stretching every resource to the breaking point, you ensured everyone felt valued, even as the cold grew more intense. Your leadership was defined by a shared fate." },
-      "B": { "title": "The Path of Strategic Hardness", "resolution": "You prioritized the strong and the contributors. While painful, your efficiency ensured the group's functional survival. You sacrificed individual comfort for the collective's ability to endure the siege." },
-      "C": { "title": "The Path of Tribal Protection", "resolution": "You protected your immediate circle above all else. In the dark of the basement, you found that blood is thicker than shared geography. You kept your promises to your family, whatever the cost to others." },
-      "D": { "title": "The Path of the Shadow Broker", "resolution": "You hoarded reserves for the final breakout. Your silence and secrecy were tools of survival. You emerged from the city alone but alive, carrying the weight of the unused rations in your memory." }
-    },
-    "steps": [
-      {
-        "id": 1,
-        "title": "The Bread Dilemma",
-        "situation": "Five loaves of bread remain. The children need strength, but the men digging the rubble to clear the exit need calories to work. The elderly watch in silence.",
-        "question": "How do you distribute the bread?",
-        "options": [
-          {
-            "value": "A1",
-            "label": "Tiny portions for everyone",
-            "consequence": "Hunger is universal, but no one feels abandoned. The work on the exit slows to a crawl as strength fades.",
-            "scores": { "Distinction": 5, "Proportionality": 4, "Necessity": 3, "Precaution": 4 },
-            "ethicsIndex": 16
-          },
-          {
-            "value": "B1",
-            "label": "Full portions for the laborers",
-            "consequence": "The exit is cleared faster, but the children's cries become a constant, haunting background noise.",
-            "scores": { "Distinction": 4, "Proportionality": 3, "Necessity": 4, "Precaution": 3 },
-            "ethicsIndex": 14
-          },
-          {
-            "value": "C1",
-            "label": "Prioritize your own family",
-            "consequence": "Your daughter smiles as she eats, but the neighbor who lost everything avoids your gaze in the dark.",
-            "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 },
-            "ethicsIndex": 10
-          },
-          {
-            "value": "D1",
-            "label": "Hide two loaves for the journey out",
-            "consequence": "You tell them only three were found. The laborers grow weak, but you have a secret insurance policy.",
-            "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 4, "Precaution": 1 },
-            "ethicsIndex": 7
-          }
-        ]
-      },
-      {
-        "id": 2,
-        "title": "The Fuel Shortage",
-        "situation": "The generator has one hour of fuel left. It can either power the medical fridge for insulin or the radio to listen for evacuation coordinates.",
-        "question": "Where does the power go?",
-        "options": [
-          {
-            "value": "A2",
-            "label": "Alternate 30 mins each",
-            "consequence": "The insulin is compromised and the radio signal is patchy. You gamble on 'middle ground' and risk both.",
-            "scores": { "Distinction": 4, "Proportionality": 2, "Necessity": 3, "Precaution": 2 },
-            "ethicsIndex": 11
-          },
-          {
-            "value": "B2",
-            "label": "Full hour for the radio",
-            "consequence": "You hear the coordinates clearly, but Lena’s uncle slips into a coma by nightfall without his medicine.",
-            "scores": { "Distinction": 4, "Proportionality": 2, "Necessity": 4, "Precaution": 2 },
-            "ethicsIndex": 12
-          },
-          {
-            "value": "C2",
-            "label": "Full hour for the medical fridge",
-            "consequence": "The uncle lives, but you miss the window for the UN safe passage announcement. You are trapped longer.",
-            "scores": { "Distinction": 5, "Proportionality": 3, "Necessity": 4, "Precaution": 3 },
-            "ethicsIndex": 15
-          },
-          {
-            "value": "D2",
-            "label": "Siphon the fuel for a getaway bike",
-            "consequence": "The basement goes dark immediately. You wait for the moment to move while others believe the fuel simply ran out.",
-            "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 4, "Precaution": 1 },
-            "ethicsIndex": 7
-          }
-        ]
-      },
-      {
-        "id": 3,
-        "title": "The Informant",
-        "situation": "A soldier from the opposing side is found injured in the stairwell. He has a map of the minefields. The group wants to leave him; the medic wants to save him.",
-        "question": "What is the soldier's fate?",
-        "options": [
-          {
-            "value": "A3",
-            "label": "Treat him and trade for information",
-            "consequence": "He lives and gives you the map. Half the group thinks you are a traitor; the other half thinks you are a genius.",
-            "scores": { "Distinction": 4, "Proportionality": 4, "Necessity": 4, "Precaution": 4 },
-            "ethicsIndex": 16
-          },
-          {
-            "value": "B3",
-            "label": "Take the map and leave him",
-            "consequence": "You get the information without using medical supplies, but the moral atmosphere in the basement turns cold.",
-            "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 },
-            "ethicsIndex": 10
-          },
-          {
-            "value": "C3",
-            "label": "Protect him as a prisoner of war",
-            "consequence": "You follow the rules of IHL, but he consumes a ration that could have gone to the children.",
-            "scores": { "Distinction": 4, "Proportionality": 3, "Necessity": 3, "Precaution": 4 },
-            "ethicsIndex": 14
-          },
-          {
-            "value": "D3",
-            "label": "Ignore him and focus on your exit",
-            "consequence": "You don't risk the map being a trap. You leave him to the silence of the building.",
-            "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 4, "Precaution": 1 },
-            "ethicsIndex": 7
-          }
-        ]
-      },
-      {
-        "id": 4,
-        "title": "The Final Exit",
-        "situation": "The shelling has stopped briefly. The path to the 'Green Corridor' is open, but only if you move now. Two people are too weak to walk.",
-        "question": "How do you handle the evacuation?",
-        "options": [
-          {
-            "value": "A4",
-            "label": "Carry them at the cost of speed",
-            "consequence": "You move as a unit. You reach the bus just as it prepares to leave. You are the last ones on.",
-            "scores": { "Distinction": 5, "Proportionality": 4, "Necessity": 4, "Precaution": 4 },
-            "ethicsIndex": 17
-          },
-          {
-            "value": "B4",
-            "label": "Leave them with the remaining supplies",
-            "consequence": "The group moves fast and reaches safety easily. The silence during the ride is your only punishment.",
-            "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 },
-            "ethicsIndex": 10
-          },
-          {
-            "value": "C4",
-            "label": "Stay behind with those who can't move",
-            "consequence": "You send your family ahead. You sit in the dark and wait for the next miracle or the final end.",
-            "scores": { "Distinction": 4, "Proportionality": 3, "Necessity": 3, "Precaution": 3 },
-            "ethicsIndex": 13
-          },
-          {
-            "value": "D4",
-            "label": "Run ahead to secure your own spot",
-            "consequence": "You are the first to safety. You watch the horizon for the others, realizing the distance you've put between you.",
-            "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 4, "Precaution": 1 },
-            "ethicsIndex": 7
-          }
-        ]
-      }
-    ]
-  },
-
-  "C": {
-    "id": "C",
-    "title": "Frontier Justice — Loyalty Path",
-    "intro": "The borderlands are a lawless gray zone. Retreating forces have left behind a cache of documents that could expose collaborators. You are a local teacher who knows everyone’s secrets. A resistance group wants the names; the families of the accused beg for mercy. You hold the book of truth.",
-    "scenarioImage": "static/scenarios/C.jpg",
-    "resolutions": {
-      "A": { "title": "The Path of Truth & Reconciliation", "resolution": "You chose transparency over vengeance. By exposing the truth but advocating for due process, you prevented a cycle of blood-feuds. You remained the teacher, even when the world wanted a judge." },
-      "B": { "title": "The Path of National Duty", "resolution": "You handed the documents to the authorities immediately. You prioritized the security of the future state over the safety of individuals. Your loyalty to the idea of justice was absolute." },
-      "C": { "title": "The Path of Community Shield", "resolution": "You protected your neighbors, even the flawed ones. You believed that healing a village is more important than punishing a crime. You burned the evidence to save the future." },
-      "D": { "title": "The Path of the Silent Archivist", "resolution": "You kept the documents for yourself. Information is the only currency you trust. You moved away with the files, a quiet man with the power to change history if you ever choose to speak." }
-    },
-    "steps": [
-      {
-        "id": 1,
-        "title": "The Ledger",
-        "situation": "You find the ledger in the abandoned school. It lists those who took extra rations in exchange for information. Your cousin’s name is on page four.",
-        "question": "What do you do with the ledger?",
-        "options": [
-          { "value": "A1", "label": "Publicly announce the discovery", "consequence": "The village is in an uproar. Transparency creates immediate tension but stops the rumors.", "scores": { "Distinction": 4, "Proportionality": 3, "Necessity": 4, "Precaution": 3 }, "ethicsIndex": 14 },
-          { "value": "B1", "label": "Give it to the Resistance commander", "consequence": "They take it and begin 'interviews' by nightfall. You have done your duty, but the air is thick with fear.", "scores": { "Distinction": 3, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 11 },
-          { "value": "C1", "label": "Tear out your cousin’s page", "consequence": "You protect your blood. The rest of the truth remains, but your integrity is now a secret debt.", "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 10 },
-          { "value": "D1", "label": "Hide it in the school rafters", "consequence": "You wait to see who wins the war before deciding which truth is most useful.", "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 4, "Precaution": 1 }, "ethicsIndex": 7 }
-        ]
-      },
-      {
-        "id": 2,
-        "title": "The Accused Neighbor",
-        "situation": "A crowd has gathered around Old Marek. They say he signaled the planes. Marek says he was just drying his laundry. They ask you to verify his character.",
-        "question": "What is your testimony?",
-        "options": [
-          { "value": "A2", "label": "State only the facts you saw", "consequence": "You remain neutral. Marek is kept under guard, but not harmed. The crowd is unsatisfied.", "scores": { "Distinction": 4, "Proportionality": 4, "Necessity": 3, "Precaution": 4 }, "ethicsIndex": 15 },
-          { "value": "B2", "label": "Condemn him for his past ties", "consequence": "You use your influence to remove a potential threat. Marek is taken away. The village feels 'safer' but crueler.", "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 10 },
-          { "value": "C2", "label": "Vouch for him to save his life", "consequence": "You save a man who might be guilty because you cannot bear to see a lynching. He owes you his life.", "scores": { "Distinction": 4, "Proportionality": 3, "Necessity": 4, "Precaution": 3 }, "ethicsIndex": 14 },
-          { "value": "D2", "label": "Refuse to speak and walk away", "consequence": "You don't let the mob use your name. Whatever happens to Marek, it isn't on your hands—officially.", "scores": { "Distinction": 3, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 11 }
-        ]
-      },
-      {
-        "id": 3,
-        "title": "The Bribe",
-        "situation": "A wealthy businessman whose name is in the ledger offers you a car and safe passage for your sister if you destroy the book.",
-        "question": "Do you take the deal?",
-        "options": [
-          { "value": "A3", "label": "Refuse and report the bribe", "consequence": "You stay for the fallout. Your sister remains in danger, but the truth is not for sale.", "scores": { "Distinction": 4, "Proportionality": 4, "Necessity": 4, "Precaution": 4 }, "ethicsIndex": 16 },
-          { "value": "B3", "label": "Take the deal but keep a copy", "consequence": "You get your sister out and keep the leverage. You are playing a dangerous game of double-cross.", "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 10 },
-          { "value": "C3", "label": "Burn the book for the family's sake", "consequence": "You destroy the evidence to save your own. Peace returns to the village, but it is built on a lie.", "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 4, "Precaution": 1 }, "ethicsIndex": 7 },
-          { "value": "D3", "label": "Negotiate for more resources", "consequence": "If the world is ending, you will ensure you have the means to start again elsewhere.", "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 10 }
-        ]
-      },
-      {
-        "id": 4,
-        "title": "The Aftermath",
-        "situation": "The regular army returns. They ask for the ledger to begin official trials. The village is divided between those who want to forget and those who want to hang.",
-        "question": "How do you hand over the history?",
-        "options": [
-          { "value": "A4", "label": "Hand it over with a plea for mercy", "consequence": "Trials begin. They are slow and painful, but the rule of law is restored to the frontier.", "scores": { "Distinction": 4, "Proportionality": 4, "Necessity": 4, "Precaution": 4 }, "ethicsIndex": 16 },
-          { "value": "B4", "label": "Identify the worst offenders only", "consequence": "You focus the punishment on the few to save the many. A surgical justice.", "scores": { "Distinction": 3, "Proportionality": 3, "Necessity": 4, "Precaution": 3 }, "ethicsIndex": 13 },
-          { "value": "C4", "label": "Claim the book was lost in fire", "consequence": "You let the village heal through forgetting. You remain the teacher in a town of ghosts.", "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 10 },
-          { "value": "D4", "label": "Sell the information to the highest bidder", "consequence": "You use the war's end as your own beginning. You leave the frontier behind forever.", "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 4, "Precaution": 1 }, "ethicsIndex": 7 }
-        ]
-      }
-    ]
-  },
-
-  "D": {
-    "id": "D",
-    "title": "Supply Chain — Self-Preservation Path",
-    "intro": "You are a contractor in a conflict-adjacent city. You manage the warehouse for international aid. The front line has shifted, and the roads are cut off. You have the last shipment of antibiotics. The local hospital is desperate, but your company orders you to hold the stock for a high-value evacuation team.",
-    "scenarioImage": "static/scenarios/D.jpg",
-    "resolutions": {
-      "A": { "title": "The Path of Corporate Defiance", "resolution": "You chose people over protocols. By redirecting life-saving medicine to the local population, you saved hundreds of lives but ended your professional career. You left with nothing but a clear conscience." },
-      "B": { "title": "The Path of Standard Operating Procedure", "resolution": "You followed the chain of command. Your discipline ensured the evacuation team was successful, though the local hospital suffered. You are a reliable cog in a complex machine." },
-      "C": { "title": "The Path of the Local Patron", "resolution": "You used your position to protect your city. You funneled just enough supplies to keep the locals alive while keeping your bosses satisfied. You are the master of the gray market." },
-      "D": { "title": "The Path of Maximum Profit", "resolution": "You saw opportunity in the scarcity. By controlling the flow of goods, you secured your financial future in a collapsing economy. You survived the war by becoming a merchant of it." }
-    },
-    "steps": [
-      {
-        "id": 1,
-        "title": "The Urgent Request",
-        "situation": "The hospital director is at your gate. He needs five crates of amoxicillin. Your manifest says those crates are reserved for the 'Global Response Team' arriving in 48 hours.",
-        "question": "Do you release the crates?",
-        "options": [
-          { "value": "A1", "label": "Release all requested crates", "consequence": "The director weeps with relief. Your digital inventory logs an immediate red flag at headquarters.", "scores": { "Distinction": 5, "Proportionality": 4, "Necessity": 4, "Precaution": 4 }, "ethicsIndex": 17 },
-          { "value": "B1", "label": "Refuse and follow the manifest", "consequence": "The hospital turns away patients by evening. You sit in your air-conditioned office and wait for the VIPs.", "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 10 },
-          { "value": "C1", "label": "Give him one 'damaged' crate", "consequence": "A compromise. It helps the most critical cases, and you can hide the discrepancy in the paperwork.", "scores": { "Distinction": 4, "Proportionality": 3, "Necessity": 4, "Precaution": 3 }, "ethicsIndex": 14 },
-          { "value": "D1", "label": "Ask what he can trade for it", "consequence": "You realize the hospital has fuel you might need later. A fair trade for survival.", "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 10 }
-        ]
-      },
-      {
-        "id": 2,
-        "title": "The Inspection",
-        "situation": "A local militia group hears about the supplies and demands an inspection. They offer 'protection' in exchange for a share of the medical kits.",
-        "question": "How do you handle the militia?",
-        "options": [
-          { "value": "A2", "label": "Refuse and risk a standoff", "consequence": "You maintain the kits' integrity, but your warehouse becomes a target for the rest of the week.", "scores": { "Distinction": 4, "Proportionality": 3, "Necessity": 4, "Precaution": 3 }, "ethicsIndex": 14 },
-          { "value": "B2", "label": "Call the company security line", "consequence": "They tell you to handle it locally. They won't risk their own men for a warehouse. You are on your own.", "scores": { "Distinction": 3, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 11 },
-          { "value": "C2", "label": "Give them the non-essential kits", "consequence": "You buy their loyalty with bandages and saline. The antibiotics remain safe for now.", "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 10 },
-          { "value": "D2", "label": "Hire them to guard the perimeter", "consequence": "You turn the threat into an asset. You are now the most powerful person in the district.", "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 10 }
-        ]
-      },
-      {
-        "id": 3,
-        "title": "The High-Value Team",
-        "situation": "The Global Response Team arrives. They don't need all the medicine, but they want it loaded on their plane anyway 'just in case'. The hospital is now under direct fire.",
-        "question": "Where does the medicine go?",
-        "options": [
-          { "value": "A3", "label": "Defy the team and send it to the hospital", "consequence": "You physically block the loading. The team leaves without you. You are stuck in a war zone with a clear heart.", "scores": { "Distinction": 5, "Proportionality": 4, "Necessity": 4, "Precaution": 4 }, "ethicsIndex": 17 },
-          { "value": "B3", "label": "Load it all as ordered", "consequence": "You get a seat on the plane. You watch the hospital burn from the window, knowing you did your job.", "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 10 },
-          { "value": "C3", "label": "Hide half the crates for the locals", "consequence": "You tell the team the shipment was smaller than expected. You smuggle the rest to the director by night.", "scores": { "Distinction": 4, "Proportionality": 3, "Necessity": 4, "Precaution": 3 }, "ethicsIndex": 14 },
-          { "value": "D3", "label": "Charge the team for 'handling fees'", "consequence": "If they want it all, they can pay for the extra logistics. You collect your bonus in cash.", "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 4, "Precaution": 1 }, "ethicsIndex": 7 }
-        ]
-      },
-      {
-        "id": 4,
-        "title": "The Final Balance",
-        "situation": "The city has fallen. You are at the border. You have a suitcase and a set of keys to a warehouse that no longer exists in a country that is changing names.",
-        "question": "How do you walk into your new life?",
-        "options": [
-          { "value": "A4", "label": "Join an NGO to fix what you saw", "consequence": "You use your logistics skills for good, forever trying to make up for theManifest.", "scores": { "Distinction": 4, "Proportionality": 4, "Necessity": 4, "Precaution": 4 }, "ethicsIndex": 16 },
-          { "value": "B4", "label": "Apply for a promotion at headquarters", "consequence": "You proved you can follow orders under pressure. Your career is set.", "scores": { "Distinction": 2, "Proportionality": 2, "Necessity": 4, "Precaution": 2 }, "ethicsIndex": 10 },
-          { "value": "C4", "label": "Open your own supply consultancy", "consequence": "You know how the world really works now. You will never be without resources again.", "scores": { "Distinction": 3, "Proportionality": 3, "Necessity": 4, "Precaution": 3 }, "ethicsIndex": 13 },
-          { "value": "D4", "label": "Change your name and disappear", "consequence": "You have the money. You just need to find a place where no one knows where it came from.", "scores": { "Distinction": 1, "Proportionality": 1, "Necessity": 4, "Precaution": 1 }, "ethicsIndex": 7 }
-        ]
-      }
-    ]
+    }
   }
 }

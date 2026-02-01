@@ -2,6 +2,8 @@
 {% extends "base.html" %}
 
 {% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
 <style>
 :root{
   --ink:#1a1515; --muted:#736b6b; --primary:#4a3b3b; --secondary:#967d7d;
@@ -9,6 +11,9 @@
   --shadow-lg:0 20px 40px rgba(0,0,0,.06);
   --radius-md:16px;
   --transition: all 0.3s ease;
+  --warn-bg: rgba(180,83,9,0.08);
+  --warn-bd: rgba(180,83,9,0.25);
+  --warn-tx: #7c2d12;
 }
 
 body { background-color: var(--bg); }
@@ -34,13 +39,11 @@ body { background-color: var(--bg); }
   justify-content: center;
 }
 
-/* State: Image is Active */
 .hero-img-wrap:has(img) {
   aspect-ratio: 1/1;
   box-shadow: var(--shadow-lg);
 }
 
-/* State: Image is OFF or Placeholder (Compact Mode) */
 .hero-img-wrap:has(.img-empty) {
   aspect-ratio: auto;
   padding: 0.75rem;
@@ -76,11 +79,25 @@ body { background-color: var(--bg); }
 .progress-track{ height:6px; background:#e8e3e3; border-radius:10px; margin-top:8px; overflow:hidden; }
 .progress-fill{ height:100%; background:var(--secondary); transition:width .8s ease; }
 
+.situation-box{ background: rgba(255,255,255,0.65); border:1px solid var(--edge); border-radius: var(--radius-md); padding:1.75rem; box-shadow:0 10px 30px rgba(0,0,0,0.03); }
 .situation-box h1{ font-size:2.25rem; font-weight:850; color:var(--primary); letter-spacing:-.03em; margin-bottom:1rem; }
-.situation-text{ font-size:1.15rem; line-height:1.7; color:#444; margin-bottom:2rem; }
+.situation-text{ font-size:1.15rem; line-height:1.7; color:#444; margin-bottom:1.25rem; }
+
+/* --- Back Warning --- */
+.back-warning{
+  margin-bottom:1.75rem;
+  padding:1rem 1.25rem;
+  border-radius:14px;
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-bd);
+  color: var(--warn-tx);
+  font-size:.9rem;
+  font-weight:800;
+  line-height:1.5;
+}
 
 /* --- Form Elements --- */
-.options-list{ display:flex; flex-direction:column; gap:1rem; }
+.options-list{ display:flex; flex-direction:column; gap:1rem; margin-top:1.25rem; }
 .option-label{
   display:flex; gap:1.2rem; padding:1.5rem; border:2px solid transparent; background:#fff;
   border-radius:var(--radius-md); cursor:pointer; transition:all .2s ease; box-shadow:0 4px 12px rgba(0,0,0,0.03);
@@ -88,18 +105,104 @@ body { background-color: var(--bg); }
 .option-label:hover{ transform:translateX(8px); border-color:var(--accent); }
 .option-label:has(input:checked){ border-color:var(--secondary); background:#fffcfc; }
 
-.option-label input{ appearance:none; width:22px; height:22px; flex-shrink:0; border:2px solid #dcdcdc; border-radius:50%; margin-top:2px; }
+.option-label input{
+  appearance:none; width:22px; height:22px; flex-shrink:0;
+  border:2px solid #dcdcdc; border-radius:50%; margin-top:2px;
+}
 .option-label input:checked{ background:var(--secondary); border-color:var(--secondary); box-shadow:inset 0 0 0 4px #fff; }
 
-.btn-submit{ width:100%; margin-top:3rem; padding:1.25rem; border-radius:14px; background:var(--primary); color:#fff; border:none; font-weight:800; font-size:1.1rem; cursor:pointer; transition: opacity 0.2s; }
-.btn-submit:hover { opacity: 0.9; }
+.btn-submit{
+  width:100%;
+  margin-top:2.25rem;
+  padding:1.25rem;
+  border-radius:14px;
+  background:var(--primary);
+  color:#fff;
+  border:none;
+  font-weight:800;
+  font-size:1.1rem;
+  cursor:pointer;
+}
+.btn-submit:hover { opacity: 0.92; }
 
-@media (max-width:1024px){
+/* --- Modal small styling --- */
+.modal-content{
+  border-radius:18px !important;
+  border:1px solid var(--edge) !important;
+}
+.modal-header, .modal-footer{
+  border-color: var(--edge) !important;
+}
+.survey-title{
+  font-weight:900; color:var(--primary); letter-spacing:-.01em;
+}
+.survey-sub{
+  margin:0 0 14px;
+  color:var(--muted);
+  line-height:1.5;
+}
+.survey-q{
+  font-weight:900;
+  color:var(--primary);
+  margin-bottom:8px;
+}
+.survey-btns .btn{
+  border-radius:12px;
+  font-weight:800;
+  padding:10px 12px;
+  border-color: rgba(0,0,0,0.12);
+  color: var(--primary);
+}
+.survey-btns .btn.active,
+.survey-btns .btn:active{
+  background: var(--accent);
+  border-color: var(--secondary);
+  color: var(--primary);
+}
+#surveyErr{
+  display:none;
+  margin-top:12px;
+  color:#b91c1c;
+  font-weight:900;
+}
+
+/* --- Loading Overlay --- */
+#loadingOverlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity .2s ease, visibility .2s ease;
+}
+#loadingOverlay.active{
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 980px){
   .split-container{ grid-template-columns:1fr; }
-  .narrative-col{ height:auto; position:relative; border-right:none; padding:1.5rem; }
-  .interaction-col { padding: 2rem 1.5rem; }
+  .narrative-col{ position:relative; height:auto; }
+  .interaction-col{ padding:2.5rem 6%; }
 }
 </style>
+
+<div id="loadingOverlay">
+  <div class="text-center">
+    <div class="spinner-border" role="status" style="width:3rem;height:3rem;"></div>
+    <p style="margin-top:12px; font-weight:800; color:var(--primary);">
+      Working on the scenario...
+    </p>
+    <p style="margin:0; color:var(--muted); font-size:.95rem;">
+      Please wait.
+    </p>
+  </div>
+</div>
 
 <div class="split-container">
   <aside class="narrative-col">
@@ -108,28 +211,28 @@ body { background-color: var(--bg); }
         {% if hero_image_url %}
           <img src="{{ hero_image_url }}" alt="AI Generated Scene">
         {% else %}
-          <div class="img-empty">
-            <p>Processing Scene...</p>
-          </div>
+          <div class="img-empty"><p>Processing Scene...</p></div>
         {% endif %}
       {% else %}
-        <div class="img-empty">
-          <p>Visual Experience Off</p>
-        </div>
+        <div class="img-empty"><p>Visual Experience Off</p></div>
       {% endif %}
     </div>
 
     <div class="story-sofar">
       <h4>The Story So Far</h4>
       <p>{{ story_so_far or "The journey begins here..." }}</p>
-      <div style="margin-top:1.5rem; font-size:.8rem; color:var(--secondary); border-top:1px solid var(--edge); padding-top:1rem;">
-        <p><strong>Scenario:</strong> {{ scenario_title }}</p>
-      </div>
     </div>
   </aside>
 
   <main class="interaction-col">
     <div class="content-width">
+
+      <div class="back-warning">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        Do not use the browser Back button during the scenario.<br>
+        Using Back may break the flow and cause progress loss.
+      </div>
+
       <header class="step-meta">
         <span class="count">
           Step {{ step_index }} / {{ total_steps }}
@@ -142,35 +245,225 @@ body { background-color: var(--bg); }
 
       <section class="situation-box">
         <h1>Current Situation</h1>
-        <div class="situation-text">
-          {{ situation_text }}
-        </div>
-        <p style="font-weight: 800; color: var(--primary); font-size: 1.15rem; margin-bottom: 1.5rem; line-height: 1.4;">
+        <div class="situation-text">{{ situation_text }}</div>
+        <p style="font-weight:900; color:var(--primary); font-size:1.15rem; margin:0;">
           {{ step.question }}
         </p>
+
+        <form id="stepForm" method="post">
+          <div class="options-list">
+            {% for opt in (step.options or []) %}
+              <label class="option-label">
+                <input
+                  type="radio"
+                  name="choice"
+                  value="{{ opt.value }}"
+                  {% if selected == opt.value %}checked{% endif %}
+                  required
+                >
+                <div>
+                  <div style="font-weight:900; color:var(--primary);">{{ opt.label }}</div>
+                  {% if opt.consequence %}
+                    <div style="margin-top:6px; color:var(--muted); line-height:1.5;">
+                      {{ opt.consequence }}
+                    </div>
+                  {% endif %}
+                </div>
+              </label>
+            {% endfor %}
+          </div>
+
+          <button class="btn-submit" type="submit">
+            {% if is_last %}Finalize Experience{% else %}Continue Decision{% endif %}
+          </button>
+        </form>
       </section>
 
-      <form method="post" action="{{ url_for('gpt_scenario_step', step=step_index) }}">
-        <div class="options-list">
-          {% for opt in step.options %}
-            <label class="option-label">
-              <input type="radio" name="choice" value="{{ opt.value }}"
-                     {% if selected == opt.value %}checked{% endif %} required>
-              <div>
-                <p style="margin:0; font-weight:800; font-size: 1.05rem;">{{ opt.label }}</p>
-                {% if opt.hint %}
-                  <p style="margin:.35rem 0 0; color:var(--muted); font-size: 0.9rem; line-height: 1.4;">{{ opt.hint }}</p>
-                {% endif %}
-              </div>
-            </label>
-          {% endfor %}
-        </div>
-
-        <button class="btn-submit" type="submit">
-          {% if is_last %}Finalize Experience{% else %}Continue Decision{% endif %}
-        </button>
-      </form>
     </div>
   </main>
 </div>
+
+<!-- Step Survey Modal (50% chance on submit) -->
+<div class="modal fade" id="stepSurveyModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title survey-title">Quick Check-in</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <p class="survey-sub">
+          Before continuing, answer these 3 questions about your decision.
+        </p>
+
+        <div style="display:grid; gap:14px;">
+          <div>
+            <div class="survey-q">Confidence</div>
+            <div class="d-grid gap-2 survey-btns" data-group="conf">
+              <button class="btn btn-outline-secondary" type="button" data-name="survey_conf" data-value="very_sure">Very sure</button>
+              <button class="btn btn-outline-secondary" type="button" data-name="survey_conf" data-value="somewhat_sure">Somewhat sure</button>
+              <button class="btn btn-outline-secondary" type="button" data-name="survey_conf" data-value="unsure">Unsure</button>
+              <button class="btn btn-outline-secondary" type="button" data-name="survey_conf" data-value="guessing">Guessing</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="survey-q">Sentiment</div>
+            <div class="d-grid gap-2 survey-btns" data-group="sent">
+              <button class="btn btn-outline-secondary" type="button" data-name="survey_sent" data-value="positive">Positive</button>
+              <button class="btn btn-outline-secondary" type="button" data-name="survey_sent" data-value="neutral">Neutral</button>
+              <button class="btn btn-outline-secondary" type="button" data-name="survey_sent" data-value="negative">Negative</button>
+              <button class="btn btn-outline-secondary" type="button" data-name="survey_sent" data-value="mixed">Mixed</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="survey-q">Morality</div>
+            <div class="d-grid gap-2 survey-btns" data-group="moral">
+              <button class="btn btn-outline-secondary" type="button" data-name="survey_moral" data-value="morally_right">Morally right</button>
+              <button class="btn btn-outline-secondary" type="button" data-name="survey_moral" data-value="morally_neutral">Morally neutral</button>
+              <button class="btn btn-outline-secondary" type="button" data-name="survey_moral" data-value="morally_wrong">Morally wrong</button>
+              <button class="btn btn-outline-secondary" type="button" data-name="survey_moral" data-value="unsure">Unsure</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="surveyErr">Please answer all three questions.</div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="surveySkipBtn" class="btn btn-light" data-bs-dismiss="modal">Skip</button>
+        <button type="button" id="surveySubmitBtn" class="btn" style="background:var(--primary); color:#fff; font-weight:900; border-radius:12px;">
+          Submit & Continue
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const overlay = document.getElementById('loadingOverlay');
+  const form = document.getElementById('stepForm');
+
+  const STEP_INDEX = Number("{{ step_index }}");
+
+  const modalEl = document.getElementById('stepSurveyModal');
+  const stepSurveyModal = (window.bootstrap && modalEl)
+    ? new bootstrap.Modal(modalEl, { backdrop: 'static' })
+    : null;
+
+  const surveyErr = document.getElementById('surveyErr');
+  const surveySubmitBtn = document.getElementById('surveySubmitBtn');
+  const surveySkipBtn = document.getElementById('surveySkipBtn');
+
+  // Store selected survey values
+  const surveyState = { survey_conf: null, survey_sent: null, survey_moral: null };
+
+  function showSurveyErr(msg){
+    surveyErr.textContent = msg || "Please answer all three questions.";
+    surveyErr.style.display = "block";
+  }
+  function hideSurveyErr(){ surveyErr.style.display = "none"; }
+
+  function getChoice(){
+    const el = document.querySelector('input[name="choice"]:checked');
+    return el ? el.value : null;
+  }
+
+  // Toggle button groups -> set surveyState + .active
+  document.querySelectorAll('.survey-btns button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const name = btn.getAttribute('data-name');
+      const val = btn.getAttribute('data-value');
+
+      // clear active in the group container
+      const parent = btn.closest('.survey-btns');
+      parent.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+
+      // set active for clicked
+      btn.classList.add('active');
+
+      // update state
+      surveyState[name] = val;
+      hideSurveyErr();
+    });
+  });
+
+  async function postSurvey(payload){
+    const res = await fetch("/api/run/step-survey", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) {
+      const txt = await res.text();
+      throw new Error(txt || "Survey save failed");
+    }
+    return res.json();
+  }
+
+  // 50% chance: intercept submit and show modal
+  form.addEventListener('submit', (e) => {
+    const choice = getChoice();
+    if (!choice) return; // required handles
+
+    const shouldShowSurvey = Math.random() < 0.5;
+
+    if (!shouldShowSurvey || !stepSurveyModal) {
+      overlay.classList.add('active');
+      return;
+    }
+
+    e.preventDefault();
+    hideSurveyErr();
+    stepSurveyModal.show();
+  });
+
+  // Skip -> just submit the step (no survey row)
+  surveySkipBtn.addEventListener('click', ()=>{
+    overlay.classList.add('active');
+    form.submit();
+  });
+
+  // Submit survey then submit the step
+  surveySubmitBtn.addEventListener('click', async () => {
+    const choice = getChoice();
+    const confidence = surveyState.survey_conf;
+    const sentiment = surveyState.survey_sent;
+    const morality = surveyState.survey_moral;
+
+    if (!confidence || !sentiment || !morality) {
+      showSurveyErr("Please answer all three questions.");
+      return;
+    }
+
+    surveySubmitBtn.disabled = true;
+
+    try {
+      await postSurvey({
+        step_index: STEP_INDEX,
+        choice_value: choice,
+        confidence,
+        sentiment,
+        morality
+      });
+
+      overlay.classList.add('active');
+      form.submit();
+    } catch (err) {
+      showSurveyErr("Could not save the survey. Please try again.");
+      surveySubmitBtn.disabled = false;
+    }
+  });
+
+  // Back-button warning
+  history.pushState({step:"{{ step_index }}"}, "", location.href);
+  window.addEventListener("popstate", function () {
+    const leave = confirm(
+      "Going back may break the scenario flow and lose progress.\n\nDo you really want to go back?"
+    );
+    if (!leave) history.pushState({step:"{{ step_index }}"}, "", location.href);
+  });
+</script>
 {% endblock %}

@@ -1,4 +1,4 @@
-{# templates/gpt_scenario_prefs.html (FULL UPDATED — adds Custom/Fiction War mode) #}
+{# templates/gpt_scenario_prefs.html #}
 {% extends "base.html" %}
 {% block content %}
 
@@ -13,16 +13,25 @@
   --surface: rgba(255, 255, 255, 0.85);
   --edge: rgba(0, 0, 0, 0.08);
   --shadow: 0 12px 40px rgba(0, 0, 0, 0.04);
+
+  /* warm terracotta (matching your Launch button palette) */
+  --launch: #b45309;
+  --launch-dark: #92400e;
+  --launch-ring: rgba(180,83,9,0.28);
 }
+
 body {
   background: radial-gradient(circle at top left, #fdfcfc, #f5f2f2);
   color: var(--ink);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
+
 .page { max-width: 850px; margin: 0 auto; padding: 3rem 1.5rem; }
+
 .header-section { margin-bottom: 3rem; text-align: center; }
 .header-section h1 { font-weight: 850; font-size: 2.25rem; color: var(--primary); letter-spacing: -0.03em; }
-.header-section p { color: var(--muted); font-size: 1.1rem; max-width: 600px; margin: 0.5rem auto; }
+.header-section p { color: var(--muted); font-size: 1.1rem; max-width: 640px; margin: 0.5rem auto; }
+
 .config-card {
   background: var(--surface);
   backdrop-filter: blur(16px);
@@ -32,7 +41,9 @@ body {
   box-shadow: var(--shadow);
   padding: 2.5rem;
 }
-.form-label { font-weight: 700; color: var(--primary); margin-bottom: 0.5rem; font-size: 0.95rem; display: block; }
+
+.form-label { font-weight: 700; color: var(--launch); margin-bottom: 0.5rem; font-size: 0.95rem; display: block; }
+
 .modern-input {
   width: 100%;
   padding: 0.8rem 1rem;
@@ -43,11 +54,16 @@ body {
   color: var(--ink);
   font-size: 1rem;
 }
+
 .modern-input:focus {
   outline: none;
   border-color: var(--secondary);
   box-shadow: 0 0 0 4px rgba(171, 142, 142, 0.15);
 }
+
+.grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.full-width { grid-column: span 2; }
+
 .mode-toggle {
   display: flex;
   align-items: center;
@@ -58,6 +74,7 @@ body {
   border: 1px solid var(--edge);
   margin-top: 1rem;
 }
+
 .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
 .switch input { opacity: 0; width: 0; height: 0; }
 .slider {
@@ -73,24 +90,24 @@ body {
 input:checked + .slider { background-color: var(--primary); }
 input:checked + .slider:before { transform: translateX(24px); }
 
-.grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-.full-width { grid-column: span 2; }
-
 .btn-generate {
-  width: 100%;
-  background: var(--primary);
-  color: #fff;
+  width: 50%;
+
+    background: var(--launch);
+    color: white;
   border: none;
   padding: 1.1rem;
   border-radius: 16px;
   font-weight: 800;
   font-size: 1.1rem;
+  display:block;
+  margin: 0 auto;
   margin-top: 2rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
 }
 .btn-generate:hover {
-  background: #3f3434;
+    background: var(--launch-dark);
   transform: translateY(-2px);
   box-shadow: 0 10px 25px rgba(87, 69, 69, 0.25);
 }
@@ -122,30 +139,81 @@ input:checked + .slider:before { transform: translateX(24px); }
 .hr-soft{
   height:1px; border:0; background:rgba(0,0,0,.06); margin:1rem 0;
 }
-
-/* Hide helper */
 .hidden { display: none !important; }
 
 @media (max-width: 640px) {
   .grid-container { grid-template-columns: 1fr; }
   .full-width { grid-column: span 1; }
 }
+
+/* Loading overlay */
 #loading-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(255, 255, 255, 0.9);
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.92);
   z-index: 10000;
   backdrop-filter: blur(10px);
+}
+
+.overlay-inner{
+  position:absolute;
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  width:min(440px, 92vw);
+  padding: 28px 20px;
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 18px;
+  background: rgba(255,255,255,.85);
+  box-shadow: 0 18px 40px rgba(0,0,0,.08);
+}
+.spinner{
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 4px solid rgba(0,0,0,.12);
+  border-top-color: var(--primary);
+  margin: 0 auto 14px;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===== NEW: visual hint under toggle (JS controls show/hide) ===== */
+.visual-hint{
+  margin-top: .6rem;
+  display: none;
+}
+.visual-hint.show{ display: block; }
+
+.visual-hint .pill{
+  display:inline-flex;
+  align-items:center;
+  gap:.5rem;
+  padding:.45rem .75rem;
+  border-radius:999px;
+  border:1px solid rgba(180,83,9,0.22);
+  background: rgba(180,83,9,0.10);
+  color: rgba(146,64,14,0.96);
+  font-weight: 800;
+  font-size: .9rem;
+  letter-spacing: .01em;
+}
+.visual-hint .dot{
+  width:8px; height:8px; border-radius:50%;
+  background: var(--launch);
+  box-shadow: 0 0 0 4px rgba(180,83,9,0.16);
 }
 </style>
 
 <div class="page">
   <div class="header-section">
     <h1>Scenario Architect</h1>
-    <p>Configure a custom AI-driven ethical experience. Choose your perspective and witness the human side of history.</p>
+    <p>Configure an AI-driven ethical scenario. Step 1 is generated first, then each next dilemma is generated after your choice.</p>
   </div>
 
   <div class="config-card">
-    <form method="post" action="{{ url_for('gpt_scenario_prefs') }}" onsubmit="return beforeSubmit();">
+    <form id="prefsForm" method="post" action="{{ url_for('gpt_scenario_prefs') }}" onsubmit="return beforeSubmit();">
       <div class="grid-container">
 
         <div class="full-width">
@@ -172,6 +240,8 @@ input:checked + .slider:before { transform: translateX(24px); }
               <option value="peloponnesian-war">Peloponnesian War (Ancient Greece)</option>
             </optgroup>
           </select>
+
+          <input type="hidden" id="war_custom_payload" name="war_custom_payload" value="">
         </div>
 
         <div>
@@ -196,6 +266,7 @@ input:checked + .slider:before { transform: translateX(24px); }
           <label class="form-label" for="custom_theatre">Front / Region Name</label>
           <input id="custom_theatre" name="custom_theatre" type="text" class="modern-input"
                  placeholder="e.g. North River Corridor, Iron Coast, District-7 Perimeter">
+          <p class="hint">If empty, AI will invent an appropriate region name.</p>
         </div>
 
         <div>
@@ -209,17 +280,17 @@ input:checked + .slider:before { transform: translateX(24px); }
 
         <div>
           <label class="form-label" for="goal">Learning Focus</label>
-          <input id="goal" name="goal" type="text" class="modern-input" placeholder="e.g. Civilians in crossfire">
+          <input id="goal" name="goal" type="text" class="modern-input"
+                 placeholder="e.g. Civilians in crossfire" required>
         </div>
 
-        {# --- Custom War Panel (shown only when war == custom-war) --- #}
         <div id="customWarPanel" class="full-width hidden">
           <div class="custom-war-wrap">
             <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; flex-wrap:wrap;">
               <div>
                 <div class="badge-mini">Custom Mode</div>
                 <p class="hint" style="margin-top:.5rem;">
-                  Define a fictional conflict setting. Keep it realistic but invented (no real current battlefield names needed).
+                  Define a fictional conflict setting. Keep it realistic but invented.
                 </p>
               </div>
             </div>
@@ -248,7 +319,7 @@ input:checked + .slider:before { transform: translateX(24px); }
               <div class="full-width">
                 <label class="form-label" for="custom_setting">Setting Summary</label>
                 <textarea id="custom_setting" name="custom_setting" class="modern-input" rows="3"
-                          placeholder="1–3 sentences: where, why the conflict started, and what civilians are facing."></textarea>
+                          placeholder="1–3 sentences: where, why it started, and what civilians face."></textarea>
               </div>
 
               <div>
@@ -266,23 +337,29 @@ input:checked + .slider:before { transform: translateX(24px); }
               <div class="full-width">
                 <label class="form-label" for="custom_constraints">Boundaries (optional)</label>
                 <input id="custom_constraints" name="custom_constraints" type="text" class="modern-input"
-                       placeholder="e.g. avoid gore; focus on ethical dilemmas in evacuation, rationing, truth vs safety">
-                <p class="hint">This helps keep the story age-appropriate and aligned with your research goal.</p>
+                       placeholder="e.g. avoid gore; focus on evacuation, rationing, truth vs safety">
+                <p class="hint">We’ll pass these constraints to GPT to keep it aligned with your research goal.</p>
               </div>
             </div>
           </div>
         </div>
 
+        <!-- Visual Experience toggle + NEW hint under it -->
         <div class="full-width">
           <div class="mode-toggle">
             <div>
               <span style="font-weight: 700; color: var(--primary); display: block;">Visual Experience</span>
-              <small class="text-muted">Show images only if you enable this mode</small>
+              <small class="text-muted">Enable images (optional). Step images may appear after generation.</small>
             </div>
             <label class="switch">
               <input type="checkbox" name="make_image" id="make_image" value="1">
               <span class="slider"></span>
             </label>
+          </div>
+
+          <!-- NEW: hidden note, shown by JS when toggle ON -->
+          <div id="visualHint" class="visual-hint" aria-live="polite">
+            <span class="pill"><span class="dot"></span>Image processing can take a few minutes.</span>
           </div>
         </div>
 
@@ -294,9 +371,10 @@ input:checked + .slider:before { transform: translateX(24px); }
 </div>
 
 <div id="loading-overlay">
-  <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center;">
-    <p style="margin-top:1.5rem; color:var(--primary); font-weight:800; font-size:1.2rem;">Architecting Scenario...</p>
-    <p class="text-muted">Analyzing historical data and ethical dilemmas.</p>
+  <div class="overlay-inner">
+    <div class="spinner"></div>
+    <p style="margin:0; color:var(--primary); font-weight:900; font-size:1.15rem;">Architecting Scenario...</p>
+    <p style="margin:.5rem 0 0; color:var(--muted);">Generating Step 1. Next steps will be generated after each choice.</p>
   </div>
 </div>
 
@@ -325,16 +403,10 @@ const theatreCustomWrap = document.getElementById('theatreCustomWrap');
 const customWarPanel = document.getElementById('customWarPanel');
 
 function setCustomMode(isCustom){
-  // Show custom war panel
   customWarPanel.classList.toggle('hidden', !isCustom);
-
-  // Swap theatre UI:
-  // - real wars: dropdown theatres
-  // - custom war: free text region/front
   theatreSelectWrap.classList.toggle('hidden', isCustom);
   theatreCustomWrap.classList.toggle('hidden', !isCustom);
 
-  // For custom, don't force theatre dropdown; for real wars, clear custom theatre
   if(isCustom){
     theatreSel.value = "";
   } else {
@@ -363,7 +435,7 @@ warSel.addEventListener('change', () => {
   }
 });
 
-// Ensure correct initial state (in case browser restores form values)
+// Ensure correct initial state (browser restore)
 (function init(){
   const isCustom = (warSel.value === "custom-war");
   setCustomMode(isCustom);
@@ -372,26 +444,62 @@ warSel.addEventListener('change', () => {
   }
 })();
 
-function beforeSubmit(){
-  showLoading();
+function buildCustomWarPayload(){
+  const name = (document.getElementById('custom_war_name').value || "").trim();
+  const era = (document.getElementById('custom_era').value || "").trim();
+  const setting = (document.getElementById('custom_setting').value || "").trim();
+  const a = (document.getElementById('custom_faction_a').value || "").trim();
+  const b = (document.getElementById('custom_faction_b').value || "").trim();
+  const cons = (document.getElementById('custom_constraints').value || "").trim();
 
-  // Soft validation: if custom-war chosen, at least one of the custom fields should be non-empty
+  const parts = [];
+  parts.push(name ? name : "Custom Fictional Conflict");
+  if(era) parts.push(`Era/Tech: ${era}`);
+  if(a || b) parts.push(`Factions: ${a || "Faction A"} vs ${b || "Faction B"}`);
+  if(setting) parts.push(`Setting: ${setting}`);
+  if(cons) parts.push(`Constraints: ${cons}`);
+
+  return parts.join(" | ");
+}
+
+/* ===== NEW: JS-only hint for Visual Experience toggle ===== */
+(function initVisualHint(){
+  const toggle = document.getElementById('make_image');
+  const hint = document.getElementById('visualHint');
+  if(!toggle || !hint) return;
+
+  const sync = () => {
+    hint.classList.toggle('show', toggle.checked);
+  };
+
+  toggle.addEventListener('change', sync);
+  sync(); // run once on load
+})();
+
+function beforeSubmit(){
   if(warSel.value === "custom-war"){
     const name = (document.getElementById('custom_war_name').value || "").trim();
     const setting = (document.getElementById('custom_setting').value || "").trim();
     const theatre = (document.getElementById('custom_theatre').value || "").trim();
 
-    // Not hard required, but helps avoid empty custom mode submissions
     if(!name && !setting && !theatre){
-      // Allow submit, but could be annoying; better to guide:
-      // We'll just re-enable button + hide overlay and prevent submit.
-      document.getElementById('loading-overlay').style.display = 'none';
-      document.getElementById('submitBtn').disabled = false;
-      alert("For Custom / Fictional War, please fill at least one field (Conflict Name, Setting Summary, or Front/Region).");
+      alert("For Custom / Fictional War, fill at least one field (Conflict Name, Setting Summary, or Front/Region).");
       return false;
+    }
+
+    document.getElementById('war_custom_payload').value = buildCustomWarPayload();
+
+    if(theatre){
+      theatreSel.innerHTML = '<option value="" selected></option>';
+      const opt = document.createElement('option');
+      opt.value = theatre;
+      opt.textContent = theatre;
+      opt.selected = true;
+      theatreSel.appendChild(opt);
     }
   }
 
+  showLoading();
   return true;
 }
 </script>

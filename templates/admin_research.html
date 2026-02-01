@@ -1,4 +1,4 @@
-{# templates/admin_research.html (FULL UPDATED — charts render + popular full path) #}
+{# templates/admin_research.html (FULL UPDATED — charts + user explorer + scenario picker) #}
 {% extends "base.html" %}
 {% block content %}
 
@@ -85,6 +85,43 @@
   .slide-panel.open { right: 0; }
 
   table.table td, table.table th { vertical-align: middle; }
+
+  .btn-soft {
+    border-radius: 10px;
+    border: 1px solid rgba(87,69,69,0.18);
+    background: #fff;
+    color: var(--brand-primary);
+    font-weight: 800;
+  }
+  .btn-soft:hover { background: var(--brand-soft); }
+
+  .badge-active {
+    display:inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 900;
+    background: var(--brand-primary);
+    color: #fff;
+    letter-spacing: .3px;
+  }
+
+  .pill-muted {
+    display:inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 900;
+    border: 1px solid rgba(87,69,69,0.18);
+    color: var(--brand-primary);
+    background: #fff;
+  }
+
+  .line {
+    height:1px;
+    background: rgba(0,0,0,.06);
+    margin: 12px 0;
+  }
 </style>
 
 <div class="admin-wrapper">
@@ -103,9 +140,18 @@
         <h2 class="fw-900 mb-1" style="color: var(--brand-primary)">Research Intelligence</h2>
         <p class="text-muted small">Trajectory analysis & IHL adherence metrics (Research Only · Static Research Data Only)</p>
       </div>
-      <button class="btn btn-dark btn-sm px-4 fw-800"
-              style="background: var(--brand-primary); border-radius: 10px;"
-              onclick="refreshDashboard()">Sync Console</button>
+
+      <div class="d-flex gap-2">
+        <button class="btn btn-soft btn-sm px-4" onclick="openScenarioPicker()">
+          Scenario Picker
+        </button>
+
+        <button class="btn btn-dark btn-sm px-4 fw-800"
+                style="background: var(--brand-primary); border-radius: 10px;"
+                onclick="refreshDashboard()">
+          Sync Console
+        </button>
+      </div>
     </div>
 
     <div class="kpi-row">
@@ -205,6 +251,9 @@
   let activeCharts = {};
   let timer = null;
 
+  // ---------------------------
+  // Helpers
+  // ---------------------------
   function showEl(id, on) {
     const el = document.getElementById(id);
     if (!el) return;
@@ -216,35 +265,45 @@
     return path.split("").join(" → ");
   }
 
+  function _escapeHtml(s) {
+    return (s ?? "").toString()
+      .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+  }
+
+  function _escapeJs(s) {
+    return (s ?? "").toString().replaceAll("\\","\\\\").replaceAll("'","\\'");
+  }
+
+  // ---------------------------
+  // Dashboard refresh
+  // ---------------------------
   async function refreshDashboard() {
-    // KPI + aggregate charts
     const res = await fetch('/admin/api/research_stats');
     const data = await res.json();
 
     if (data.counts) {
-      document.getElementById('kCompleted').innerText = `${data.counts.completed_users} / ${data.counts.users_with_any_research}`;
-      document.getElementById('kSent').innerText = (data.avg_final_ethics_index ?? 0).toFixed(2);
-      document.getElementById('kChoice').innerText = data.popular_path ? fmtPathLetters(data.popular_path) : "--";
+      document.getElementById('kCompleted').innerText =
+        `${data.counts.completed_users} / ${data.counts.users_with_any_research}`;
+      document.getElementById('kSent').innerText =
+        (data.avg_final_ethics_index ?? 0).toFixed(2);
+      document.getElementById('kChoice').innerText =
+        data.popular_path ? fmtPathLetters(data.popular_path) : "--";
       document.getElementById('kRecent').innerText = data.recent_user || "--";
     }
 
     renderGlobalCharts(data);
-
-    // Trajectories + table
     await renderTrajectories();
-
-    // Sidebar
     await loadUserList();
   }
 
   function renderGlobalCharts(data) {
-    // Radar (avg final-step dims)
+    // Radar
     const radarCanvas = document.getElementById('radarChart');
     const radarCtx = radarCanvas.getContext("2d");
     if (activeCharts.radar) activeCharts.radar.destroy();
 
-    const dims = data.avg_dims || null; // {Distinction:..., Proportionality:..., Necessity:..., Precaution:...}
-
+    const dims = data.avg_dims || null;
     if (dims && Object.keys(dims).length) {
       showEl("radarEmpty", false);
       activeCharts.radar = new Chart(radarCtx, {
@@ -272,11 +331,17 @@
       });
     } else {
       showEl("radarEmpty", true);
-      // draw empty chart (so canvas isn't dead)
       activeCharts.radar = new Chart(radarCtx, {
         type: 'radar',
-        data: { labels: ['Distinction','Proportionality','Necessity','Precaution'], datasets:[{ data:[0,0,0,0] }] },
-        options: { maintainAspectRatio:false, plugins:{ legend:{display:false} }, scales:{ r:{ beginAtZero:true, suggestedMax:4 } } }
+        data: {
+          labels: ['Distinction','Proportionality','Necessity','Precaution'],
+          datasets:[{ data:[0,0,0,0] }]
+        },
+        options: {
+          maintainAspectRatio:false,
+          plugins:{ legend:{display:false} },
+          scales:{ r:{ beginAtZero:true, suggestedMax:4 } }
+        }
       });
     }
 
@@ -285,8 +350,7 @@
     const barCtx = barCanvas.getContext("2d");
     if (activeCharts.bar) activeCharts.bar.destroy();
 
-    const byAge = data.by_age || null; // {"13-15": 2, "16-18": 5, ...}
-
+    const byAge = data.by_age || null;
     if (byAge && Object.keys(byAge).length) {
       showEl("ageEmpty", false);
       activeCharts.bar = new Chart(barCtx, {
@@ -321,9 +385,8 @@
     const has = data.all_data && data.all_data.length > 0;
     showEl("trajEmpty", !has);
 
-    // ---- Top Paths table ----
+    // Top Paths table
     const tbody = document.getElementById("topPathsTable");
-
     const meaningHint = (p) => {
       const counts = {A:0,B:0,C:0,D:0};
       (p || "").split("").forEach(ch => { if (counts[ch] != null) counts[ch]++; });
@@ -345,13 +408,12 @@
       </tr>
     `).join("") || `<tr><td colspan="3" class="text-muted small">No path summary yet.</td></tr>`;
 
-    // ---- Trajectory chart ----
+    // Trajectory chart
     const canvas = document.getElementById('trajectoryChart');
     const ctx = canvas.getContext("2d");
     if (activeCharts.traj) activeCharts.traj.destroy();
 
     if (!has) {
-      // keep an empty chart so UI looks alive
       activeCharts.traj = new Chart(ctx, {
         type:'line',
         data:{ labels:['Step 1','Step 2','Step 3','Step 4'], datasets:[{ data:[0,0,0,0], borderColor:'#574545' }] },
@@ -362,7 +424,6 @@
 
     const maxSteps = Math.max(...data.all_data.map(u => (u.path || []).length));
     const labels = Array.from({length:maxSteps}, (_,i)=>`Step ${i+1}`);
-
     const palette = ["#574545", "#ab8e8e", "#8e7a7a", "#d4c5c5", "#3f2f2f", "#c8b1b1"];
 
     const datasets = data.all_data.map((u, idx) => {
@@ -416,14 +477,20 @@
           }
         },
         scales: {
-          y: { beginAtZero: true, title: { display: true, text: 'Ethics Index (sum of 4 dimensions)' },
-               grid: { color: "rgba(0,0,0,0.06)" } },
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: 'Ethics Index (sum of 4 dimensions)' },
+            grid: { color: "rgba(0,0,0,0.06)" }
+          },
           x: { grid: { display: false } }
         }
       }
     });
   }
 
+  // ---------------------------
+  // Sidebar user explorer
+  // ---------------------------
   function filterUsers() {
     clearTimeout(timer);
     timer = setTimeout(async () => {
@@ -443,11 +510,11 @@
   function populateList(users) {
     const list = document.getElementById('userList');
     list.innerHTML = (users || []).map(u => `
-      <div class="user-item" onclick="viewUser('${u.username}')">
+      <div class="user-item" onclick="viewUser('${_escapeJs(u.username)}')">
         <div class="avatar-circle">${(u.username || "?")[0].toUpperCase()}</div>
         <div style="overflow:hidden">
-          <div class="fw-bold small text-truncate">${u.username}</div>
-          <div class="text-muted" style="font-size: 9px">${u.age_group || "--"} · ${u.gender || "--"}</div>
+          <div class="fw-bold small text-truncate">${_escapeHtml(u.username)}</div>
+          <div class="text-muted" style="font-size: 9px">${_escapeHtml(u.age_group || "--")} · ${_escapeHtml(u.gender || "--")}</div>
         </div>
       </div>
     `).join('') || `<div class="text-muted small px-2">No users yet.</div>`;
@@ -463,23 +530,23 @@
     const data = await res.json();
 
     content.innerHTML = `
-      <h3 class="fw-900 mb-4" style="color: var(--brand-primary)">${username}</h3>
+      <h3 class="fw-900 mb-4" style="color: var(--brand-primary)">${_escapeHtml(username)}</h3>
 
       <div style="background: var(--brand-soft); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem;">
         <h6 class="fw-800">Behavioral Persona</h6>
-        <p class="mb-0 small text-muted">"${data.persona || "—"}"</p>
+        <p class="mb-0 small text-muted">"${_escapeHtml(data.persona || "—")}"</p>
       </div>
 
       <h6 class="fw-800 mb-3">Decision History (Research Runs)</h6>
 
       ${(data.runs || []).map(run => `
         <div style="border-left: 2px solid var(--brand-secondary); padding-left: 1rem; margin-bottom: 1.5rem;">
-          <div class="fw-bold small">${run.title || "Research Run"}</div>
-          <div class="text-muted" style="font-size: 10px;">${run.started_at || ""}</div>
+          <div class="fw-bold small">${_escapeHtml(run.title || "Research Run")}</div>
+          <div class="text-muted" style="font-size: 10px;">${_escapeHtml(run.started_at || "")}</div>
 
           ${(run.decisions || []).map(d => `
             <div class="p-2 mb-1 bg-light rounded" style="font-size:11px;">
-              <b>${d.step_title || ("Step " + d.step_index)}:</b> ${d.chosen_label || "—"}
+              <b>${_escapeHtml(d.step_title || ("Step " + d.step_index))}:</b> ${_escapeHtml(d.chosen_label || "—")}
             </div>
           `).join('')}
         </div>
@@ -487,11 +554,172 @@
     `;
   }
 
+  // ---------------------------
+  // Story Picker (Library -> static runs)
+  // Requires backend:
+  //   GET  /admin/api/library_stories
+  //   GET  /admin/api/active_static_library
+  //   POST /admin/api/active_static_library {run_id:"123"} or {run_id:""}
+  // ---------------------------
+  async function openScenarioPicker() {
+    const panel = document.getElementById('detailPanel');
+    const content = document.getElementById('panelContent');
+    panel.classList.add('open');
+
+    content.innerHTML = `
+      <h3 class="fw-900 mb-2" style="color: var(--brand-primary)">Story Picker</h3>
+      <p class="text-muted small mb-2">Choose a story from the Library to use for <b>static</b> runs. This affects new runs only.</p>
+
+      <div class="p-2 rounded" style="border:1px solid var(--edge); background:#fff;">
+        <div class="d-flex gap-2 align-items-center">
+          <input id="libQ" class="form-control form-control-sm" placeholder="Search (title/author)..." />
+          <button class="btn btn-sm btn-dark fw-800"
+                  style="background: var(--brand-primary); border-radius:10px;"
+                  onclick="reloadLibraryList()">Search</button>
+        </div>
+        <div class="text-muted" style="font-size:11px; margin-top:6px;">
+          If this list is empty, generate at least one GPT scenario first (it must have a stored sequence), then check /library.
+        </div>
+      </div>
+
+      <div class="line"></div>
+      <div id="activeLibLine" class="text-muted small">Loading active selection...</div>
+      <div class="line"></div>
+
+      <div id="libList" class="text-muted small">Loading library stories...</div>
+
+      <div class="line"></div>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-sm btn-outline-dark fw-800"
+                style="border-radius:10px; border-color: rgba(87,69,69,0.25); color: var(--brand-primary);"
+                onclick="clearActiveLibrary()">Clear Selection</button>
+      </div>
+    `;
+
+    await reloadLibraryList();
+  }
+
+  async function clearActiveLibrary() {
+    await fetch('/admin/api/active_static_library', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ run_id: "" })
+    });
+    await reloadLibraryList();
+  }
+
+  async function reloadLibraryList() {
+    // Active
+    let activeId = "";
+    try {
+      const aRes = await fetch('/admin/api/active_static_library');
+      const aData = await aRes.json();
+      if (aData && aData.ok) activeId = (aData.run_id || "").toString();
+    } catch(e) {}
+
+    const activeEl = document.getElementById("activeLibLine");
+    if (activeEl) {
+      activeEl.innerHTML = `
+        <div class="d-flex align-items-center justify-content-between">
+          <div class="text-muted small">Active Library story</div>
+          <div>${activeId ? `<span class="badge-active">run_id ${_escapeHtml(activeId)}</span>` : `<span class="pill-muted">--</span>`}</div>
+        </div>
+      `;
+    }
+
+    // List
+    const q = (document.getElementById("libQ")?.value || "").trim();
+    const listEl = document.getElementById("libList");
+    if (listEl) listEl.innerHTML = `<div class="text-muted small">Loading...</div>`;
+
+    const url = q
+      ? `/admin/api/library_stories?q=${encodeURIComponent(q)}`
+      : `/admin/api/library_stories`;
+
+    const res = await fetch(url);
+
+    if (!res.ok) {
+      if (listEl) {
+        listEl.innerHTML = `
+          <div class="empty-note">
+            Failed to load library stories.<br/>
+            Status: ${res.status}.<br/>
+            Common causes: endpoint missing (404), redirected to login (HTML), or DB has no templates yet.
+          </div>
+        `;
+      }
+      return;
+    }
+
+    const data = await res.json().catch(()=>({}));
+    if (!data.ok) {
+      if (listEl) listEl.innerHTML = `<div class="empty-note">Failed: ${_escapeHtml(data.error || "unknown error")}</div>`;
+      return;
+    }
+
+    const items = data.stories || [];
+    if (!items.length) {
+      if (listEl) listEl.innerHTML = `<div class="empty-note">No library stories found.</div>`;
+      return;
+    }
+
+    const rows = items.map(s => {
+      const rid = (s.run_id ?? "").toString();
+      const isActive = (rid && rid === activeId);
+      const when = (s.created_at_epoch != null)
+        ? new Date(Number(s.created_at_epoch) * 1000).toLocaleString()
+        : (s.created_at ? new Date(s.created_at).toLocaleString() : "--");
+      return `
+        <div class="p-3 mb-2 rounded" style="border:1px solid var(--edge); background:#fff;">
+          <div class="d-flex justify-content-between align-items-start">
+            <div style="min-width:0; padding-right:10px">
+              <div class="fw-900 text-truncate" style="color: var(--brand-primary)">
+                ${_escapeHtml(s.title || "Library Story")}
+                ${isActive ? `<span class="badge-active ms-2">ACTIVE</span>` : ``}
+              </div>
+              <div class="text-muted" style="font-size:11px;">
+                by ${_escapeHtml(s.author || "--")} · ${_escapeHtml(String(s.steps_count || 0))} steps · ${_escapeHtml(when)}
+              </div>
+              ${s.intro ? `<div class="text-muted small mt-2" style="font-size:11px;">${_escapeHtml(s.intro)}</div>` : ``}
+            </div>
+
+            <button class="btn btn-sm ${isActive ? "btn-outline-dark" : "btn-dark"} fw-800"
+                    style="${isActive
+                      ? "border-radius:10px; border-color: rgba(87,69,69,0.25); color: var(--brand-primary);"
+                      : "background: var(--brand-primary); border-radius: 10px;"}"
+                    onclick="setActiveLibrary('${_escapeJs(rid)}')">
+              ${isActive ? "Selected" : "Use"}
+            </button>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    if (listEl) listEl.innerHTML = rows;
+  }
+
+  async function setActiveLibrary(runId) {
+    const res = await fetch('/admin/api/active_static_library', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ run_id: runId })
+    });
+
+    const data = await res.json().catch(()=>({}));
+    if (!res.ok || !data.ok) {
+      alert(`Save failed: ${data.error || ("HTTP " + res.status)}`);
+      return;
+    }
+    await reloadLibraryList();
+  }
+
+  // ---------------------------
+  // Panel close + boot
+  // ---------------------------
   function closePanel() {
     document.getElementById('detailPanel').classList.remove('open');
   }
 
   refreshDashboard();
 </script>
-
 {% endblock %}

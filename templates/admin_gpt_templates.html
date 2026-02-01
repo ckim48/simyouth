@@ -1,0 +1,109 @@
+{# templates/admin_gpt_templates.html #}
+{% extends "base.html" %}
+{% block content %}
+<style>
+  :root{ --ink:#1e293b; --muted:#64748b; --primary:#574545; --edge:rgba(0,0,0,.08); }
+  body{ background:#f8fafc; }
+  .wrap{max-width:980px;margin:0 auto;padding:2.5rem 1.25rem}
+  .card{background:#fff;border:1px solid var(--edge);border-radius:18px;padding:18px}
+  .row{display:grid;grid-template-columns:1fr;gap:14px}
+  .title{font-weight:900;font-size:1.4rem;margin:0 0 8px;color:var(--primary)}
+  .muted{color:var(--muted)}
+  .btn{border:0;border-radius:14px;padding:.9rem 1rem;font-weight:900;background:var(--primary);color:#fff;cursor:pointer}
+  .btn:hover{background:#3f3434}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .full{grid-column:1/-1}
+  label{display:block;font-weight:800;color:var(--primary);margin:.2rem 0 .35rem}
+  input,select,textarea{width:100%;padding:.75rem .9rem;border:1px solid rgba(0,0,0,.12);border-radius:14px}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:10px;border-bottom:1px solid rgba(0,0,0,.06);text-align:left}
+  th{color:var(--muted);font-size:.85rem;text-transform:uppercase;letter-spacing:.06em}
+  a{color:var(--primary);font-weight:900;text-decoration:none}
+</style>
+
+<div class="wrap">
+  <div class="card" style="margin-bottom:14px">
+    <div class="title">Admin — Curated GPT Templates</div>
+    <div class="muted">Create a template (Step 1 only). Then curate Step 2–4 for every path.</div>
+  </div>
+
+  <div class="row">
+    <div class="card">
+      <div class="title" style="font-size:1.1rem">Create Template</div>
+      <form method="post">
+        <div class="grid">
+          <div class="full">
+            <label>Historical Context</label>
+            <select name="war" required>
+              <option value="" disabled selected>Select</option>
+              <option value="ww2">World War II</option>
+              <option value="korean-war">Korean War</option>
+              <option value="vietnam-war">Vietnam War</option>
+              <option value="custom-war">Custom / Fictional War</option>
+            </select>
+            <input type="hidden" name="war_custom_payload" value="">
+          </div>
+
+          <div>
+            <label>Role</label>
+            <select name="role">
+              <option value="student" selected>School Student</option>
+              <option value="field-commander">Field Commander</option>
+              <option value="medic">Field Medic</option>
+              <option value="war-reporter">War Reporter</option>
+              <option value="humanitarian-coordinator">Relief Worker</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Tone</label>
+            <select name="tone">
+              <option value="serious & age-appropriate" selected>Educational & Serious</option>
+              <option value="reflective">Reflective</option>
+              <option value="case-study">Case Study</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Theatre (optional)</label>
+            <input name="theatre" placeholder="Auto-suggested by AI if empty">
+          </div>
+
+          <div>
+            <label>Learning Focus</label>
+            <input name="goal" required placeholder="e.g. Civilians in crossfire">
+          </div>
+
+          <div class="full" style="display:flex;gap:10px;align-items:center;margin-top:6px">
+            <input id="make_image" type="checkbox" name="make_image" value="1" style="width:auto">
+            <label for="make_image" style="margin:0">Enable images (optional)</label>
+          </div>
+        </div>
+
+        <button class="btn" type="submit" style="width:100%;margin-top:12px">Generate Step 1 Template</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <div class="title" style="font-size:1.1rem">Existing Templates</div>
+      {% if templates %}
+        <table>
+          <thead><tr><th>ID</th><th>Title</th><th>Created</th><th>Open</th></tr></thead>
+          <tbody>
+          {% for t in templates %}
+            <tr>
+              <td>#{{ t.id }}</td>
+              <td>{{ t.title }}</td>
+              <td class="muted">{{ t.created_at }}</td>
+              <td><a href="{{ url_for('admin_gpt_branch_editor', template_id=t.id, step_index=2, path='') }}">Branch Editor</a></td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <div class="muted">No templates yet.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
