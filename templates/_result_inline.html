@@ -1,0 +1,127 @@
+{# templates/_result_inline.html #}
+
+<style>
+  .inline-report {
+    margin-top: 14px;
+    border-radius: 16px;
+    border: 1px solid rgba(0,0,0,.08);
+    background: #fff;
+    padding: 18px;
+  }
+  .inline-report .mini-head{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    margin-bottom: 10px;
+  }
+  .inline-report .mini-title{
+    font-weight: 900; letter-spacing: -0.02em;
+    color: #4a3b3b;
+    margin: 0;
+  }
+  .inline-report .mini-pill{
+    background: #f5f5f7;
+    border: 1px solid rgba(0,0,0,.08);
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-weight: 900;
+    font-size: .75rem;
+    color: #967d7d;
+    white-space: nowrap;
+  }
+  .inline-report .exec{
+    border-radius: 14px;
+    background: #fafafa;
+    border: 1px solid rgba(0,0,0,.06);
+    padding: 14px;
+    margin-bottom: 14px;
+  }
+  .inline-report .exec strong{
+    display:block;
+    color:#4a3b3b;
+    font-size: 1.05rem;
+    margin-bottom: 6px;
+  }
+  .inline-report .timeline{
+    border-left: 2px solid #f2ebeb;
+    padding-left: 18px;
+    margin-left: 6px;
+  }
+  .inline-report .node{ position: relative; margin-bottom: 18px; }
+  .inline-report .node::before{
+    content:"";
+    position:absolute;
+    left: -26px;
+    top: 6px;
+    width: 10px; height:10px;
+    border-radius: 50%;
+    background: #fff;
+    border: 3px solid #967d7d;
+  }
+  .inline-report .meta{ font-size:.72rem; font-weight:900; color:#967d7d; text-transform:uppercase; }
+  .inline-report .issue{ font-size:1.05rem; font-weight:900; color:#4a3b3b; margin: 4px 0 8px; }
+  .inline-report .context{
+    background:#fff;
+    border:1px solid rgba(0,0,0,.08);
+    border-left:4px solid #f2ebeb;
+    border-radius: 12px;
+    padding: 10px 12px;
+    color:#444;
+    line-height: 1.6;
+  }
+  .inline-report .opts{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .inline-report .opt{
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,.08);
+    padding: 10px 12px;
+    background:#fff;
+    color:#6e6e73;
+  }
+  .inline-report .opt strong{ display:block; color:#4a3b3b; margin-bottom:6px; }
+  .inline-report .opt.selected{
+    border: 2px solid #967d7d;
+    background: #fffcfc;
+    color: #1a1515;
+  }
+</style>
+
+<div class="inline-report">
+  <div class="mini-head">
+    <h3 class="mini-title">The Ethics Report</h3>
+    <span class="mini-pill">Path {{ path_letters }} · {{ decisions|length }} steps</span>
+  </div>
+
+  <div class="exec">
+    <strong>Final Resolution</strong>
+    <div>{{ ending }}</div>
+  </div>
+
+  <div class="timeline">
+    {% for d in decisions %}
+      <div class="node">
+        <div class="meta">Phase {{ loop.index }}</div>
+        <div class="issue">{{ d.step_title or d.title }}</div>
+        <div class="context">{{ d.situation_text or d.situation }}</div>
+
+        <div class="opts">
+          {% if d.all_options %}
+            {% for opt in d.all_options %}
+              <div class="opt {% if d.chosen_label == opt.label %}selected{% endif %}">
+                <strong>{{ opt.label }}</strong>
+                <div>{{ opt.consequence }}</div>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="opt selected">
+              <strong>{{ d.label }}</strong>
+              <div>{{ d.consequence }}</div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>

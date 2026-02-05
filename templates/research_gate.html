@@ -1,26 +1,52 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="page" style="max-width: 500px; margin: 100px auto;">
-    <div class="card shadow-lg" style="border-radius: 24px; border: none; padding: 2rem;">
-        <div class="text-center mb-4">
-            <h2 style="font-weight: 850; color: var(--primary);">Research Mode</h2>
-            <p class="text-muted">Please enter your specialized access code to begin the study.</p>
-        </div>
-        
-        <form method="POST">
-            <div class="mb-3">
-                <input type="text" name="access_code" class="form-control form-control-lg" 
-                       placeholder="Enter Code" required 
-                       style="border-radius: 12px; text-align: center; letter-spacing: 2px;">
-            </div>
-            <button type="submit" class="btn btn-dark w-100 py-3" style="border-radius: 12px; font-weight: 800;">
-                Initialize Research Session
-            </button>
-        </form>
-        
-        <div class="mt-4 text-center">
-            <small class="text-muted">This session will track decision metrics for ethical analysis.</small>
-        </div>
+<div class="page" style="max-width: 500px; margin: 100px auto; position:relative;">
+  <div class="card shadow-lg" style="border-radius: 24px; border: none; padding: 2rem;">
+    <div class="text-center mb-4">
+      <h2 style="font-weight: 850; color: var(--primary);">Research Mode</h2>
+      <p class="text-muted">Please enter your specialized access code to begin the study.</p>
     </div>
+
+    <form id="researchForm" method="POST">
+      <div class="mb-3">
+        <input type="text" name="access_code" class="form-control form-control-lg"
+               placeholder="Enter Code" required
+               style="border-radius: 12px; text-align: center; letter-spacing: 2px;">
+      </div>
+      <button id="startBtn" type="submit" class="btn btn-dark w-100 py-3"
+              style="border-radius: 12px; font-weight: 800;">
+        Initialize Research Session
+      </button>
+    </form>
+
+    <div class="mt-4 text-center">
+      <small class="text-muted">This session will track decision metrics for ethical analysis.</small>
+    </div>
+  </div>
 </div>
+
+<!-- Loading Overlay (shown immediately on submit) -->
+<div id="rgLoading" style="
+  position:fixed; inset:0; background:rgba(255,255,255,.85);
+  display:flex; align-items:center; justify-content:center; z-index:9999;
+  visibility:hidden; opacity:0; transition:opacity .2s ease, visibility .2s ease;
+">
+  <div class="text-center">
+    <div class="spinner-border" role="status" style="width:3rem;height:3rem;"></div>
+    <p style="margin-top:12px; font-weight:800; color:var(--primary);">Starting the study...</p>
+    <p style="margin:0; color:var(--muted);">Please wait. It takes 3-5 minutes to initialize the study.</p>
+  </div>
+</div>
+
+<script>
+  const f = document.getElementById('researchForm');
+  const o = document.getElementById('rgLoading');
+  const b = document.getElementById('startBtn');
+  if (f){
+    f.addEventListener('submit', ()=>{
+      if (o){ o.style.visibility='visible'; o.style.opacity='1'; }
+      if (b){ b.disabled = true; b.style.opacity = '0.85'; }
+    });
+  }
+</script>
 {% endblock %}

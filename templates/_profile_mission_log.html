@@ -1,78 +1,97 @@
 {# templates/_profile_mission_log.html #}
 
-<h3 class="mb-4" style="font-weight: 800; color: var(--brand); font-size: 1.5rem;">Mission Log</h3>
-
-{% if page_runs and page_runs|length > 0 %}
-  {% for r in page_runs %}
-  <div class="mission-row">
-    <div class="d-flex justify-content-between align-items-center">
-      <div class="d-flex align-items-center gap-3">
-        <span class="badge-mission">{{ r.run_type }}</span>
-        <span class="fw-bold">{{ r.title }}</span>
-      </div>
-      <button class="btn btn-sm btn-outline-secondary fw-bold"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#run-{{ r.id }}">Review</button>
+<div class="bento-card stat-card-wide">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+      <div class="card-label">Mission Log</div>
+      <div class="card-sub">Completed missions only. Click to view the final Ethics Report inline.</div>
     </div>
-
-    <div id="run-{{ r.id }}" class="collapse mt-3">
-      <div class="pt-3 border-top">
-        {% for d in r.decisions %}
-          <div style="border-left: 2px solid var(--line); margin-left: 8px; padding: 0 0 20px 20px; position: relative;">
-            <div style="font-size: 0.6rem; font-weight: 800; color: var(--brand-light);">STEP {{ loop.index }}</div>
-            <div class="fw-bold small">{{ d.step_title }}</div>
-            <div class="small">Decision: <span class="fw-bold" style="color: var(--brand)">{{ d.chosen_label }}</span></div>
-          </div>
-        {% endfor %}
-      </div>
-    </div>
+    {% if page is defined and total_pages is defined %}
+      <span class="badge-mission">Page {{ page }} / {{ total_pages }}</span>
+    {% endif %}
   </div>
-  {% endfor %}
 
-  {% if total_pages and total_pages > 1 %}
-  <div class="pager-wrap">
-    <div class="pager-meta">Page {{ page }} / {{ total_pages }}</div>
-
-    <nav aria-label="Mission log pagination">
-      <ul class="pagination pagination-sm mb-0">
-        <li class="page-item {% if page <= 1 %}disabled{% endif %}">
-          <a class="page-link" href="{{ url_for('profile', page=page-1) }}">Prev</a>
-        </li>
-
-        {% set start_p = 1 if page-2 < 1 else page-2 %}
-        {% set end_p = total_pages if page+2 > total_pages else page+2 %}
-
-        {% if start_p > 1 %}
-          <li class="page-item"><a class="page-link" href="{{ url_for('profile', page=1) }}">1</a></li>
-          {% if start_p > 2 %}
-            <li class="page-item disabled"><span class="page-link">…</span></li>
-          {% endif %}
-        {% endif %}
-
-        {% for p in range(start_p, end_p + 1) %}
-          <li class="page-item {% if p == page %}active{% endif %}">
-            <a class="page-link" href="{{ url_for('profile', page=p) }}">{{ p }}</a>
-          </li>
-        {% endfor %}
-
-        {% if end_p < total_pages %}
-          {% if end_p < total_pages - 1 %}
-            <li class="page-item disabled"><span class="page-link">…</span></li>
-          {% endif %}
-          <li class="page-item"><a class="page-link" href="{{ url_for('profile', page=total_pages) }}">{{ total_pages }}</a></li>
-        {% endif %}
-
-        <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
-          <a class="page-link" href="{{ url_for('profile', page=page+1) }}">Next</a>
-        </li>
-      </ul>
-    </nav>
-  </div>
+  {# ✅ Only show completed missions (finished_at exists) #}
+  {% set completed_runs = [] %}
+  {% if runs and runs|length > 0 %}
+    {% for r in runs %}
+      {% if r.finished_at %}
+        {% set _ = completed_runs.append(r) %}
+      {% endif %}
+    {% endfor %}
   {% endif %}
 
-{% else %}
-  <div class="bento-card text-center py-5">
-    <p class="text-muted fw-bold">No missions recorded yet. Start your first scenario to see your log.</p>
-  </div>
-{% endif %}
+  {% if completed_runs and completed_runs|length > 0 %}
+    {% for r in completed_runs %}
+      <div class="mission-row" id="missionRow{{ r.id }}">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+          <div class="d-flex flex-column">
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <span class="badge-mission">{{ (r.run_type or "mission")|upper }}</span>
+              <div class="fw-bold" style="color: var(--brand);">
+                {{ r.title or "Untitled Mission" }}
+              </div>
+            </div>
+            <div class="small text-muted">
+              Started: {{ r.started_at or "—" }}
+              <span class="mx-1">·</span>
+              Completed: {{ r.finished_at }}
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center gap-2">
+            <button type="button"
+                    class="btn btn-sm fw-bold btn-view-report"
+                    style="background: var(--launch); color:#fff; border-radius: 12px;"
+                    data-run-id="{{ r.id }}">
+              View Report
+            </button>
+          </div>
+        </div>
+
+        {# Inline report mount point #}
+        <div id="reportMount{{ r.id }}" style="margin-top: 12px;"></div>
+      </div>
+    {% endfor %}
+
+    {% if total_pages is defined and total_pages|int > 1 %}
+      <div class="pager-wrap">
+        <div class="pager-meta">
+          {% if page is defined %}
+            Page {{ page }} of {{ total_pages }}
+          {% endif %}
+        </div>
+
+        <nav aria-label="Mission log pages">
+          <ul class="pagination mb-0">
+            {# Prev #}
+            <li class="page-item {% if page|int <= 1 %}disabled{% endif %}">
+              <a class="page-link" href="{{ url_for('profile', page=(page|int - 1)) }}">Prev</a>
+            </li>
+
+            {# Page numbers #}
+            {% for p in range(1, (total_pages|int) + 1) %}
+              {% if p == page|int %}
+                <li class="page-item active"><a class="page-link" href="{{ url_for('profile', page=p) }}">{{ p }}</a></li>
+              {% elif p == 1 or p == total_pages|int or (p >= page|int - 1 and p <= page|int + 1) %}
+                <li class="page-item"><a class="page-link" href="{{ url_for('profile', page=p) }}">{{ p }}</a></li>
+              {% elif p == page|int - 2 or p == page|int + 2 %}
+                <li class="page-item disabled"><span class="page-link">…</span></li>
+              {% endif %}
+            {% endfor %}
+
+            {# Next #}
+            <li class="page-item {% if page|int >= total_pages|int %}disabled{% endif %}">
+              <a class="page-link" href="{{ url_for('profile', page=(page|int + 1)) }}">Next</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    {% endif %}
+
+  {% else %}
+    <div class="empty-state" style="background: var(--empty-bg); border-radius: 16px; padding: 28px;">
+      <p>No completed missions yet. Finish a scenario to unlock your Mission Log.</p>
+    </div>
+  {% endif %}
+</div>

@@ -2,7 +2,7 @@
 # IMPORTANT: DO NOT hardcode your OpenAI key. Set OPENAI_API_KEY in your environment.
 
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
-import sqlite3, os, json, re, base64, hashlib
+import sqlite3, os, json, re, base64, hashlib, time
 from datetime import datetime, timezone
 from functools import wraps
 from collections import Counter
@@ -16,6 +16,11 @@ app.secret_key = os.getenv("FLASK_SECRET_KEY", "dev-secret")
 DB_PATH = os.path.join("static", "database.db")
 os.makedirs("static", exist_ok=True)
 os.makedirs(os.path.join("static", "generated"), exist_ok=True)
+
+# ===== GPT branch cache table (v2) =====
+# Bump cache table version when the generation logic changes in a way that
+# would make previously cached branches invalid.
+GPT_BRANCH_TABLE = "gpt_branch_steps_v3"
 
 # --- Jinja filters: timestamps -> local datetime strings ---
 try:
@@ -61,8 +66,6 @@ def db_conn():
     return get_db()
 
 
-
-
 def ensure_column(conn: sqlite3.Connection, table: str, col: str, col_def_sql: str):
     """
     SQLite schema migration helper.
@@ -81,6 +84,32 @@ def safe_json_loads(s: Optional[str], default=None):
         return json.loads(s) if s else default
     except Exception:
         return default
+
+
+
+# ===== Research A/B assignment =====
+def _assign_research_group(username: str, run_id: int) -> str:
+    """Return 'A' or 'B' deterministically for a research run.
+    A: scenario WITH images
+    B: scenario WITHOUT images
+    The user is not told which group they are in.
+    """
+    u = (username or '').strip().lower()
+    seed = f"{u}|{int(run_id)}"
+    h = hashlib.sha256(seed.encode('utf-8')).hexdigest()
+    return 'A' if (int(h[:2], 16) % 2 == 0) else 'B'
+
+
+def _persist_research_group(run_id: int, group_label: str):
+    """Persist group label on Runs row (best-effort)."""
+    try:
+        conn = get_db()
+        conn.execute("UPDATE Runs SET group_label=? WHERE id=?", (group_label, int(run_id)))
+        conn.commit()
+        conn.close()
+    except Exception:
+        pass
+
 def init_db():
     os.makedirs("static", exist_ok=True)
     conn = get_db()
@@ -105,6 +134,7 @@ def init_db():
         username TEXT NOT NULL,
         run_type TEXT NOT NULL,  -- static | research | gpt
         sid TEXT,
+        scenario_key TEXT,
         title TEXT,
         total_steps INTEGER,
         started_at TEXT,
@@ -113,6 +143,10 @@ def init_db():
         FOREIGN KEY(username) REFERENCES Users(username)
     );
     """)
+
+    ensure_column(conn, 'Runs', 'scenario_key', 'TEXT')
+    ensure_column(conn, 'Runs', 'group_label', 'TEXT')
+
 
     # --- migration: store GPT analytic resolution for result page ---
     ensure_column(conn, "Runs", "gpt_resolution_json", "TEXT")
@@ -130,6 +164,41 @@ def init_db():
         FOREIGN KEY(run_id) REFERENCES Runs(id)
     );
     """)
+
+    # ---- Decision analytics (LOAC / Strategy / Emotion) ----
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS RunDecisionMetrics(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        run_id INTEGER NOT NULL,
+        step_index INTEGER NOT NULL,
+        loac_json TEXT,                 -- JSON: Distinction/Proportionality/Necessity/Precaution scores 0..1
+        strategy_json TEXT,             -- JSON: optional strategy traits 0..1
+        emotional_index REAL,           -- 0..1 (higher = more emotionally intense)
+        emotion_label TEXT,             -- e.g., calm | anxious | conflicted | distressed | confident
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(run_id, step_index),
+        FOREIGN KEY(run_id) REFERENCES Runs(id) ON DELETE CASCADE
+    );
+    """)
+    c.execute("CREATE INDEX IF NOT EXISTS idx_decisionmetrics_run ON RunDecisionMetrics(run_id);")
+    c.execute("CREATE INDEX IF NOT EXISTS idx_decisionmetrics_run_step ON RunDecisionMetrics(run_id, step_index);")
+
+    # ---- Step Survey (modal) ----
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS RunStepSurveys(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        run_id INTEGER NOT NULL,
+        step_index INTEGER NOT NULL,
+        choice_value TEXT,
+        confidence TEXT NOT NULL,
+        sentiment TEXT NOT NULL,
+        morality TEXT NOT NULL,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(run_id) REFERENCES Runs(id) ON DELETE CASCADE
+    );
+    """)
+    c.execute("CREATE INDEX IF NOT EXISTS idx_stepsurveys_run ON RunStepSurveys(run_id);")
+    c.execute("CREATE INDEX IF NOT EXISTS idx_stepsurveys_run_step ON RunStepSurveys(run_id, step_index);")
 
     c.execute("""
     CREATE TABLE IF NOT EXISTS RunReflections(
@@ -190,6 +259,11 @@ def init_db():
     );
     """)
 
+
+    ensure_column(conn, 'ResearchSessions', 'group_label', 'TEXT')
+
+    # Persona cache
+
     # Persona cache
     c.execute("""
     CREATE TABLE IF NOT EXISTS UserPersonaCache(
@@ -208,7 +282,8 @@ def init_db():
         scenario_key TEXT NOT NULL,
         started_at INTEGER NOT NULL,
         finished_at INTEGER,
-        source TEXT DEFAULT 'static'
+        source TEXT DEFAULT 'static',
+        group_label TEXT
     );
     """)
 
@@ -226,6 +301,7 @@ def init_db():
         scores_json TEXT,
         ethics_index REAL DEFAULT 0.0,
         created_at INTEGER NOT NULL,
+        group_label TEXT,
         source TEXT DEFAULT 'static',
         UNIQUE(run_id, step_id, source),
         FOREIGN KEY(run_id) REFERENCES research_runs(id)
@@ -235,6 +311,24 @@ def init_db():
     c.execute("CREATE INDEX IF NOT EXISTS idx_research_runs_user ON research_runs(username);")
     c.execute("CREATE INDEX IF NOT EXISTS idx_research_runs_finished ON research_runs(finished_at);")
     c.execute("CREATE INDEX IF NOT EXISTS idx_research_decisions_run ON research_decisions(run_id);")
+    c.execute("CREATE INDEX IF NOT EXISTS idx_research_decisions_run_step ON research_decisions(run_id, step_id);")
+    c.execute("CREATE INDEX IF NOT EXISTS idx_research_decisions_group ON research_decisions(group_label);")
+    c.execute("CREATE INDEX IF NOT EXISTS idx_research_runs_group ON research_runs(group_label);")
+
+    # ---- Static branch step cache (for research path-dependent steps) ----
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS static_branch_steps(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        base_sid TEXT NOT NULL,          -- e.g., "A"
+        prefix TEXT NOT NULL,            -- e.g., "", "A", "AB", "ABCD" (choices before this step)
+        step_index INTEGER NOT NULL,     -- 1..N
+        step_json TEXT NOT NULL,         -- full step object as JSON
+        created_at INTEGER NOT NULL,
+        UNIQUE(base_sid, prefix, step_index)
+    );
+    """)
+    c.execute("CREATE INDEX IF NOT EXISTS idx_branch_steps_sid ON static_branch_steps(base_sid);")
+    c.execute("CREATE INDEX IF NOT EXISTS idx_branch_steps_sid_prefix ON static_branch_steps(base_sid, prefix);")
 
     conn.commit()
     conn.close()
@@ -378,6 +472,417 @@ def _resolve_step_view(step_raw, prev_choice):
     }
 
 
+def _get_choice_details(seq: dict, progress: list, step_index_1based: int) -> dict:
+    """Return resolved step + chosen option details for a completed step.
+
+    step_index_1based: 1..N (must be <= len(progress) and <= len(seq['steps']))
+    """
+    steps = seq.get("steps", []) or []
+    if step_index_1based < 1 or step_index_1based > len(steps):
+        return {"value": "", "label": "", "consequence": "", "question": "", "situation": "", "title": ""}
+
+    if step_index_1based < 1 or step_index_1based > len(progress):
+        return {"value": "", "label": "", "consequence": "", "question": "", "situation": "", "title": ""}
+
+    # Resolve step text/options based on the *previous* choice (adaptive steps)
+    prev_choice = None
+    if step_index_1based >= 2 and len(progress) >= (step_index_1based - 1):
+        prev_choice = (progress[step_index_1based - 2] or "").strip() or None
+
+    raw = steps[step_index_1based - 1]
+    st = _resolve_step_view(raw, prev_choice)
+
+    choice_val = (progress[step_index_1based - 1] or "").strip()
+    opt = next(
+        (o for o in (st.get("options") or [])
+         if isinstance(o, dict) and (o.get("value") or "").strip() == choice_val),
+        None
+    ) or {}
+
+    return {
+        "value": choice_val,
+        "label": (opt.get("label") or "").strip(),
+        "consequence": (opt.get("consequence") or "").strip(),
+        "story_line": (opt.get("story_line") or "").strip(),
+        "question": (st.get("question") or "").strip(),
+        "situation": (st.get("situation") or "").strip(),
+        "title": (st.get("title") or "").strip(),
+    }
+
+
+# ===== Static branch step cache helpers (Research mode) =====
+def _prefix_from_progress(progress: list, current_step: int) -> str:
+    """
+    Build a compact prefix from choices before current_step.
+    Example: progress=["A1","B2"] and current_step=3 -> "AB"
+    """
+    letters = []
+    upto = max(0, int(current_step) - 1)
+    for v in (progress or [])[:upto]:
+        if v:
+            letters.append(str(v).strip().upper()[0])
+    return "".join(letters)
+
+
+
+# ===== GPT branch cache helpers (collision-free prefix) =====
+
+def _gpt_prefix_from_progress(progress: list, step_index: int) -> str:
+    """Return decision-path prefix up to (step_index-1) using full option_value tokens.
+
+    Example:
+      progress = ["accept", "route_b"]
+      step_index=3 -> "accept/route_b"
+      step_index=2 -> "accept"
+    """
+    if step_index <= 1:
+        return ""
+    upto = max(0, int(step_index) - 1)
+    toks = []
+    for v in (progress or [])[:upto]:
+        vv = (str(v).strip() if v is not None else "")
+        if vv:
+            toks.append(vv)
+    return "/".join(toks)
+
+
+def _gpt_scenario_key_from_prefs(prefs: dict) -> str:
+    """Stable key for a GPT scenario across users (research reuse)."""
+    try:
+        raw = json.dumps(prefs or {}, sort_keys=True, ensure_ascii=False)
+    except Exception:
+        raw = str(prefs or {})
+    h = hashlib.sha256(raw.encode("utf-8")).hexdigest()[:16]
+    return f"GPT:{h}"
+
+
+
+def ensure_gpt_branch_schema(conn: sqlite3.Connection):
+    """Ensure the GPT branch-cache table exists (v2, path-dependent). Safe to call repeatedly."""
+    conn.execute(f"""
+        CREATE TABLE IF NOT EXISTS {GPT_BRANCH_TABLE} (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            scenario_key TEXT NOT NULL,
+            prefix TEXT NOT NULL,
+            step_index INTEGER NOT NULL,
+            payload_json TEXT NOT NULL,
+            created_at INTEGER NOT NULL,
+            UNIQUE(scenario_key, prefix, step_index)
+        )
+    """)
+    conn.execute(f"""
+        CREATE INDEX IF NOT EXISTS idx_{GPT_BRANCH_TABLE}_lookup
+        ON {GPT_BRANCH_TABLE}(scenario_key, prefix, step_index)
+    """)
+    conn.commit()
+
+
+def _get_gpt_branch_step(conn: sqlite3.Connection, scenario_key: str, prefix: str, step_index: int) -> Optional[dict]:
+    ensure_gpt_branch_schema(conn)
+    row = conn.execute(
+        f"""SELECT payload_json FROM {GPT_BRANCH_TABLE}
+              WHERE scenario_key=? AND prefix=? AND step_index=?""",
+        (scenario_key, prefix, int(step_index)),
+    ).fetchone()
+    if not row:
+        return None
+    try:
+        return json.loads(row["payload_json"])
+    except Exception:
+        return None
+
+
+def _upsert_gpt_branch_step(conn: sqlite3.Connection, scenario_key: str, prefix: str, step_index: int, step_obj: dict):
+    ensure_gpt_branch_schema(conn)
+
+    # Never write NULL into payload_json
+    if not isinstance(step_obj, dict) or not step_obj:
+        step_obj = {
+            "title": f"Step {step_index}",
+            "situation": "This step could not be generated at the moment.",
+            "question": "Please continue.",
+            "options": [{"label": "Continue", "value": "continue", "consequence": ""}],
+        }
+
+    payload = json.dumps(step_obj, ensure_ascii=False)
+    conn.execute(
+        f"""INSERT INTO {GPT_BRANCH_TABLE}(scenario_key, prefix, step_index, payload_json, created_at)
+              VALUES(?,?,?,?,?)
+              ON CONFLICT(scenario_key, prefix, step_index) DO UPDATE SET
+                payload_json=excluded.payload_json""",
+        (scenario_key, prefix, int(step_index), payload, int(time.time())),
+    )
+    conn.commit()
+
+
+def _generate_gpt_root_step(prefs: dict) -> dict:
+    """Generate the root (Step 1) GPT step.
+
+    Step 1 does not depend on any prior user choice, so we cache it once
+    under prefix="". We reuse the existing generator that produces
+    title/intro + step 1, then return only the step object.
+    """
+    seq = generate_gpt_initial_sequence_with_llm(prefs or {})
+    step1 = (seq.get("steps") or [{}])[0] if isinstance(seq, dict) else {}
+    if not isinstance(step1, dict) or not step1:
+        return {
+            "title": "Step 1",
+            "situation": "This scenario could not be generated at the moment.",
+            "question": "Please continue.",
+            "options": [
+                {"label": "Continue", "value": "A1", "consequence": ""},
+                {"label": "Continue", "value": "B1", "consequence": ""},
+                {"label": "Continue", "value": "C1", "consequence": ""},
+                {"label": "Continue", "value": "D1", "consequence": ""},
+            ],
+        }
+    # Ensure minimal keys exist (defensive)
+    step1.setdefault("id", 1)
+    step1.setdefault("title", "Step 1")
+    step1.setdefault("question", "What do you do?")
+    step1["options"] = _normalize_options_to_4(1, step1.get("options"))
+    return step1
+
+def _ensure_gpt_steps_upto(conn, scenario_key, prefs, progress, upto_step):
+    """
+    Ensure GPT steps up to `upto_step` exist.
+    Step 1 is cached once.
+    Step 2+ are cached by decision path (prefix).
+    """
+    ensure_gpt_branch_schema(conn)
+
+    # ---------------------------
+    # Step 1 (root, prefix = "")
+    # ---------------------------
+    root = _get_gpt_branch_step(conn, scenario_key, "", 1)
+    if not root:
+        root = _generate_gpt_root_step(prefs)
+        _upsert_gpt_branch_step(conn, scenario_key, "", 1, root)
+
+    steps_path = [root]
+
+    # ---------------------------
+    # Step 2+
+    # ---------------------------
+    for step_index in range(2, upto_step + 1):
+        # prefix includes decisions up to step_index - 1
+        prefix_tokens = [
+            (v or "").strip()
+            for v in progress[: step_index - 1]
+            if (v or "").strip()
+        ]
+        prefix = "/".join(prefix_tokens)
+
+        step_obj = _get_gpt_branch_step(
+            conn,
+            scenario_key,
+            prefix,
+            step_index
+        )
+
+        if not step_obj:
+            # IMPORTANT: next steps must depend on the user's previous choice.
+            # Build a recap (story_so_far) and a structured description of the last choice,
+            # then generate the next step with the same LLM helper used by the admin regen.
+            story_so_far = _story_from_gpt_path(steps_path, progress, step_index - 1)
+
+            prev_step_obj = steps_path[step_index - 2] if len(steps_path) >= (step_index - 1) else {}
+            prev_choice_val = progress[step_index - 2] if len(progress) >= (step_index - 1) else ""
+            last_detail = _choice_detail_from_step(prev_step_obj, prev_choice_val)
+            last_choice = (
+                f"Value: {last_detail.get('value') or 'UNKNOWN'}\n"
+                f"Question: {last_detail.get('question') or ''}\n"
+                f"Chosen option: {last_detail.get('label') or ''}\n"
+                f"Consequence: {last_detail.get('consequence') or ''}"
+            )
+
+            step_obj = generate_gpt_next_step_with_llm(
+                prefs=prefs or {},
+                story_so_far=story_so_far,
+                last_choice_value=last_choice,
+                step_index=step_index,
+                admin_direction="",
+            )
+            _upsert_gpt_branch_step(
+                conn,
+                scenario_key,
+                prefix,
+                step_index,
+                step_obj
+            )
+
+        steps_path.append(step_obj)
+
+    return steps_path
+
+def _choice_detail_from_step(step_obj: dict, chosen_value: Optional[str]) -> dict:
+    step_obj = step_obj or {}
+    chosen_value = (chosen_value or "").strip()
+    chosen_opt = None
+    for o in (step_obj.get("options") or []):
+        try:
+            if (o.get("value") or "").strip() == chosen_value:
+                chosen_opt = o
+                break
+        except Exception:
+            continue
+    return {
+        "question": step_obj.get("question", "") or "",
+        "value": chosen_value,
+        "label": (chosen_opt.get("label") if chosen_opt else "") or "",
+        "consequence": (chosen_opt.get("consequence") if chosen_opt else "") or "",
+    }
+
+
+def _story_from_gpt_path(steps_path: List[dict], progress: list, upto: int) -> str:
+    """Create a compact story recap up to 'upto' steps (1-based count)."""
+    lines = []
+    upto = max(0, int(upto))
+    for i in range(1, upto + 1):
+        step_obj = steps_path[i-1] if len(steps_path) >= i else {}
+        choice_val = progress[i-1] if len(progress) >= i else None
+        detail = _choice_detail_from_step(step_obj, choice_val)
+        situation = (step_obj.get("situation") or "").strip()
+        if situation:
+            lines.append(f"Step {i} situation: {situation}")
+        q = (detail.get("question") or "").strip()
+        if q:
+            lines.append(f"Step {i} question: {q}")
+        if detail.get("label"):
+            lines.append(f"Step {i} choice: {detail['label']}")
+        if detail.get("consequence"):
+            lines.append(f"Outcome: {detail['consequence']}")
+    return "\n".join(lines).strip()
+def _get_cached_branch_step(base_sid: str, prefix: str, step_index: int) -> Optional[dict]:
+    if not base_sid:
+        return None
+    try:
+        step_index = int(step_index)
+    except Exception:
+        return None
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        SELECT step_json FROM static_branch_steps
+        WHERE base_sid=? AND prefix=? AND step_index=?
+        LIMIT 1
+        """,
+        (base_sid, prefix or "", step_index),
+    )
+    row = cur.fetchone()
+    conn.close()
+    if not row:
+        return None
+    try:
+        return json.loads(row["step_json"])
+    except Exception:
+        return None
+
+
+def _save_cached_branch_step(base_sid: str, prefix: str, step_index: int, step_obj: dict):
+    if not base_sid:
+        return
+    try:
+        step_index = int(step_index)
+    except Exception:
+        return
+    now_ts = int(datetime.now(timezone.utc).timestamp())
+    payload = json.dumps(step_obj or {}, ensure_ascii=False)
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        INSERT OR REPLACE INTO static_branch_steps(base_sid, prefix, step_index, step_json, created_at)
+        VALUES(?,?,?,?,?)
+        """,
+        (base_sid, prefix or "", step_index, payload, now_ts),
+    )
+    conn.commit()
+    conn.close()
+
+
+def generate_static_branch_step_with_llm(
+        *,
+        base_sid: str,
+        base_seq: dict,
+        step_index: int,
+        prefix: str,
+        story_so_far: str
+) -> Optional[dict]:
+    """
+    Generate ONE step (not the whole scenario) for a given path prefix.
+    Only used when a cached step for (base_sid, prefix, step_index) does not exist.
+    """
+    if not _client:
+        return None
+
+    try:
+        step_index = int(step_index)
+    except Exception:
+        return None
+
+    # Typically branch from step 2+
+    if step_index < 2:
+        return None
+
+    title = (base_seq or {}).get("title") or f"Scenario {base_sid}"
+    intro = (base_seq or {}).get("intro") or ""
+
+    system = (
+        "You write one step of an educational, non-graphic ethics decision scenario. "
+        "Return STRICT JSON only (no markdown). "
+        "The step must be coherent with the story so far and the user's prior choices."
+    )
+
+    user = (
+        f"Base Scenario ID: {base_sid}\n"
+        f"Scenario Title: {title}\n"
+        f"Scenario Intro: {intro}\n"
+        f"Path Prefix (choices before this step): {prefix}\n"
+        f"Current Step Index to generate: {step_index} (1-based)\n\n"
+        f"Story so far (context): {story_so_far}\n\n"
+        "Generate a single step object with keys:\n"
+        "- id: integer (must equal the current step index)\n"
+        "- title: short string\n"
+        "- situation: 2-5 sentences, non-graphic, no gore\n"
+        "- question: one sentence\n"
+        "- options: array of EXACTLY 4 objects; each object must include:\n"
+        "  - value: must be exactly A{step}, B{step}, C{step}, D{step}\n"
+        "  - label: short action\n"
+        "  - consequence: 1-2 sentences\n"
+        "Return only JSON."
+    )
+
+    try:
+        step_obj = _llm_json(
+            model=os.getenv("STATIC_BRANCH_STEP_MODEL", "gpt-4o-mini"),
+            system=system,
+            user=user,
+            temperature=0.5
+        )
+    except Exception as e:
+        print("[branch step] LLM failed:", e)
+        return None
+
+    if not isinstance(step_obj, dict):
+        return None
+
+    step_obj = dict(step_obj)
+    step_obj["id"] = step_index
+    step_obj["title"] = (step_obj.get("title") or f"Step {step_index}").strip()
+    step_obj["situation"] = (step_obj.get("situation") or "").strip()
+    step_obj["question"] = (step_obj.get("question") or "What do you do?").strip()
+
+    # normalize to 4 options and enforce A{step}..D{step}
+    fixed = _normalize_options_to_4(step_index, step_obj.get("options"))
+    step_obj["options"] = [
+        {"value": o["value"], "label": o["label"], "consequence": o.get("consequence", "")}
+        for o in fixed
+    ]
+    return step_obj
+
+
 def derive_recaps(seq: dict, progress: list):
     """Build recap objects for completed steps (supports adaptive steps)."""
     recaps = []
@@ -406,7 +911,11 @@ def derive_recaps(seq: dict, progress: list):
 
 
 def story_from_progress(seq: dict, progress: list, upto_step_exclusive: int):
-    """Story so far = situation + decision story_line (fallback consequence)."""
+    """Story so far = situation + explicit decision recap (label + story_line/consequence).
+
+    This is used to condition GPT generation. Make the chosen option explicit so the model
+    does not drift into other branches.
+    """
     chunks = []
     intro = seq.get("intro")
     if isinstance(intro, str) and intro.strip():
@@ -419,16 +928,26 @@ def story_from_progress(seq: dict, progress: list, upto_step_exclusive: int):
     for idx in range(upto):
         raw = steps[idx]
         st = _resolve_step_view(raw, prev_choice)
-        choice = progress[idx]
+        choice = (progress[idx] or "").strip()
 
         situation = st.get("situation")
         if isinstance(situation, str) and situation.strip():
             chunks.append(situation.strip())
 
-        opt = next((o for o in (st.get("options") or []) if isinstance(o, dict) and o.get("value") == choice), None)
+        opt = next(
+            (o for o in (st.get("options") or [])
+             if isinstance(o, dict) and (o.get("value") or "").strip() == choice),
+            None
+        )
         if opt:
+            label = (opt.get("label") or "").strip()
             line = (opt.get("story_line") or opt.get("consequence") or "").strip()
-            if line:
+
+            if label and line:
+                chunks.append(f"Decision: {label}. {line}")
+            elif label:
+                chunks.append(f"Decision: {label}.")
+            elif line:
                 chunks.append(line)
 
         prev_choice = choice
@@ -464,38 +983,266 @@ def login_required(view_func):
 
     return wrapper
 
-
-# ====== Run logging ======
-def _start_run(run_type, sid, title, total_steps, prefs=None):
+def _start_run(
+    run_type,
+    sid,
+    title,
+    total_steps,
+    prefs=None,
+    scenario_key=None
+):
     conn = get_db()
     c = conn.cursor()
+
     c.execute(
-        """INSERT INTO Runs(username, run_type, sid, title, total_steps, started_at, prefs_json)
-           VALUES(?,?,?,?,?,?,?)""",
+        """
+        INSERT INTO Runs(
+            username,
+            run_type,
+            sid,
+            scenario_key,
+            title,
+            total_steps,
+            started_at,
+            prefs_json
+        )
+        VALUES (?,?,?,?,?,?,?,?)
+        """,
         (
             session.get("username", "anonymous"),
-            run_type, sid, title, total_steps,
+            run_type,
+            sid,
+            scenario_key,
+            title,
+            total_steps,
             datetime.utcnow().isoformat(timespec="seconds"),
             json.dumps(prefs or {}, ensure_ascii=False),
         ),
     )
+
     run_id = c.lastrowid
     conn.commit()
     conn.close()
+
     session["run_id"] = run_id
     return run_id
 
 
-def _log_decision(run_id, step_index, opt_value, opt_label, opt_consequence):
+def _fallback_decision_metrics(step_question: str, situation_text: str, opt_label: str, opt_consequence: str) -> dict:
+    """Heuristic fallback when OpenAI key is missing or the LLM fails."""
+    blob = f"{step_question}\n{situation_text}\n{opt_label}\n{opt_consequence}".lower()
+
+    def _clamp01(x: float) -> float:
+        return max(0.0, min(1.0, float(x)))
+
+    # Very lightweight keyword heuristics (better than nothing; LLM is preferred).
+    loac = {
+        "Distinction": 0.5,
+        "Proportionality": 0.5,
+        "Necessity": 0.5,
+        "Precaution": 0.5,
+    }
+
+    if any(k in blob for k in ["civilian", "non-combatant", "hostage", "school", "hospital"]):
+        loac["Distinction"] = 0.7
+        loac["Precaution"] = 0.65
+    if any(k in blob for k in ["warning", "evacu", "delay", "confirm", "verify", "minimize"]):
+        loac["Precaution"] = 0.75
+    if any(k in blob for k in ["collateral", "excessive", "harm", "casualt", "damage"]):
+        loac["Proportionality"] = 0.7
+    if any(k in blob for k in ["only way", "necessary", "essential", "objective", "military advantage"]):
+        loac["Necessity"] = 0.7
+
+    emotional_index = 0.35
+    emotion_label = "calm"
+    if any(k in blob for k in ["kill", "execute", "bomb", "strike", "hostage", "children"]):
+        emotional_index = 0.75
+        emotion_label = "distressed"
+    elif any(k in blob for k in ["risk", "uncertain", "unknown", "ambiguous"]):
+        emotional_index = 0.55
+        emotion_label = "anxious"
+
+    strategy = {
+        "risk_taking": 0.5,
+        "caution": 0.5,
+        "cooperation": 0.5,
+        "aggression": 0.5
+    }
+    if any(k in blob for k in ["negot", "coordinate", "share", "joint", "collabor"]):
+        strategy["cooperation"] = 0.7
+        strategy["aggression"] = 0.35
+    if any(k in blob for k in ["immediate", "force", "attack", "strike"]):
+        strategy["aggression"] = 0.75
+        strategy["caution"] = 0.35
+        strategy["risk_taking"] = 0.65
+    if any(k in blob for k in ["wait", "delay", "verify", "recon"]):
+        strategy["caution"] = 0.75
+        strategy["risk_taking"] = 0.35
+
+    return {
+        "loac": {k: _clamp01(v) for k, v in loac.items()},
+        "strategy": {k: _clamp01(v) for k, v in strategy.items()},
+        "emotional_index": _clamp01(emotional_index),
+        "emotion_label": emotion_label,
+        "rationale": "heuristic_fallback"
+    }
+
+
+def _analyze_decision_metrics(step_question: str, situation_text: str, opt_value: str, opt_label: str,
+                              opt_consequence: str) -> dict:
+    """Use GPT to score LOAC adherence + strategy traits + emotional index for a decision."""
+    # If API key missing, fall back.
+    if not _client:
+        return _fallback_decision_metrics(step_question, situation_text, opt_label, opt_consequence)
+
+    system = (
+        "You are a strict evaluator for a scenario-based decision-making study. "
+        "Given a scenario step and the user's chosen option, output compact JSON only."
+    )
+
+    user = f"""Evaluate the user's decision.
+
+STEP_QUESTION:
+{step_question}
+
+SITUATION:
+{situation_text}
+
+CHOSEN_OPTION:
+- value: {opt_value}
+- label: {opt_label}
+- consequence: {opt_consequence}
+
+Return JSON with:
+- loac: object with Distinction, Proportionality, Necessity, Precaution each in [0,1]
+- strategy: object with risk_taking, caution, cooperation, aggression each in [0,1]
+- emotional_index: number in [0,1]
+- emotion_label: one of ['calm','anxious','conflicted','distressed','confident']
+- rationale: short string <= 140 chars
+
+Return only valid JSON. No markdown.
+"""
+
+    try:
+        data = _llm_json(
+            model=os.getenv("DECISION_METRICS_MODEL", "gpt-4o-mini"),
+            system=system,
+            user=user,
+            temperature=0.2
+        )
+    except Exception as e:
+        print("[decision metrics] LLM failed:", e)
+        return _fallback_decision_metrics(step_question, situation_text, opt_label, opt_consequence)
+
+    # Normalize + hard clamp
+    def _clamp01(x):
+        try:
+            return max(0.0, min(1.0, float(x)))
+        except Exception:
+            return 0.0
+
+    loac_in = (data.get("loac") or {})
+    strat_in = (data.get("strategy") or {})
+    out = {
+        "loac": {
+            "Distinction": _clamp01(loac_in.get("Distinction")),
+            "Proportionality": _clamp01(loac_in.get("Proportionality")),
+            "Necessity": _clamp01(loac_in.get("Necessity")),
+            "Precaution": _clamp01(loac_in.get("Precaution")),
+        },
+        "strategy": {
+            "risk_taking": _clamp01(strat_in.get("risk_taking")),
+            "caution": _clamp01(strat_in.get("caution")),
+            "cooperation": _clamp01(strat_in.get("cooperation")),
+            "aggression": _clamp01(strat_in.get("aggression")),
+        },
+        "emotional_index": _clamp01(data.get("emotional_index")),
+        "emotion_label": (data.get("emotion_label") or "conflicted").strip().lower(),
+        "rationale": (data.get("rationale") or "").strip()[:140]
+    }
+    return out
+
+
+def _upsert_decision_metrics(run_id: int, step_index: int, metrics: dict):
     conn = get_db()
     c = conn.cursor()
     c.execute(
-        """INSERT INTO RunDecisions(run_id, step_index, option_value, option_label, option_consequence)
-           VALUES(?,?,?,?,?)""",
-        (run_id, step_index, opt_value, opt_label, opt_consequence),
+        """
+        INSERT INTO RunDecisionMetrics(run_id, step_index, loac_json, strategy_json, emotional_index, emotion_label)
+        VALUES(?,?,?,?,?,?)
+        ON CONFLICT(run_id, step_index) DO UPDATE SET
+            loac_json=excluded.loac_json,
+            strategy_json=excluded.strategy_json,
+            emotional_index=excluded.emotional_index,
+            emotion_label=excluded.emotion_label
+        """,
+        (
+            run_id,
+            step_index,
+            json.dumps(metrics.get("loac") or {}, ensure_ascii=False),
+            json.dumps(metrics.get("strategy") or {}, ensure_ascii=False),
+            metrics.get("emotional_index"),
+            metrics.get("emotion_label"),
+        ),
     )
     conn.commit()
     conn.close()
+
+
+def _log_decision(run_id, step_index, opt_value, opt_label, opt_consequence, step_question=None, situation_text=None):
+    """
+    Persist the user's choice and also compute/store decision-level analytics.
+
+    IMPORTANT FIX:
+    - Some older DBs have RunDecisions.opt_value instead of RunDecisions.option_value.
+    - This function now detects the column names and writes safely to either schema.
+    """
+    conn = get_db()
+    c = conn.cursor()
+
+    # Detect schema (option_value vs opt_value)
+    c.execute("PRAGMA table_info(RunDecisions)")
+    cols = {row[1] for row in c.fetchall()}  # row[1] = column name
+
+    value_col = "option_value" if "option_value" in cols else ("opt_value" if "opt_value" in cols else None)
+    label_col = "option_label" if "option_label" in cols else ("opt_label" if "opt_label" in cols else None)
+    cons_col = "option_consequence" if "option_consequence" in cols else (
+        "opt_consequence" if "opt_consequence" in cols else None)
+
+    if not value_col:
+        conn.close()
+        raise RuntimeError("RunDecisions table missing decision value column (option_value/opt_value).")
+
+    # Insert using whichever columns exist
+    insert_cols = ["run_id", "step_index", value_col]
+    insert_vals = [run_id, step_index, opt_value]
+
+    if label_col:
+        insert_cols.append(label_col)
+        insert_vals.append(opt_label)
+
+    if cons_col:
+        insert_cols.append(cons_col)
+        insert_vals.append(opt_consequence)
+
+    sql = f"INSERT INTO RunDecisions({', '.join(insert_cols)}) VALUES({', '.join(['?'] * len(insert_cols))})"
+    c.execute(sql, insert_vals)
+
+    conn.commit()
+    conn.close()
+
+    # Decision analytics (best-effort; never block navigation)
+    try:
+        metrics = _analyze_decision_metrics(
+            step_question=step_question or "",
+            situation_text=situation_text or "",
+            opt_value=opt_value or "",
+            opt_label=opt_label or "",
+            opt_consequence=opt_consequence or ""
+        )
+        _upsert_decision_metrics(run_id=run_id, step_index=step_index, metrics=metrics)
+    except Exception as e:
+        print("[decision metrics] store failed:", e)
 
 
 def _finish_run(run_id):
@@ -510,6 +1257,7 @@ def _finish_run(run_id):
 
 
 # ===== OpenAI client (DO NOT hardcode keys) =====
+
 _client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
 
@@ -524,8 +1272,6 @@ def _strip_json_fences(text: str) -> str:
             return mid
         return t.replace("```", "")
     return t
-
-
 
 
 def _get_run_resolution(run_id: Optional[int]) -> Optional[str]:
@@ -593,7 +1339,8 @@ def _llm_json(model: str, system: str, user: str, temperature: float = 0.3) -> d
         return json.loads(m.group(0))
 
 
-def generate_analytic_resolution(decisions_view: list, scenario_title: str, scenario_intro: str, path_letters: str) -> dict:
+def generate_analytic_resolution(decisions_view: list, scenario_title: str, scenario_intro: str,
+                                 path_letters: str) -> dict:
     """
     Build a research-friendly analytic resolution grounded in what the user chose.
     Returns a dict suitable for rendering.
@@ -635,6 +1382,8 @@ def generate_analytic_resolution(decisions_view: list, scenario_title: str, scen
 
     # Pick a strong, affordable model for text analysis
     return _llm_json(model="gpt-4.1-mini", system=system, user=user, temperature=0.35)
+
+
 def _safe_option_label(opt: dict, fallback: str) -> str:
     raw = (opt.get("label") or opt.get("text") or "").strip()
     if not raw or raw == "—":
@@ -1120,6 +1869,8 @@ def scenario_start(sid):
     _start_run(
         run_type="static",
         sid=sid,
+        scenario_key=(f"LIB:{session.get('library_run_id')}" if (sid or '').strip().upper() == 'LIB' else (
+                    seq.get('id') or (sid or '').strip().upper())),
         title=seq.get("title", f"Scenario {sid}"),
         total_steps=len(seq["steps"]),
         prefs=None
@@ -1130,11 +1881,34 @@ def scenario_start(sid):
 RESEARCH_ACCESS_CODE = "111"
 
 
+RESEARCH_AB_SEED = os.environ.get("RESEARCH_AB_SEED", "research_ab_seed_v1")
+
+def _assign_research_group(username: str, run_id: int) -> str:
+    """Deterministic hidden A/B assignment for research.
+    Group A = images ON, Group B = images OFF.
+    """
+    base = f"{RESEARCH_AB_SEED}|{username}|{run_id}"
+    h = hashlib.sha256(base.encode("utf-8")).hexdigest()
+    return "A" if (int(h[:8], 16) % 2 == 0) else "B"
+
+def _persist_research_group(run_id: int, group_label: str, access_code: str = "") -> None:
+    """Persist group assignment in Runs + ResearchSessions (best-effort)."""
+    try:
+        conn = get_db()
+        conn.execute("UPDATE Runs SET group_label=? WHERE id=?", (group_label, run_id))
+        # also mirror into the most recent ResearchSessions row for this run
+        conn.execute("UPDATE ResearchSessions SET group_label=? WHERE run_id=?", (group_label, run_id))
+        conn.commit()
+        conn.close()
+    except Exception:
+        pass
+
+
 @app.route("/research", methods=["GET", "POST"])
 @login_required
 def research_gate():
     if request.method == "POST":
-        code = request.form.get("access_code", "").strip()
+        code = (request.form.get("access_code") or "").strip()
         if code == RESEARCH_ACCESS_CODE:
             # mark mode
             session["mode"] = "research"
@@ -1148,12 +1922,10 @@ def research_gate():
                 except Exception:
                     session["library_run_id"] = None
             else:
-                # Fall back to your default static scenario
                 session["scenario_sid"] = "A"
                 session.pop("library_run_id", None)
 
             session["scenario_progress"] = []
-            session["make_image"] = False
             session["step_start_time"] = datetime.utcnow().timestamp()
 
             # Start a research run record (stored in Runs)
@@ -1163,9 +1935,7 @@ def research_gate():
                 run_title = "IHL Research Study (Library)"
                 try:
                     dbt = get_db()
-                    cur = dbt.cursor()
-                    cur.execute("SELECT title FROM Runs WHERE id=?", (session.get("library_run_id"),))
-                    rr = cur.fetchone()
+                    rr = dbt.execute("SELECT title FROM Runs WHERE id=?", (session.get("library_run_id"),)).fetchone()
                     dbt.close()
                     if rr and rr["title"]:
                         run_title = f'IHL Research Study (Library): {rr["title"]}'
@@ -1176,7 +1946,8 @@ def research_gate():
                     run_type="research",
                     sid=f"LIB:{session.get('library_run_id')}",
                     title=run_title,
-                    total_steps=len(lib_steps)
+                    total_steps=len(lib_steps),
+                    scenario_key=f"LIB:{session.get('library_run_id')}"
                 )
                 redirect_sid = "LIB"
             else:
@@ -1184,20 +1955,82 @@ def research_gate():
                     run_type="research",
                     sid="A",
                     title="IHL Research Study",
-                    total_steps=len(SCENARIO_SEQUENCES["A"]["steps"])
+                    total_steps=len(SCENARIO_SEQUENCES["A"]["steps"]),
+                    scenario_key="A"
                 )
                 redirect_sid = "A"
 
-            # Store minimal research session metadata
-            conn = get_db()
-            conn.execute(
-                "INSERT INTO ResearchSessions(run_id, access_code, start_time) VALUES(?,?,?)",
-                (run_id, code, datetime.utcnow().isoformat(timespec="seconds"))
-            )
-            conn.commit()
-            conn.close()
+            # --- assign hidden A/B group for research ---
+            group_label = _assign_research_group(session.get("username") or "", int(run_id))
+            session["research_group"] = group_label
 
-            session["run_id"] = run_id
+            # Group A: with image, Group B: no image
+            session["make_image"] = (group_label == "A")
+
+            _persist_research_group(int(run_id), group_label)
+
+            # Persist research session metadata (best-effort)
+            try:
+                conn = get_db()
+                conn.execute(
+                    "INSERT INTO ResearchSessions(run_id, access_code, start_time, group_label) VALUES(?,?,?,?)",
+                    (int(run_id), code, datetime.utcnow().isoformat(timespec="seconds"), group_label)
+                )
+                conn.commit()
+                conn.close()
+            except Exception:
+                pass
+
+            session["run_id"] = int(run_id)
+
+            # --- Pre-generate Step 1 image for Group A (so the first page loads fast) ---
+            if session.get("make_image") and session.get("run_id"):
+                try:
+                    run_id_i = int(session.get("run_id"))
+                    if redirect_sid == "LIB":
+                        lib_run_id = session.get("library_run_id")
+                        scenario_key = f"LIB:{lib_run_id}"
+                        # Ensure step 1 exists in DB for this library story, then generate its image once.
+                        prefs = dict(_load_run_prefs_by_run_id(lib_run_id) or {})
+                        prefs["make_image"] = True
+                        conn_g = get_db()
+                        try:
+                            steps_path = _ensure_gpt_steps_upto(
+                                conn=conn_g,
+                                scenario_key=scenario_key,
+                                prefs=prefs,
+                                progress=[],
+                                upto_step=1,
+                            )
+                        finally:
+                            conn_g.close()
+
+                        step_obj = (steps_path or [{}])[0] if steps_path else {}
+                        seq_for_img = _get_library_sequence(lib_run_id) or {"id": "LIB", "title": "Library Scenario"}
+                        _generate_and_store_step_image(
+                            run_id=run_id_i,
+                            step_index=1,
+                            seq=seq_for_img,
+                            prefs=prefs,
+                            step_obj=step_obj,
+                            story_so_far=""
+                        )
+                    else:
+                        seq_for_img = SCENARIO_SEQUENCES.get("A") or {}
+                        step_obj = ((seq_for_img.get("steps") or [{}])[0])
+                        prefs = _get_run_prefs(run_id_i) or {}
+                        prefs["make_image"] = True
+                        _generate_and_store_step_image(
+                            run_id=run_id_i,
+                            step_index=1,
+                            seq=seq_for_img,
+                            prefs=prefs,
+                            step_obj=step_obj,
+                            story_so_far=""
+                        )
+                except Exception as e:
+                    print("[research] step1 image pregen failed:", e)
+
             return redirect(url_for("scenario_step", sid=redirect_sid, step=1))
 
         flash("Invalid Research Access Code.", "danger")
@@ -1272,24 +2105,45 @@ def compute_ethics_index(scores: dict) -> float:
     return total
 
 
+
 def _upsert_static_research_decision(
         username: str,
         user_id: Optional[str],
         scenario_key: str,
         step_id: int,
-        option_value: str
+        option_value: str,
+        *,
+        chosen_label_override: Optional[str] = None,
+        scores_override: Optional[dict] = None,
+        group_label: Optional[str] = None
 ):
-    scenarios = load_scenarios_for_research()
-    _, opt = find_option(scenarios, scenario_key, step_id, option_value)
-    if not opt:
-        return False, "Option not found in scenarios.json"
+    """Mirror a (static/research) step decision into the research_* tables.
 
+    - If scenario_key exists in scenarios.json, we pull label/scores from there.
+    - If it does NOT exist (e.g., Library stories), we still store the decision
+      with best-effort fields (chosen_label_override / scores_override) so the
+      admin research log can load instead of failing.
+    """
     chosen_letter = (option_value[0] if option_value else "").upper()
-    chosen_label = opt.get("label", "")
 
-    scores = opt.get("scores") or {}
+    # Best-effort defaults
+    chosen_label = (chosen_label_override or "").strip()
+    scores = scores_override or {}
     if not isinstance(scores, dict):
         scores = {}
+
+    # Try to enrich from scenarios.json (when available)
+    scenarios = load_scenarios_for_research()
+    try:
+        _, opt = find_option(scenarios, scenario_key, step_id, option_value)
+    except Exception:
+        opt = None
+
+    if isinstance(opt, dict) and opt:
+        chosen_label = (opt.get("label") or chosen_label).strip()
+        s2 = opt.get("scores")
+        if isinstance(s2, dict):
+            scores = s2
 
     ethics_index = compute_ethics_index(scores)
     now_ts = int(datetime.now().timestamp())
@@ -1298,6 +2152,7 @@ def _upsert_static_research_decision(
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
 
+    # Open run (unfinished) for this user+scenario_key+source
     cur.execute("""
         SELECT id FROM research_runs
         WHERE username=? AND scenario_key=? AND source='static' AND finished_at IS NULL
@@ -1306,45 +2161,58 @@ def _upsert_static_research_decision(
     row = cur.fetchone()
 
     if row:
-        run_id = row["id"]
+        run_id = int(row["id"])
     else:
         cur.execute("""
-            INSERT INTO research_runs(user_id, username, scenario_key, started_at, source)
-            VALUES(?,?,?,?, 'static')
-        """, (user_id, username, scenario_key, now_ts))
-        run_id = cur.lastrowid
+            INSERT INTO research_runs(user_id, username, scenario_key, started_at, source, group_label)
+            VALUES(?,?,?,?, 'static', ?)
+        """, (user_id, username, scenario_key, now_ts, group_label))
+        run_id = int(cur.lastrowid)
+
+    # Persist group label on the research run (best-effort)
+    if group_label:
+        try:
+            cur.execute("UPDATE research_runs SET group_label=? WHERE id=?", (group_label, run_id))
+        except Exception:
+            pass
 
     payload_scores_json = json.dumps(scores, ensure_ascii=False)
 
+    # Upsert decision row
     cur.execute("""
         SELECT id FROM research_decisions
         WHERE run_id=? AND step_id=? AND source='static'
         LIMIT 1
-    """, (run_id, step_id))
+    """, (run_id, int(step_id)))
     existing = cur.fetchone()
 
     if existing:
         cur.execute("""
             UPDATE research_decisions
             SET option_value=?, chosen_letter=?, chosen_label=?,
-                scores_json=?, ethics_index=?, created_at=?
+                scores_json=?, ethics_index=?, created_at=?, group_label=?
             WHERE id=?
-        """, (option_value, chosen_letter, chosen_label,
-              payload_scores_json, ethics_index, now_ts, existing["id"]))
+        """, (
+            option_value, chosen_letter, chosen_label,
+            payload_scores_json, ethics_index, now_ts, group_label, int(existing["id"])
+        ))
     else:
         cur.execute("""
             INSERT INTO research_decisions(
               run_id, user_id, username, scenario_key, step_id,
               option_value, chosen_letter, chosen_label,
-              scores_json, ethics_index, created_at, source
+              scores_json, ethics_index, created_at, group_label, source
             )
-            VALUES(?,?,?,?,?,?,?,?,?,?,?, 'static')
-        """, (run_id, user_id, username, scenario_key, step_id,
-              option_value, chosen_letter, chosen_label,
-              payload_scores_json, ethics_index, now_ts))
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?, 'static')
+        """, (
+            run_id, user_id, username, scenario_key, int(step_id),
+            option_value, chosen_letter, chosen_label,
+            payload_scores_json, ethics_index, now_ts, group_label
+        ))
 
-    total_steps = len((scenarios.get(scenario_key) or {}).get("steps", [])) or 4
-    if step_id >= total_steps:
+    # Mark run finished when we can infer total steps (known scenarios) and step_id is last.
+    total_steps = len((scenarios.get(scenario_key) or {}).get("steps", [])) or 0
+    if total_steps and int(step_id) >= total_steps:
         cur.execute("""
             UPDATE research_runs SET finished_at=?
             WHERE id=? AND finished_at IS NULL
@@ -1355,113 +2223,294 @@ def _upsert_static_research_decision(
     return True, None
 
 
+def _upsert_gpt_research_decision(
+        username: str,
+        user_id: Optional[str],
+        run_id: int,
+        step_id: int,
+        option_value: str,
+):
+    """Mirror a GPT step decision into the research_* tables (source='gpt').
+
+    We store LOAC-style scores in research_decisions.scores_json so the admin research
+    log and report structure match the static scenario flow.
+    """
+    chosen_letter = (option_value[0] if option_value else "").upper()
+
+    # Pull label + consequence from the stored GPT sequence (best-effort).
+    chosen_label = ""
+    scenarios_key = f"GPT:{run_id}"
+
+    seq = _get_run_sequence(run_id)
+    opt_consequence = ""
+    step_question = ""
+    situation_text = ""
+
+    if isinstance(seq, dict):
+        steps = seq.get("steps") or []
+        if 1 <= step_id <= len(steps):
+            st = steps[step_id - 1] or {}
+            step_question = (st.get("question") or "").strip()
+            situation_text = (st.get("situation") or "").strip()
+            opt = next(
+                (o for o in (st.get("options") or []) if isinstance(o, dict) and o.get("value") == option_value),
+                None
+            )
+            if opt:
+                chosen_label = (opt.get("label") or "").strip()
+                opt_consequence = (opt.get("consequence") or "").strip()
+
+    # Produce LOAC scores (best-effort)
+    try:
+        metrics = _analyze_decision_metrics(
+            step_question=step_question,
+            situation_text=situation_text,
+            opt_value=option_value,
+            opt_label=chosen_label or "",
+            opt_consequence=opt_consequence,
+        )
+        scores = metrics.get("loac") or {}
+        if not isinstance(scores, dict):
+            scores = {}
+    except Exception:
+        scores = {}
+
+    ethics_index = compute_ethics_index(scores)
+    now_ts = int(datetime.now().timestamp())
+
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+
+    # Open run (unfinished) for this user+scenario_key+source
+    cur.execute(
+        """
+        SELECT id FROM research_runs
+        WHERE username=? AND scenario_key=? AND source='gpt' AND finished_at IS NULL
+        ORDER BY started_at DESC LIMIT 1
+        """,
+        (username, scenarios_key)
+    )
+    row = cur.fetchone()
+
+    if row:
+        research_run_id = row["id"]
+    else:
+        cur.execute(
+            """
+            INSERT INTO research_runs(user_id, username, scenario_key, started_at, source)
+            VALUES(?,?,?,?, 'gpt')
+            """,
+            (user_id, username, scenarios_key, now_ts)
+        )
+        research_run_id = cur.lastrowid
+
+    payload_scores_json = json.dumps(scores, ensure_ascii=False)
+
+    # Upsert decision row
+    cur.execute(
+        """
+        SELECT id FROM research_decisions
+        WHERE run_id=? AND step_id=? AND source='gpt'
+        LIMIT 1
+        """,
+        (research_run_id, step_id)
+    )
+    existing = cur.fetchone()
+
+    if existing:
+        cur.execute(
+            """
+            UPDATE research_decisions
+            SET option_value=?, chosen_letter=?, chosen_label=?,
+                scores_json=?, ethics_index=?, created_at=?, group_label=?
+            WHERE id=?
+            """,
+            (option_value, chosen_letter, chosen_label, payload_scores_json, ethics_index, now_ts, existing["id"])
+        )
+    else:
+        cur.execute(
+            """
+            INSERT INTO research_decisions(
+              run_id, user_id, username, scenario_key, step_id,
+              option_value, chosen_letter, chosen_label,
+              scores_json, ethics_index, created_at, source
+            )
+            VALUES(?,?,?,?,?,?,?,?,?,?,?, 'gpt')
+            """,
+            (research_run_id, user_id, username, scenarios_key, step_id,
+             option_value, chosen_letter, chosen_label, payload_scores_json, ethics_index, now_ts)
+        )
+
+    # GPT flow always has 5 steps
+    if step_id >= 5:
+        cur.execute(
+            """
+            UPDATE research_runs SET finished_at=?
+            WHERE id=? AND finished_at IS NULL
+            """,
+            (now_ts, research_run_id)
+        )
+
+    conn.commit()
+    conn.close()
+    return True, None
+
 @app.route("/scenario/<sid>/step/<int:step>", methods=["GET", "POST"])
 @login_required
 def scenario_step(sid, step):
-    # Special: Library story used for static/research runs
-    if sid == "LIB":
-        lib_run_id = session.get("library_run_id")
-        lib_seq = _get_library_sequence(lib_run_id)
-        if not lib_seq:
-            flash("Selected library story is missing or invalid.", "warning")
-            return redirect(url_for("research_gate"))
-        seq = lib_seq
-        steps = seq.get("steps", []) or []
-    else:
-        if sid not in SCENARIO_SEQUENCES:
-            return redirect(url_for("scenario_start", sid="A"))
-
-        seq = SCENARIO_SEQUENCES[sid]
-        steps = seq.get("steps", [])
-
-    if not steps:
-        flash("Scenario is missing steps.", "danger")
-        return redirect(url_for("scenario_start", sid="A"))
-
-    if step < 1 or step > len(steps):
-        return redirect(url_for("scenario_start", sid=sid))
-
-    progress = session.get("scenario_progress", [])
+    sid_u = (sid or "").strip().upper()
+    mode = session.get("mode", "static")  # "static" | "research"
+    progress = session.get("scenario_progress") or []
     run_id = session.get("run_id")
 
-    # Resolve current step adaptively based on the previous choice
-    prev_choice = None
-    if step > 1 and len(progress) >= (step - 1):
-        prev_choice = progress[step - 2] or None
+    # --- LIB: must have selected a library run id ---
+    lib_run_id = session.get("library_run_id") if sid_u == "LIB" else None
+    if sid_u == "LIB" and not lib_run_id:
+        flash("No library story is selected.", "warning")
+        return redirect(url_for("research_gate"))
 
-    current_raw = steps[step - 1]
-    current = _resolve_step_view(current_raw, prev_choice)
+    # --- Load sequence / steps ---
+    # For LIB we treat it as a GPT-sequence stored in RunSequences for that library run.
+    gpt_steps_path = None
+    if sid_u == "LIB":
+        run_id = int(lib_run_id)
+        session["run_id"] = run_id  # IMPORTANT: make it stable on every request
 
+        prefs = dict(_load_run_prefs_by_run_id(run_id) or {})
+        prefs["make_image"] = bool(session.get("make_image", False))
+
+        scenario_key = f"LIB:{run_id}"
+        session["gpt_scenario_key"] = scenario_key
+
+        # pull stored GPT sequence for this library run
+        seq = _get_run_sequence(run_id)
+        if not seq:
+            flash("Selected library story has no saved sequence.", "danger")
+            return redirect(url_for("research_gate"))
+
+        steps = (seq.get("steps") or [])
+        if not isinstance(steps, list) or not steps:
+            flash("Selected library story has no steps.", "danger")
+            return redirect(url_for("research_gate"))
+
+        # Build the already-materialized steps along the path (if you store them),
+        # else just use seq["steps"] as the canonical steps list.
+        gpt_steps_path = steps
+
+    else:
+        # Static/Research uses SCENARIO_SEQUENCES
+        if sid_u not in SCENARIO_SEQUENCES:
+            flash("Scenario not found.", "danger")
+            return redirect(url_for("index"))
+        seq = SCENARIO_SEQUENCES[sid_u]
+        steps = (seq.get("steps") or [])
+
+    total_steps = len(steps)
+    if step < 1 or step > total_steps:
+        flash("Invalid step.", "warning")
+        return redirect(url_for("scenario_start", sid=sid))
+
+    # Ensure progress list length up to current step
+    if len(progress) < step:
+        progress = progress + [None] * (step - len(progress))
+        session["scenario_progress"] = progress
+
+    # --- Ensure run exists EARLY (even on GET) so images/answers can cache properly ---
+    if sid_u != "LIB":
+        if not run_id:
+            run_id = _start_run(
+                run_type=("research" if mode == "research" else "static"),
+                sid=sid_u,
+                title=seq.get("title", f"Scenario {sid_u}"),
+                total_steps=total_steps,
+                prefs=session.get("prefs") or {},
+            )
+            session["run_id"] = run_id
+
+    # --- POST: save choice and advance ---
     if request.method == "POST":
         choice = (request.form.get("choice") or "").strip()
         if not choice:
-            flash("Please select one option.", "warning")
+            flash("Please select an option.", "warning")
             return redirect(url_for("scenario_step", sid=sid, step=step))
 
-        if len(progress) >= step:
-            progress[step - 1] = choice
-        else:
-            while len(progress) < step - 1:
-                progress.append("")
-            progress.append(choice)
-
+        progress[step - 1] = choice
         session["scenario_progress"] = progress
-        session.modified = True
 
-        chosen_opt = next((o for o in current.get("options", []) if o.get("value") == choice), None)
-        if run_id and chosen_opt:
-            _log_decision(
-                run_id=run_id,
-                step_index=step,
-                opt_value=choice,
-                opt_label=chosen_opt.get("label", "") or "",
-                opt_consequence=chosen_opt.get("consequence", "") or ""
-            )
+        # Persist answer
+        try:
+            _save_answer(run_id, step, choice, (seq.get("id") or sid_u))
+        except Exception as e:
+            print("[save_answer] failed:", e)
 
-        if session.get("mode") == "research":
-            ok, err = _upsert_static_research_decision(
-                username=session.get("username"),
-                user_id=session.get("user_id"),
-                scenario_key=(sid or "").strip().upper(),
-                step_id=step,
-                option_value=choice
-            )
-            if not ok:
-                print("[research mirror] failed:", err)
-
-        if step < len(steps):
+        # Next step / finish
+        if step < total_steps:
             return redirect(url_for("scenario_step", sid=sid, step=step + 1))
-        return redirect(url_for("scenario_result", sid=sid))
+        return redirect(url_for("run_result", run_id=run_id))
 
-    story_text = story_from_progress(seq, progress, step - 1)
+    # --- GET: build current step object ---
+    if sid_u == "LIB":
+        current = gpt_steps_path[step - 1]
+    else:
+        # Resolve adaptive static steps based on previous choice
+        prev_choice = None
+        if step >= 2 and len(progress) >= (step - 1):
+            prev_choice = (progress[step - 2] or "").strip() or None
+        current = _resolve_step_view(steps[step - 1], prev_choice)
 
+    # --- Story so far (for image prompt + UI) ---
+    if sid_u == "LIB":
+        story_text = _story_from_gpt_path(gpt_steps_path, progress, step - 1)
+    else:
+        story_text = story_from_progress(seq, progress, step - 1)
+
+    # --- Previous recap (for UI) ---
     prev_recap = None
     if step > 1 and len(progress) >= (step - 1):
-        derived = derive_recaps(seq, progress)
-        prev_recap = derived[step - 2] if len(derived) >= (step - 1) else None
+        if sid_u == "LIB":
+            try:
+                prev_step_obj = gpt_steps_path[step - 2]
+                prev_choice_val = progress[step - 2]
+                prev_opt = next(
+                    (o for o in (prev_step_obj.get("options") or []) if o.get("value") == prev_choice_val),
+                    None,
+                )
+                if prev_opt:
+                    prev_recap = {
+                        "title": prev_step_obj.get("title") or f"Step {step-1}",
+                        "choice": prev_choice_val,
+                        "label": prev_opt.get("label", ""),
+                        "consequence": prev_opt.get("consequence", ""),
+                    }
+            except Exception:
+                prev_recap = None
+        else:
+            derived = derive_recaps(seq, progress)
+            prev_recap = derived[step - 2] if len(derived) >= (step - 1) else None
 
-    sid_u = (sid or "").strip().upper()
-    mode = session.get("mode", "static")
-    show_images = (mode in ("static", "research"))  # static/research only
+    # --- Image policy ---
+    # research: follow A/B toggle (make_image in session)
+    # static: images enabled
+    show_images = (bool(session.get("make_image", True)) if mode == "research" else (mode == "static"))
 
     hero_image = None
+    hero_image_url = None
     img_debug_candidates = []
     img_debug_progress = progress[:]
 
     if show_images:
+        # 1) Check packaged static images first
         prev_letters = []
         for c in progress[:max(0, step - 1)]:
             if c:
                 prev_letters.append(str(c).strip().upper()[0])
 
         suffix = sid_u + "".join(prev_letters)
-
         cand1 = f"{sid_u}/step_{step}_{suffix}.png"
-        img_debug_candidates.append(cand1)
-
         cand2 = f"{sid_u}/step_{step}_{sid_u}.png"
         cand3 = f"{sid_u}/step_{step}.png"
-        img_debug_candidates.extend([cand2, cand3])
+        img_debug_candidates.extend([cand1, cand2, cand3])
 
         for cand in img_debug_candidates:
             abs_path = os.path.join(app.static_folder, "scenarios", cand)
@@ -1469,19 +2518,63 @@ def scenario_step(sid, step):
                 hero_image = cand
                 break
 
+        # 2) Prefer scenario-path cache (prevents regenerating across new run_id)
+        #    LIB: key MUST be stable -> "LIB:<library_run_id>"
+        try:
+            if sid_u == "LIB":
+                scenario_key_for_img = f"LIB:{int(lib_run_id)}"
+                prefix_for_img = _gpt_prefix_from_progress(progress, step)
+            else:
+                scenario_key_for_img = sid_u
+                prefix_for_img = _prefix_from_progress(progress, step)
+
+            hero_image_url = _generate_and_store_step_image_for_path(
+                scenario_key=scenario_key_for_img,
+                prefix=prefix_for_img,
+                step_index=step,
+                seq=seq,
+                prefs=_get_run_prefs(run_id) or {},
+                step_obj=current,
+                story_so_far=story_text,
+            )
+
+            # Also record it to RunImages so report pages can locate by run_id (optional)
+            if hero_image_url and run_id:
+                rel = hero_image_url.replace("/static/", "", 1).lstrip("/")
+                try:
+                    _save_run_image(run_id, step, rel, None)
+                except Exception:
+                    pass
+
+        except Exception as e:
+            print("[image][path-cache] failed:", e)
+            hero_image_url = None
+
+        # 3) Legacy per-run cache fallback
+        if (not hero_image_url) and run_id:
+            cached_img = _get_run_image(run_id, step)
+            if cached_img and cached_img.get("image_path"):
+                hero_image_url = "/static/" + cached_img["image_path"].lstrip("/")
+
+        # 4) Packaged static file fallback
+        if (not hero_image_url) and hero_image:
+            hero_image_url = "/static/scenarios/" + hero_image.lstrip("/")
+
     return render_template(
         "scenario_step_static.html",
         scenario_id=seq.get("id", sid),
+        scenario_key=(seq.get("id") or (sid_u or sid)),
         scenario_title=seq.get("title", f"Scenario {sid}"),
         step=current,
         step_index=step,
-        total_steps=len(steps),
+        total_steps=total_steps,
         situation_text=current.get("situation", ""),
         story_so_far=story_text,
         prev_recap=prev_recap,
         hero_image=hero_image,
+        hero_image_url=hero_image_url,
         show_images=show_images,
-        is_last=(step == len(steps)),
+        is_last=(step == total_steps),
         sid=sid,
         selected=(progress[step - 1] if len(progress) >= step else None),
         run_id=run_id,
@@ -1491,18 +2584,50 @@ def scenario_step(sid, step):
         img_debug_candidates=img_debug_candidates,
     )
 
-
 @app.route("/scenario/<sid>/result", methods=["GET"])
 @login_required
 def scenario_result(sid):
     # --- resolve sequence + steps (support LIB too) ---
     if sid == "LIB":
         lib_run_id = session.get("library_run_id")
-        seq = _get_library_sequence(lib_run_id)
-        if not seq:
-            flash("Selected library story is missing or invalid.", "warning")
+        if not lib_run_id:
+            flash("No library story is selected.", "warning")
             return redirect(url_for("research_gate"))
-        steps = seq.get("steps", []) or []
+
+        prefs = dict(_load_run_prefs_by_run_id(lib_run_id) or {})
+        prefs["make_image"] = bool(session.get("make_image", False))
+
+        scenario_key = f"LIB:{lib_run_id}"
+        session["gpt_scenario_key"] = scenario_key
+
+        # Ensure all steps exist (or are loaded) for this library story.
+        progress = session.get("scenario_progress", []) or []
+        conn_g = get_db()
+        try:
+            steps_path = _ensure_gpt_steps_upto(
+                conn=conn_g,
+                scenario_key=scenario_key,
+                prefs=prefs,
+                progress=progress,
+                upto_step=int(TOTAL_GPT_STEPS),
+            )
+        finally:
+            conn_g.close()
+
+        seq_title = "Library Scenario"
+        try:
+            conn_t = get_db()
+            cur_t = conn_t.cursor()
+            cur_t.execute("SELECT title FROM Runs WHERE id=?", (lib_run_id,))
+            rr = cur_t.fetchone()
+            conn_t.close()
+            if rr and (rr.get("title") if isinstance(rr, dict) else rr["title"]):
+                seq_title = (rr.get("title") if isinstance(rr, dict) else rr["title"]) or seq_title
+        except Exception:
+            pass
+
+        seq = {"id": "LIB", "title": seq_title, "intro": "", "steps": steps_path, "resolutions": {}}
+        steps = steps_path
     else:
         if sid not in SCENARIO_SEQUENCES:
             return redirect(url_for("scenario_start", sid="A"))
@@ -1622,10 +2747,12 @@ def scenario_result(sid):
         path_letters="".join(letters),
         exec_summary=(
             {"title": (exec_summary.get("title") or "Executive Summary"),
-             "resolution": (gpt_report.get("executive_summary") if isinstance(gpt_report, dict) and gpt_report.get("executive_summary") else exec_summary.get("resolution"))}
+             "resolution": (gpt_report.get("executive_summary") if isinstance(gpt_report, dict) and gpt_report.get(
+                 "executive_summary") else exec_summary.get("resolution"))}
             if isinstance(gpt_report, dict) else exec_summary
         ),
-        ending=(gpt_report.get("final_resolution") if isinstance(gpt_report, dict) and gpt_report.get("final_resolution") else exec_summary.get("resolution", "Path complete.")),
+        ending=(gpt_report.get("final_resolution") if isinstance(gpt_report, dict) and gpt_report.get(
+            "final_resolution") else exec_summary.get("resolution", "Path complete.")),
         timestamp=int(datetime.utcnow().timestamp()),
         gpt_report=gpt_report,
         run_journal=None
@@ -1677,6 +2804,22 @@ def gpt_scenario_prefs():
         session["run_id"] = run_id
         _save_run_sequence(run_id, seq)
 
+        # Store GPT scenario metadata + seed step-1 into branch cache (prefix="")
+        session["gpt_title"] = seq.get("title", "GPT Scenario")
+        session["gpt_total_steps"] = TOTAL_GPT_STEPS
+        scenario_key = _gpt_scenario_key_from_prefs(prefs)
+        session["gpt_scenario_key"] = scenario_key
+
+        try:
+            conn = get_db()
+            root_step = (seq.get("steps") or [{}])[0]
+            if isinstance(root_step, dict):
+                _upsert_gpt_branch_step(conn, scenario_key, "", 1, root_step)
+                conn.commit()
+            conn.close()
+        except Exception:
+            pass
+
         return redirect(url_for("gpt_scenario_step", step=1))
 
     session.setdefault("make_image", False)
@@ -1686,135 +2829,141 @@ def gpt_scenario_prefs():
 @app.route("/gpt-scenario/step/<int:step>", methods=["GET", "POST"])
 @login_required
 def gpt_scenario_step(step: int):
-    seq = _get_active_gpt_sequence()
-    if not seq:
-        return redirect(url_for("gpt_scenario_prefs"))
+    """
+    GPT scenario step view (path-dependent):
+    - Step objects are cached by (scenario_key, prefix, step_index) in gpt_branch_steps
+    - prefix is built from full option_value tokens up to (step_index-1) to avoid collisions
+    """
+    run_id = session.get("run_id")
+    prefs = _get_run_prefs(run_id) if run_id else {}
 
-    steps = seq.get("steps", []) or []
-    total_steps = int(seq.get("total_steps") or TOTAL_GPT_STEPS)
+    # Scenario key must be stable across users for research reuse
+    scenario_key = session.get("gpt_scenario_key") or _gpt_scenario_key_from_prefs(prefs)
+    session["gpt_scenario_key"] = scenario_key
+
+    # total steps: keep existing behavior
+    total_steps = int(session.get("gpt_total_steps") or TOTAL_GPT_STEPS)
 
     # Allow user to visit step up to total_steps
     if step < 1 or step > total_steps:
         return redirect(url_for("gpt_scenario_prefs"))
 
-    progress = session.get("scenario_progress", [])
-    run_id = session.get("run_id")
-    prefs = _get_run_prefs(run_id) if run_id else {}
+    progress = session.get("scenario_progress", []) or []
 
-    # If requested step not generated yet, generate it now (sequentially up to step)
-    if len(steps) < step:
-        while len(steps) < step:
-            next_step_index = len(steps) + 1
+    # Prevent jumping ahead without prior choices
+    if step > 1 and len(progress) < (step - 1):
+        return redirect(url_for("gpt_scenario_step", step=max(1, len(progress) + 1)))
 
-            if next_step_index == 1:
-                # Step 1 should already exist, but just in case:
-                initial = generate_gpt_initial_sequence_with_llm(prefs)
-                steps = initial.get("steps", []) or []
-                seq["title"] = initial.get("title", seq.get("title"))
-                seq["intro"] = initial.get("intro", seq.get("intro"))
-                seq["total_steps"] = total_steps
-                seq["steps"] = steps
-                if run_id:
-                    _save_run_sequence(run_id, seq)
+    conn = get_db()
+    step_source = "static"
+
+    try:
+        # Determine whether THIS step exists before ensuring (for UI messaging)
+        prefix_for_step = _gpt_prefix_from_progress(progress, step)
+        existing = _get_gpt_branch_step(conn, scenario_key, (prefix_for_step if step > 1 else ""), step)
+
+        # Ensure branch steps exist up to current step for this path
+        steps_path = _ensure_gpt_steps_upto(conn, scenario_key, prefs, progress, step)
+
+        # Current step object is the last in steps_path
+        current = steps_path[step - 1] if len(steps_path) >= step else {}
+
+        if existing is not None:
+            step_source = "cache"
+        else:
+            step_source = "generate" if step >= 2 else ("cache" if _get_gpt_branch_step(conn, scenario_key, "", 1) else "generate")
+
+        if request.method == "POST":
+            choice = (request.form.get("choice") or "").strip()
+            if not choice:
+                flash("Please select one option.", "warning")
+                return redirect(url_for("gpt_scenario_step", step=step))
+
+            # Save/overwrite choice for this step
+            if len(progress) >= step:
+                progress[step - 1] = choice
             else:
-                # Build story up to previous step
-                story_text_prev = story_from_progress(seq, progress, next_step_index - 1)
-                last_choice = progress[next_step_index - 2] if len(progress) >= (next_step_index - 1) else "UNKNOWN"
+                while len(progress) < step - 1:
+                    progress.append("")
+                progress.append(choice)
 
-                new_step = generate_gpt_next_step_with_llm(
-                    prefs=prefs,
-                    story_so_far=story_text_prev,
-                    last_choice_value=last_choice,
-                    step_index=next_step_index
+            # CRITICAL: truncate downstream steps when an earlier decision changes
+            progress = progress[:step]
+            session["scenario_progress"] = progress
+            session.modified = True
+
+            # Clear downstream run data (decisions/images/reflections) for this run
+            if run_id:
+                _delete_gpt_run_data_from_step(run_id, start_step=step + 1)
+
+            chosen_opt = next((o for o in (current.get("options") or []) if (o.get("value") or "").strip() == choice), None)
+            if run_id and chosen_opt:
+                _log_decision(
+                    run_id=run_id,
+                    step_index=step,
+                    opt_value=choice,
+                    opt_label=chosen_opt.get("label", "") or "",
+                    opt_consequence=chosen_opt.get("consequence", "") or "",
+                    step_question=current.get("question", "") or "",
+                    situation_text=current.get("situation", "") or ""
                 )
-                steps.append(new_step)
-                seq["steps"] = steps
-                if run_id:
-                    _save_run_sequence(run_id, seq)
 
-    # Now safe to read the current step object
-    current = steps[step - 1]
+            if step < total_steps:
+                return redirect(url_for("gpt_scenario_step", step=step + 1))
+            return redirect(url_for("gpt_scenario_result"))
 
-    if request.method == "POST":
-        choice = request.form.get("choice")
-        if not choice:
-            flash("Please select one option.", "warning")
-            return redirect(url_for("gpt_scenario_step", step=step))
+        # ---- GET ----
+        story_text = _story_from_gpt_path(steps_path, progress, upto=step - 1)
 
-        # Save/overwrite choice for this step
-        if len(progress) >= step:
-            progress[step - 1] = choice
-        else:
-            while len(progress) < step - 1:
-                progress.append("")
-            progress.append(choice)
+        prev_recap = None
+        if step > 1 and len(progress) >= (step - 1):
+            # reuse existing recap builder if available, else keep None
+            try:
+                derived = derive_recaps({"steps": steps_path}, progress)
+                prev_recap = derived[step - 2] if len(derived) >= (step - 1) else None
+            except Exception:
+                prev_recap = None
 
-        session["scenario_progress"] = progress
-        session.modified = True
+        # LAZY IMAGE: generate ONLY the current step image if enabled.
+        show_images = bool(session.get("make_image", False))
+        hero_image_url = None
+        if show_images and run_id:
+            cached_img = _get_run_image(run_id, step)
+            if cached_img and cached_img.get("image_path"):
+                hero_image_url = "/static/" + cached_img["image_path"].lstrip("/")
+            else:
+                hero_image_url = _generate_and_store_step_image(
+                    run_id=run_id,
+                    step_index=step,
+                    seq={"steps": steps_path, "title": session.get("gpt_title", "GPT Scenario")},
+                    prefs=prefs or {},
+                    step_obj=current,
+                    story_so_far=story_text
+                )
 
-        chosen_opt = next((o for o in (current.get("options") or []) if o.get("value") == choice), None)
-        if run_id and chosen_opt:
-            _log_decision(
-                run_id,
-                step,
-                choice,
-                chosen_opt.get("label", ""),
-                chosen_opt.get("consequence", "")
-            )
-
-        # IMPORTANT FIX:
-        # Move forward based on intended total_steps, not len(steps) (which may be only 1 early on)
-        if step < total_steps:
-            return redirect(url_for("gpt_scenario_step", step=step + 1))
-        return redirect(url_for("gpt_scenario_result"))
-
-    # ---- GET ----
-    story_text = story_from_progress(seq, progress, step - 1)
-
-    prev_recap = None
-    if step > 1 and len(progress) >= (step - 1):
-        derived = derive_recaps(seq, progress)
-        prev_recap = derived[step - 2] if len(derived) >= (step - 1) else None
-
-    # LAZY IMAGE: generate ONLY the current step image if enabled.
-    show_images = bool(session.get("make_image", False))
-    hero_image_url = None
-    if show_images and run_id:
-        cached = _get_run_image(run_id, step)
-        if cached and cached.get("image_path"):
-            hero_image_url = "/static/" + cached["image_path"].lstrip("/")
-        else:
-            prefs_for_image = prefs or {}
-            hero_image_url = _generate_and_store_step_image(
-                run_id=run_id,
-                step_index=step,
-                seq=seq,
-                prefs=prefs_for_image,
-                step_obj=current,
-                story_so_far=story_text
-            )
-
-    return render_template(
-        "scenario_step_gpt.html",
-        scenario_id=seq.get("id", "G"),
-        scenario_title=seq.get("title", "GPT Scenario"),
-        step=current,
-        step_index=step,
-        total_steps=total_steps,
-        situation_text=current.get("situation", ""),
-        story_so_far=story_text,
-        prev_recap=prev_recap,
-        show_images=show_images,
-        hero_image_url=hero_image_url,
+        return render_template(
+            "scenario_step_gpt.html",
+            scenario_id=scenario_key,
+            scenario_title=session.get("gpt_title", "GPT Scenario"),
+            step=current,
+            step_index=step,
+            total_steps=total_steps,
+            situation_text=current.get("situation", ""),
+            story_so_far=story_text,
+            prev_recap=prev_recap,
+            show_images=show_images,
+            hero_image_url=hero_image_url,
         is_last=(step == total_steps),
-        selected=(progress[step - 1] if len(progress) >= step else None),
-        pre_survey=None,
-        post_survey=None,
-        step_missing=False,
-        is_admin=_is_admin_user(session.get("username"))
-    )
-
-
+            selected=(progress[step - 1] if len(progress) >= step else None),
+            pre_survey=None,
+            post_survey=None,
+            step_missing=False,
+            is_admin=_is_admin_user(session.get("username")),
+            step_source=step_source
+        )
+    finally:
+        conn.commit()
+        conn.close()
 @app.route("/admin/gpt/regenerate/step/<int:step>", methods=["POST"])
 @admin_required
 def admin_gpt_regenerate_step(step: int):
@@ -1854,7 +3003,13 @@ def admin_gpt_regenerate_step(step: int):
                 seq["total_steps"] = total_steps
             else:
                 story_text_prev = story_from_progress(seq, progress, next_step_index - 1)
-                last_choice = progress[next_step_index - 2] if len(progress) >= (next_step_index - 1) else "UNKNOWN"
+                last_detail = _get_choice_details(seq, progress, next_step_index - 1)
+                last_choice = (
+                    f"Value: {last_detail.get('value') or 'UNKNOWN'}\\n"
+                    f"Question: {last_detail.get('question') or ''}\\n"
+                    f"Chosen option: {last_detail.get('label') or ''}\\n"
+                    f"Consequence: {last_detail.get('consequence') or ''}"
+                )
                 new_step = generate_gpt_next_step_with_llm(
                     prefs=prefs,
                     story_so_far=story_text_prev,
@@ -1879,7 +3034,13 @@ def admin_gpt_regenerate_step(step: int):
             seq["steps"] = steps[:1]  # truncate after step 1
         else:
             story_text_prev = story_from_progress(seq, progress, step - 1)
-            last_choice = progress[step - 2] if len(progress) >= (step - 1) else "UNKNOWN"
+            last_detail = _get_choice_details(seq, progress, step - 1)
+            last_choice = (
+                f"Value: {last_detail.get('value') or 'UNKNOWN'}\\n"
+                f"Question: {last_detail.get('question') or ''}\\n"
+                f"Chosen option: {last_detail.get('label') or ''}\\n"
+                f"Consequence: {last_detail.get('consequence') or ''}"
+            )
 
             new_step = generate_gpt_next_step_with_llm(
                 prefs=prefs,
@@ -1974,7 +3135,13 @@ def gpt_scenario_result():
     while len(steps) < total_steps:
         next_step_index = len(steps) + 1
         story_text_prev = story_from_progress(seq, progress, next_step_index - 1)
-        last_choice = progress[next_step_index - 2] if len(progress) >= (next_step_index - 1) else "UNKNOWN"
+        last_detail = _get_choice_details(seq, progress, next_step_index - 1)
+        last_choice = (
+            f"Value: {last_detail.get('value') or 'UNKNOWN'}\\n"
+            f"Question: {last_detail.get('question') or ''}\\n"
+            f"Chosen option: {last_detail.get('label') or ''}\\n"
+            f"Consequence: {last_detail.get('consequence') or ''}"
+        )
         new_step = generate_gpt_next_step_with_llm(
             prefs=prefs,
             story_so_far=story_text_prev,
@@ -2025,7 +3192,8 @@ def gpt_scenario_result():
 
     _finish_run(run_id)
 
-    ending = "Your decisions were recorded. Review the consequences and the evolving narrative."
+    ending = (gpt_report.get("final_resolution") if isinstance(gpt_report, dict) and gpt_report.get("final_resolution")
+              else "Your decisions were recorded. Review the consequences and the evolving narrative.")
 
     return render_template(
         "scenario_result.html",
@@ -2090,6 +3258,32 @@ def compute_profile_stats(runs: list) -> dict:
             if cv:
                 letters.append(cv[0])
     letter_counts = Counter([x for x in letters if x in ("A", "B", "C", "D")])
+
+    # ---- LOAC adherence + Emotional Index (from RunDecisionMetrics) ----
+    loac_sum = {"Distinction": 0.0, "Proportionality": 0.0, "Necessity": 0.0, "Precaution": 0.0}
+    loac_n = 0
+    emo_scores = []
+    emo_dist = {"calm": 0, "anxious": 0, "conflicted": 0, "distressed": 0, "confident": 0}
+
+    for r in runs:
+        for d in r.get("decisions", []):
+            loac = d.get("loac") or {}
+            if isinstance(loac, dict) and any(k in loac for k in loac_sum.keys()):
+                try:
+                    for k in loac_sum.keys():
+                        v = loac.get(k)
+                        if isinstance(v, (int, float)):
+                            loac_sum[k] += float(v)
+                    loac_n += 1
+                except Exception:
+                    pass
+
+            ei = d.get("emotional_index")
+            if isinstance(ei, (int, float)):
+                emo_scores.append(float(ei))
+            lab = (d.get("emotion_label") or "").strip().lower()
+            if lab in emo_dist:
+                emo_dist[lab] += 1
 
     DIM_KWS = {
         "Distinction": [
@@ -2190,169 +3384,150 @@ def compute_profile_stats(runs: list) -> dict:
             if rf.get("phase") == "post" and cv in survey["post_effect_dist"]:
                 survey["post_effect_dist"][cv] += 1
 
+    # If decision-level LOAC metrics exist, prefer them over keyword heuristics.
+    if loac_n > 0:
+        loac_avg = {k: (loac_sum[k] / loac_n) for k in loac_sum.keys()}
+        raw = loac_avg
+        norm = loac_avg  # already 0..1
+
+    def _avg01(xs):
+        return sum(xs) / len(xs) if xs else 0.0
+
+    emotional = {
+        "avg": _avg01(emo_scores),
+        "dist": emo_dist,
+        "count": len(emo_scores)
+    }
+
     return {
         "counts": {"runs": total_runs, "decisions": total_decisions, "reflections": total_reflections},
         "letter_counts": dict(letter_counts),
         "dimensions_raw": raw,
         "dimensions_norm": norm,
         "sentiment": sentiment,
+        "emotional": emotional,
         "survey": survey,
     }
 
 
-def hydrate_runs_with_details(username: str, limit: int = 12) -> list:
+def compute_step_survey_stats(username: str) -> dict:
+    """Aggregate modal step-survey answers across all runs for a user."""
     conn = get_db()
-    c = conn.cursor()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
 
-    c.execute("""
-      SELECT id, run_type, sid, title, total_steps, started_at, finished_at, prefs_json
-      FROM Runs
-      WHERE username=?
-      ORDER BY COALESCE(finished_at, started_at) DESC
-      LIMIT ?
-    """, (username, limit))
-    runs = [dict(r) for r in c.fetchall()]
-
-    for r in runs:
-        run_id = r["id"]
-        r["prefs"] = _safe_json_loads(r.get("prefs_json"), {})
-
-        c.execute("""
-          SELECT step_index, option_value, option_label, option_consequence
-          FROM RunDecisions
-          WHERE run_id=?
-          ORDER BY step_index ASC
-        """, (run_id,))
-        decisions = []
-        for d in c.fetchall():
-            decisions.append({
-                "step_index": d["step_index"],
-                "step_title": f"Step {d['step_index']}",
-                "chosen_value": d["option_value"],
-                "chosen_label": d["option_label"],
-                "chosen_consequence": d["option_consequence"],
-                "all_options": []
-            })
-        r["decisions"] = decisions
-
-        c.execute("""
-          SELECT step_index, phase, question_text, response_text, sentiment_score, sentiment_label,
-                 choice_value, choice_label
-          FROM RunReflections
-          WHERE run_id=?
-          ORDER BY step_index ASC, phase ASC
-        """, (run_id,))
-        r["reflections"] = [dict(x) for x in c.fetchall()]
-
-        sid = (r.get("sid") or "").strip().upper()
-
-        if sid in SCENARIO_SEQUENCES:
-            seq = SCENARIO_SEQUENCES[sid]
-            steps = seq.get("steps", [])
-            intro = (seq.get("intro") or "")
-            r["scenario_intro_excerpt"] = intro[:180] + ("..." if intro[180:] else "")
-            for d in r["decisions"]:
-                si = d["step_index"] - 1
-                if 0 <= si < len(steps):
-                    st = steps[si]
-                    d["step_title"] = st.get("title", d["step_title"])
-                    d["all_options"] = st.get("options", [])
-        elif sid == "G":
-            seq = _get_run_sequence(run_id) or {}
-            steps = (seq.get("steps") or [])
-            intro = (seq.get("intro") or "")
-            r["scenario_intro_excerpt"] = intro[:180] + ("..." if intro[180:] else "")
-            for d in r["decisions"]:
-                si = d["step_index"] - 1
-                if 0 <= si < len(steps):
-                    st = steps[si]
-                    d["step_title"] = st.get("title", d["step_title"])
-                    d["all_options"] = st.get("options", [])
-
+    cur.execute(
+        """
+        SELECT s.confidence, s.sentiment, s.morality, COUNT(*) AS cnt
+        FROM RunStepSurveys s
+        JOIN Runs r ON r.id = s.run_id
+        WHERE r.username = ?
+        GROUP BY s.confidence, s.sentiment, s.morality
+        """,
+        (username,),
+    )
+    rows = cur.fetchall()
     conn.close()
-    return runs
 
-def generate_user_persona(stats: dict, user_prefs: dict | None = None, runs: list | None = None) -> str:
+    total = sum(int(row["cnt"]) for row in rows) if rows else 0
+    if total <= 0:
+        return {"count": 0}
+
+    conf_score = {"very_sure": 1.0, "somewhat_sure": 0.66, "unsure": 0.33, "guessing": 0.0}
+    sent_score = {"positive": 1.0, "neutral": 0.5, "mixed": 0.5, "negative": 0.0}
+    moral_score = {"morally_right": 1.0, "morally_neutral": 0.5, "morally_wrong": 0.0, "unsure": 0.33}
+
+    confidence_dist = {"very_sure": 0, "somewhat_sure": 0, "unsure": 0, "guessing": 0}
+    sentiment_dist = {"positive": 0, "neutral": 0, "mixed": 0, "negative": 0}
+    morality_dist = {"morally_right": 0, "morally_neutral": 0, "morally_wrong": 0, "unsure": 0}
+
+    conf_sum = sent_sum = moral_sum = 0.0
+
+    for row in rows:
+        c = (row["confidence"] or "").strip()
+        s = (row["sentiment"] or "").strip()
+        m = (row["morality"] or "").strip()
+        n = int(row["cnt"])
+
+        conf_sum += conf_score.get(c, 0.0) * n
+        sent_sum += sent_score.get(s, 0.0) * n
+        moral_sum += moral_score.get(m, 0.0) * n
+
+        if c in confidence_dist:
+            confidence_dist[c] += n
+        if s in sentiment_dist:
+            sentiment_dist[s] += n
+        if m in morality_dist:
+            morality_dist[m] += n
+
+    return {
+        "count": total,
+        "confidence_avg": round(conf_sum / total, 4),
+        "sentiment_avg": round(sent_sum / total, 4),
+        "morality_avg": round(moral_sum / total, 4),
+        "confidence_dist": confidence_dist,
+        "sentiment_dist": sentiment_dist,
+        "morality_dist": morality_dist,
+    }
+
+
+def compute_emotional_stats(username: str) -> dict:
     """
-    Decision DNA (profile page):
-    - Professional tone
-    - Uses: dominant decision type (A/B/C/D), ethics radar, user prefs, and recent mission content.
+    Uses RunDecisionMetrics (emotion_label + emotional_index) as the profile's
+    emotion source. This works even if you didn't save RunReflections.
     """
-    # Safe fallback if OpenAI client not available
-    if not _client:
-        return "Decision profile is unavailable at the moment. Please try again later."
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
 
-    user_prefs = user_prefs or {}
-    runs = runs or []
-
-    dominant_letter = (
-        max(stats.get("letter_counts", {}), key=stats["letter_counts"].get)
-        if stats.get("letter_counts")
-        else "N/A"
+    # Average emotional index
+    cur.execute(
+        """
+        SELECT AVG(m.emotional_index) AS avg_idx, COUNT(*) AS n
+        FROM RunDecisionMetrics m
+        JOIN Runs r ON r.id = m.run_id
+        WHERE r.username = ?
+        """,
+        (username,),
     )
-    radar_data = stats.get("dimensions_norm") or {}
+    row = cur.fetchone()
+    n = int(row["n"] or 0)
+    avg_idx = float(row["avg_idx"]) if row and row["avg_idx"] is not None else None
 
-    # Pull a compact “evidence” snippet from recent decisions so it reflects research/library activity
-    evidence_bits = []
-    for r in (runs or [])[:6]:
-        for d in (r.get("decisions") or [])[:3]:
-            lab = (d.get("chosen_label") or "").strip()
-            cons = (d.get("chosen_consequence") or "").strip()
-            if lab:
-                if cons:
-                    evidence_bits.append(f"{lab} → {cons}")
-                else:
-                    evidence_bits.append(lab)
-    evidence_bits = evidence_bits[:6]
-
-    preferred_war = (user_prefs.get("preferred_war") or "").strip()
-    interest = (user_prefs.get("interest") or "").strip()
-
-    prompt = (
-        "You are writing a short 'Decision DNA' summary for a user profile in a research platform.\n"
-        "Write 2–3 sentences in a formal, professional tone.\n"
-        "Constraints:\n"
-        "- No childish language, no metaphors (no superhero/captain/team leader comparisons).\n"
-        "- No exclamation marks.\n"
-        "- Avoid vague praise; be specific and analytical.\n"
-        "- Use second person ('You...') but keep it professional.\n"
-        "- Keep it under 65 words.\n\n"
-        f"Signals:\n"
-        f"- Dominant decision type: {dominant_letter}\n"
-        f"- Ethics radar (0–1): {radar_data}\n"
-        f"- Preferred conflict context (optional): {preferred_war or 'N/A'}\n"
-        f"- Stated interest (optional): {interest or 'N/A'}\n"
-        f"- Recent decision evidence (optional): {evidence_bits if evidence_bits else 'N/A'}\n\n"
-        "Output only the Decision DNA text, nothing else."
+    # Distribution of emotion labels
+    cur.execute(
+        """
+        SELECT LOWER(COALESCE(m.emotion_label, 'unknown')) AS lab, COUNT(*) AS cnt
+        FROM RunDecisionMetrics m
+        JOIN Runs r ON r.id = m.run_id
+        WHERE r.username = ?
+        GROUP BY LOWER(COALESCE(m.emotion_label, 'unknown'))
+        """,
+        (username,),
     )
+    dist_rows = cur.fetchall()
+    conn.close()
 
-    try:
-        resp = _client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "You are an analyst writing concise professional profile summaries."},
-                {"role": "user", "content": prompt},
-            ],
-            max_tokens=120,
-            temperature=0.6,
-        )
-        return (resp.choices[0].message.content or "").strip().strip('"')
-    except Exception:
-        return "Your decisions reflect structured reasoning under constraints, with consistent attention to ethical trade-offs and operational feasibility."
+    dist = {}
+    for rr in dist_rows:
+        dist[rr["lab"]] = int(rr["cnt"])
+
+    return {
+        "count": n,
+        "avg": None if avg_idx is None else round(float(avg_idx), 4),
+        "dist": dist
+    }
 
 
 def count_user_runs(username: str) -> int:
+    """Total number of Runs rows for this user (used for pagination)."""
     conn = get_db()
-    c = conn.cursor()
-    c.execute("SELECT COUNT(*) AS cnt FROM Runs WHERE username=?", (username,))
-    row = c.fetchone()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute("SELECT COUNT(*) AS n FROM Runs WHERE username = ?", (username,))
+    row = cur.fetchone()
     conn.close()
-    return int(row["cnt"] if row and "cnt" in row.keys() else 0)
-
-
-from flask import request, render_template, session
-import sqlite3
-from flask import jsonify, render_template, request, session
+    return int(row["n"] if row and row["n"] is not None else 0)
 
 
 @app.route("/profile", methods=["GET"], endpoint="profile")
@@ -2397,14 +3572,20 @@ def profile():
         "interest": ""
     }
 
-    runs = hydrate_runs_with_details(username=username, limit=PER_PAGE, offset=offset)
-    stats = compute_profile_stats(runs)
+    page_runs = hydrate_runs_with_details(username=username, limit=PER_PAGE, offset=offset)
+
+    # Compute analytics from ALL runs (not just the current page)
+    max_stats_runs = min(total_runs, 2000)
+    all_runs = hydrate_runs_with_details(username=username, limit=max_stats_runs, offset=0)
+    stats = compute_profile_stats(all_runs)
+    stats["step_survey"] = compute_step_survey_stats(username)
+    stats["emotional"] = compute_emotional_stats(username)
 
     # ✅ AJAX partial response (only mission log HTML)
     if request.args.get("partial") == "1":
         html = render_template(
             "_profile_mission_log.html",
-            page_runs=runs,
+            page_runs=page_runs,
             page=page,
             total_pages=total_pages,
             total_runs=total_runs,
@@ -2415,8 +3596,8 @@ def profile():
     return render_template(
         "profile.html",
         user=user,
-        page_runs=runs,
-        runs=runs,
+        page_runs=page_runs,
+        runs=page_runs,
         stats=stats,
         page=page,
         total_pages=total_pages,
@@ -2537,7 +3718,7 @@ def api_persona():
 
     conn.close()
 
-    runs = hydrate_runs_with_details(username=username, limit=12)
+    runs = hydrate_runs_with_details(username=username, limit=2000, offset=0)
     stats = compute_profile_stats(runs)
     persona = generate_user_persona(stats)
 
@@ -2678,6 +3859,46 @@ def hydrate_runs_with_details(username: str, limit: int = 12, offset: int = 0) -
                 }
             )
 
+    # 2b) Hydrate decision metrics (LOAC/strategy/emotion) for these runs (best-effort)
+    cur.execute(
+        f"""
+        SELECT run_id, step_index, loac_json, strategy_json, emotional_index, emotion_label
+        FROM RunDecisionMetrics
+        WHERE run_id IN ({placeholders})
+        """,
+        run_ids,
+    )
+    metrics_map = {}
+    for mrow in cur.fetchall():
+        md = dict(mrow)
+        key = (md.get("run_id"), md.get("step_index"))
+        loac = {}
+        strat = {}
+        try:
+            if md.get("loac_json"):
+                loac = json.loads(md["loac_json"])
+        except Exception:
+            loac = {}
+        try:
+            if md.get("strategy_json"):
+                strat = json.loads(md["strategy_json"])
+        except Exception:
+            strat = {}
+
+        metrics_map[key] = {
+            "loac": loac,
+            "strategy": strat,
+            "emotional_index": md.get("emotional_index"),
+            "emotion_label": md.get("emotion_label"),
+        }
+
+    # Attach metrics onto each decision dict
+    for rid, run in by_id.items():
+        for d in run.get("decisions", []):
+            key = (rid, d.get("step_index"))
+            if key in metrics_map:
+                d.update(metrics_map[key])
+
     # 3) Hydrate reflections for these runs (if any)
     cur.execute(
         f"""
@@ -2716,6 +3937,111 @@ def admin_api_user_detail(username):
         "persona": persona,
         "runs": runs
     })
+
+
+# --- Add this near your existing step survey route(s) ---
+@app.route("/api/research/step-survey", methods=["POST"])
+@login_required
+def api_research_step_survey():
+    """
+    Research/static page endpoint.
+    This matches scenario_step_static.html which posts to /api/research/step-survey.
+    Internally we log the same RunStepSurveys table as /api/run/step-survey.
+    """
+    run_id = session.get("run_id")
+    if not run_id:
+        return jsonify({"ok": False, "error": "No active run in session."}), 400
+
+    data = request.get_json(silent=True) or {}
+
+    try:
+        step_index = int(data.get("step_index"))
+    except Exception:
+        return jsonify({"ok": False, "error": "Invalid step_index."}), 400
+
+    choice_value = (data.get("choice_value") or "").strip()
+    confidence = (data.get("confidence") or "").strip()
+    sentiment = (data.get("sentiment") or "").strip()
+    morality = (data.get("morality") or "").strip()
+
+    allowed_conf = {"very_sure", "somewhat_sure", "unsure", "guessing"}
+    allowed_sent = {"positive", "neutral", "negative", "mixed"}
+    allowed_moral = {"morally_right", "morally_neutral", "morally_wrong", "unsure"}
+
+    if confidence not in allowed_conf:
+        return jsonify({"ok": False, "error": "Invalid confidence option."}), 400
+    if sentiment not in allowed_sent:
+        return jsonify({"ok": False, "error": "Invalid sentiment option."}), 400
+    if morality not in allowed_moral:
+        return jsonify({"ok": False, "error": "Invalid morality option."}), 400
+
+    _log_step_survey(
+        run_id=run_id,
+        step_index=step_index,
+        choice_value=choice_value,
+        confidence=confidence,
+        sentiment=sentiment,
+        morality=morality
+    )
+
+    return jsonify({"ok": True})
+
+
+@app.route("/api/research/static-decision", methods=["POST"])
+@login_required
+def api_research_static_decision():
+    """
+    Called by scenario_step_static.html before form submit to ensure decisions are mirrored
+    to research_runs / research_decisions, even if the normal POST flow is interrupted.
+    """
+    payload = request.get_json(silent=True) or {}
+    scenario_key = (payload.get("scenario_key") or "").strip()
+    step_id = int(payload.get("step_id") or 0)
+    option_value = (payload.get("option_value") or "").strip()
+
+    if not scenario_key or step_id <= 0 or not option_value:
+        return jsonify({"ok": False, "error": "Missing scenario_key/step_id/option_value"}), 400
+
+    ok, err = _upsert_static_research_decision(
+        username=session.get("username"),
+        user_id=session.get("user_id"),
+        scenario_key=scenario_key,
+        step_id=step_id,
+        option_value=option_value,
+        chosen_label_override=(payload.get("chosen_label") or ""),
+        scores_override=(payload.get("scores") if isinstance(payload.get("scores"), dict) else None)
+    )
+    if not ok:
+        return jsonify({"ok": False, "error": err or "save failed"}), 500
+    return jsonify({"ok": True})
+
+
+@app.route("/api/research/gpt-decision", methods=["POST"])
+@login_required
+def api_research_gpt_decision():
+    """Mirror GPT decisions into research_* tables (source='gpt').
+
+    Called by scenario_step_gpt.html before form submit so the research log and report
+    structure matches scenario_step_static.
+    """
+    payload = request.get_json(silent=True) or {}
+    step_id = int(payload.get("step_id") or 0)
+    option_value = (payload.get("option_value") or "").strip()
+
+    run_id = session.get("run_id")
+    if not run_id or step_id <= 0 or not option_value:
+        return jsonify({"ok": False, "error": "Missing run_id/step_id/option_value"}), 400
+
+    ok, err = _upsert_gpt_research_decision(
+        username=session.get("username"),
+        user_id=session.get("user_id"),
+        run_id=int(run_id),
+        step_id=step_id,
+        option_value=option_value
+    )
+    if not ok:
+        return jsonify({"ok": False, "error": err or "save failed"}), 500
+    return jsonify({"ok": True})
 
 
 @app.route("/admin/api/research_stats", methods=["GET"])
@@ -2890,10 +4216,16 @@ def save_static_research_decision():
         run_id = row["id"]
     else:
         cur.execute("""
-            INSERT INTO research_runs(user_id, username, scenario_key, started_at, source)
-            VALUES(?,?,?,?, 'static')
-        """, (user_id, username, scenario_key, now_ts))
+            INSERT INTO research_runs(user_id, username, scenario_key, started_at, source, group_label)
+            VALUES(?,?,?,?, 'static', ?)
+        """, (user_id, username, scenario_key, now_ts, group_label))
         run_id = cur.lastrowid
+
+    if group_label:
+        try:
+            cur.execute("UPDATE research_runs SET group_label=? WHERE id=?", (group_label, run_id))
+        except Exception:
+            pass
 
     payload_scores_json = json.dumps(scores, ensure_ascii=False)
 
@@ -2908,21 +4240,21 @@ def save_static_research_decision():
         cur.execute("""
             UPDATE research_decisions
             SET option_value=?, chosen_letter=?, chosen_label=?,
-                scores_json=?, ethics_index=?, created_at=?
+                scores_json=?, ethics_index=?, created_at=?, group_label=?
             WHERE id=?
         """, (option_value, chosen_letter, chosen_label,
-              payload_scores_json, ethics_index, now_ts, existing["id"]))
+              payload_scores_json, ethics_index, now_ts, group_label, existing["id"]))
     else:
         cur.execute("""
             INSERT INTO research_decisions(
               run_id, user_id, username, scenario_key, step_id,
               option_value, chosen_letter, chosen_label,
-              scores_json, ethics_index, created_at, source
+              scores_json, ethics_index, created_at, group_label, source
             )
-            VALUES(?,?,?,?,?,?,?,?,?,?,?, 'static')
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?, 'static')
         """, (run_id, user_id, username, scenario_key, step_id,
               option_value, chosen_letter, chosen_label,
-              payload_scores_json, ethics_index, now_ts))
+              payload_scores_json, ethics_index, now_ts, group_label))
 
     total_steps = len((scenarios.get(scenario_key) or {}).get("steps", [])) or 4
     if step_id >= total_steps:
@@ -3125,6 +4457,92 @@ def library():
     scenarios = _get_public_gpt_scenarios(limit=80, q=q, exclude_username=None)
 
     return render_template("library.html", scenarios=scenarios, q=q)
+def _get_scenario_image(scenario_key: str, prefix: str, step_index: int) -> Optional[dict]:
+    if not scenario_key:
+        return None
+    conn = get_db()
+    c = conn.cursor()
+    c.execute(
+        """SELECT scenario_key, prefix, step_index, image_path, prompt_hash
+           FROM ScenarioImages
+           WHERE scenario_key=? AND prefix=? AND step_index=?""",
+        (scenario_key, prefix or "", int(step_index)),
+    )
+    row = c.fetchone()
+    conn.close()
+    return dict(row) if row else None
+
+
+def _save_scenario_image(scenario_key: str, prefix: str, step_index: int, image_path_rel_to_static: str, prompt_hash: str):
+    if not scenario_key:
+        return
+    conn = get_db()
+    c = conn.cursor()
+    c.execute(
+        """REPLACE INTO ScenarioImages(scenario_key, prefix, step_index, image_path, prompt_hash)
+           VALUES(?,?,?,?,?)""",
+        (scenario_key, prefix or "", int(step_index), image_path_rel_to_static, prompt_hash),
+    )
+    conn.commit()
+    conn.close()
+def _generate_and_store_step_image_for_path(
+        *,
+        scenario_key: str,
+        prefix: str,
+        step_index: int,
+        seq: dict,
+        prefs: dict,
+        step_obj: dict,
+        story_so_far: str
+) -> Optional[str]:
+    """
+    Cache images by (scenario_key, prefix, step_index).
+    Reuses the same image across different runs for the same unique path.
+    """
+    if not _client:
+        return None
+
+    scenario_key = (scenario_key or "").strip()
+    prefix = (prefix or "").strip()
+    step_index = int(step_index)
+
+    prompt = _build_gpt_image_prompt(seq, prefs, step_obj, story_so_far)
+    ph = _sha256(prompt)
+
+    existing = _get_scenario_image(scenario_key, prefix, step_index)
+    if existing and existing.get("image_path") and existing.get("prompt_hash") == ph:
+        # also confirm file exists; if missing, regenerate
+        abs_path = os.path.join(app.static_folder, existing["image_path"].lstrip("/"))
+        if os.path.exists(abs_path):
+            return "/static/" + existing["image_path"].lstrip("/")
+
+    # stable filename by key+prefix+step
+    key_hash = _sha256(f"{scenario_key}||{prefix}")[:16]
+    out_dir = os.path.join(app.static_folder, "generated")
+    os.makedirs(out_dir, exist_ok=True)
+    filename = f"sc_{key_hash}_step_{step_index}.png"
+    abs_out = os.path.join(out_dir, filename)
+
+    try:
+        img = _client.images.generate(
+            model="gpt-image-1",
+            prompt=prompt,
+            size="1024x1024",
+        )
+        b64 = _extract_b64_from_image_response(img)
+        if not b64:
+            return None
+
+        png_bytes = base64.b64decode(b64)
+        with open(abs_out, "wb") as f:
+            f.write(png_bytes)
+
+        rel_path = os.path.join("generated", filename).replace("\\", "/")
+        _save_scenario_image(scenario_key, prefix, step_index, rel_path, ph)
+        return "/static/" + rel_path
+    except Exception as e:
+        print("[image][path-cache] generation failed:", e)
+        return None
 
 
 @app.route("/library/try/<int:source_run_id>", methods=["POST"])
@@ -3360,10 +4778,15 @@ def generate_gpt_next_step_with_llm(
         f"Role context: {role_context}\n"
         f"Tone: {(prefs.get('tone') or 'serious & age-appropriate').strip()}\n"
         f"Scenario context (war/theatre/goal): war={prefs.get('war', '')}, theatre={prefs.get('theatre', '')}, goal={prefs.get('goal', '')}\n\n"
-        "Story so far (derived from prior steps + choices):\n"
+        "CANONICAL HISTORY (read carefully; do not contradict):\n"
         f"{(story_so_far or '').strip()}\n\n"
-        f"Last choice made: {last_choice_value}\n"
+        "PREVIOUS DECISION (this is the only branch taken):\n"
+        f"{(last_choice_value or '').strip()}\n\n"
         f"Now generate step {step_index}.\n"
+        "Hard requirements:\n"
+        "- The new situation MUST be a direct consequence of the previous decision above.\n"
+        "- Do NOT reuse content from alternative branches that were not chosen.\n"
+        "- Keep names, locations, and stakes consistent with the canonical history.\n"
         f"{admin_block}"
     )
 
@@ -3699,6 +5122,222 @@ def get_active_static_sid(default="A"):
     sid = sid.strip().upper()
     return sid if sid in SCENARIO_SEQUENCES else default
 
+
+from collections import Counter
+import json
+
+
+@app.get("/run/<int:run_id>/result")
+@login_required
+def run_result(run_id: int):
+    """
+    Render scenario_result.html for a historical run (Mission Log entry).
+
+    FIXES:
+    1) Reads the latest decision per step_index (handles duplicates from re-submits).
+    2) Works with both schemas: option_value OR opt_value.
+    """
+
+    username = session.get("username")
+
+    # -------------------------
+    # 1) Load run and validate owner
+    # -------------------------
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        SELECT id, username, run_type, sid, title, started_at, finished_at
+        FROM Runs
+        WHERE id=?
+        """,
+        (run_id,)
+    )
+    run = cur.fetchone()
+    conn.close()
+
+    if not run or run["username"] != username:
+        if request.args.get("partial") == "1":
+            return jsonify({"html": "<div class='empty-state'><p>Run not found.</p></div>"}), 404
+        flash("Run not found.", "warning")
+        return redirect(url_for("profile"))
+
+    if not run["finished_at"]:
+        if request.args.get("partial") == "1":
+            return jsonify({"html": "<div class='empty-state'><p>This mission is not finished yet.</p></div>"}), 400
+        flash("This mission is not finished yet.", "warning")
+        return redirect(url_for("profile"))
+
+    # -------------------------
+    # 2) Resolve scenario sequence for this run
+    # -------------------------
+    seq = _get_library_sequence(run_id)
+    if not seq:
+        sid_u = (run["sid"] or "").strip().upper()
+        if not sid_u or sid_u not in SCENARIO_SEQUENCES:
+            if request.args.get("partial") == "1":
+                return jsonify({"html": "<div class='empty-state'><p>Scenario sequence not found.</p></div>"}), 404
+            flash("Scenario sequence not found for this run.", "warning")
+            return redirect(url_for("profile"))
+        seq = SCENARIO_SEQUENCES[sid_u]
+
+    steps = seq.get("steps", []) or []
+    if not steps:
+        if request.args.get("partial") == "1":
+            return jsonify({"html": "<div class='empty-state'><p>Scenario is missing steps.</p></div>"}), 500
+        flash("Scenario is missing steps.", "danger")
+        return redirect(url_for("profile"))
+
+    total = len(steps)
+
+    # -------------------------
+    # 3) Read progress (choices) from RunDecisions (LATEST per step)
+    # -------------------------
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("PRAGMA table_info(RunDecisions)")
+    cols = {row[1] for row in cur.fetchall()}
+
+    if "option_value" in cols:
+        value_col = "option_value"
+    elif "opt_value" in cols:
+        value_col = "opt_value"
+    else:
+        conn.close()
+        if request.args.get("partial") == "1":
+            return jsonify({
+                               "html": "<div class='empty-state'><p>RunDecisions table is missing a decision value column.</p></div>"}), 500
+        flash("RunDecisions table is missing a decision value column.", "danger")
+        return redirect(url_for("profile"))
+
+    # Select the latest row per step_index (MAX(id)) to avoid duplicates issues
+    cur.execute(
+        f"""
+        SELECT d.step_index, d.{value_col} AS choice_value
+        FROM RunDecisions d
+        JOIN (
+            SELECT step_index, MAX(id) AS max_id
+            FROM RunDecisions
+            WHERE run_id=?
+            GROUP BY step_index
+        ) last
+          ON last.step_index = d.step_index AND last.max_id = d.id
+        WHERE d.run_id=?
+        ORDER BY d.step_index ASC
+        """,
+        (run_id, run_id)
+    )
+    rows = cur.fetchall()
+    conn.close()
+
+    progress = [""] * total
+    for r in rows:
+        try:
+            si = int(r["step_index"])
+        except Exception:
+            continue
+        if 1 <= si <= total:
+            progress[si - 1] = (r["choice_value"] or "").strip()
+
+    if not all(progress):
+        if request.args.get("partial") == "1":
+            return jsonify({
+                               "html": "<div class='empty-state'><p>This mission is incomplete or missing saved decisions.</p></div>"}), 400
+        flash("This mission is incomplete or missing saved decisions.", "warning")
+        return redirect(url_for("profile"))
+
+    # -------------------------
+    # 4) Executive summary (letter path)
+    # -------------------------
+    letters = [c[0].upper() for c in progress if c]
+    path_letters = "".join(letters)
+    dominant_letter = Counter(letters).most_common(1)[0][0] if letters else "A"
+
+    resolutions = seq.get("resolutions", {}) or {}
+    exec_summary = resolutions.get(dominant_letter) or resolutions.get("A") or {
+        "title": "The Ethical Journey",
+        "resolution": "Your choices shaped a distinct path under uncertainty."
+    }
+
+    # -------------------------
+    # 5) Build decisions_view
+    # -------------------------
+    decisions_view = []
+    prev_choice = None
+
+    for idx, choice in enumerate(progress, start=1):
+        raw = steps[idx - 1]
+        st = _resolve_step_view(raw, prev_choice)
+
+        chosen_opt = next(
+            (o for o in (st.get("options") or []) if o.get("value") == choice),
+            None
+        ) or {
+                         "label": "Unknown Choice",
+                         "consequence": "No data recorded.",
+                         "story_line": ""
+                     }
+
+        decisions_view.append({
+            "step_id": idx,
+            "step_title": st.get("title", f"Phase {idx}"),
+            "situation_text": st.get("situation", "") or "",
+            "question_text": st.get("question", "") or "",
+            "chosen_value": choice,
+            "chosen_label": chosen_opt.get("label", "") or "",
+            "label": chosen_opt.get("label", "") or "",
+            "consequence": chosen_opt.get("consequence", "") or "",
+            "story_line": chosen_opt.get("story_line", "") or "",
+            "all_options": st.get("options", []) or []
+        })
+
+        prev_choice = choice
+
+    # -------------------------
+    # 6) Use cached GPT resolution (or generate if missing)
+    # -------------------------
+    gpt_report = None
+    cached = _get_run_resolution(run_id)
+    if cached:
+        gpt_report = safe_json_loads(cached, cached)
+
+    if (not gpt_report) and _client:
+        try:
+            rep = generate_analytic_resolution(
+                decisions_view=decisions_view,
+                scenario_title=seq.get("title", run["title"] or "Ethics Report"),
+                scenario_intro=seq.get("intro", "") or "",
+                path_letters=path_letters
+            )
+            _save_run_resolution(run_id, json.dumps(rep, ensure_ascii=False))
+            gpt_report = rep
+        except Exception as e:
+            print("[run_result] generate_analytic_resolution failed:", e)
+
+    ending_text = None
+    if isinstance(gpt_report, dict):
+        ending_text = gpt_report.get("final_resolution")
+    if not ending_text:
+        ending_text = exec_summary.get("resolution", "")
+
+    # -------------------------
+    # 7) Render (full OR inline partial)
+    # -------------------------
+    ctx = dict(
+        scenario_title=seq.get("title", run["title"] or "The Ethics Report"),
+        path_letters=path_letters,
+        decisions=decisions_view,
+        ending=ending_text,
+        gpt_report=gpt_report,
+        run_id=run_id
+    )
+
+    if request.args.get("partial") == "1":
+        html = render_template("_result_inline.html", **ctx)
+        return jsonify({"html": html})
+
+    return render_template("scenario_result.html", **ctx)
 
 
 if __name__ == "__main__":

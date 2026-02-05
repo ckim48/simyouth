@@ -209,6 +209,18 @@
     0% { transform: translateX(-60%); }
     100% { transform: translateX(60%); }
   }
+
+  /* ===== Inline Report polish ===== */
+  .inline-report-wrap{
+    margin-top: 10px;
+    border-radius: 16px;
+    border: 1px solid rgba(0,0,0,.08);
+    background: #fff;
+    overflow: hidden;
+  }
+  .inline-report-mount{
+    padding: 12px;
+  }
 </style>
 
 <div class="profile-wrapper">
@@ -388,32 +400,120 @@
     options: { scales: { r: { beginAtZero: true, max: 1, ticks: { display: false } } }, plugins: { legend: { display: false } }, maintainAspectRatio: false }
   });
 
-  const hasSentiment = STATS.sentiment?.dist?.positive || STATS.sentiment?.dist?.neutral || STATS.sentiment?.dist?.negative;
-  initChart('donutSentiment', 'chart-container-sentiment', !!hasSentiment, {
+  /* FIX 1: Donut uses decision emotion labels (STATS.emotional.dist) */
+  const emoDist = STATS.emotional?.dist || {};
+  const emoKeys = ['calm', 'confident', 'conflicted', 'anxious', 'distressed', 'unknown'];
+  const emoCounts = emoKeys.map(k => emoDist[k] || 0);
+
+  const hasSentiment =
+    (emoCounts.reduce((a,b)=>a+b,0) > 0) ||
+    ((STATS.emotional?.count || 0) > 0) ||
+    (typeof STATS.emotional?.avg === "number");
+
+  initChart('donutSentiment', 'chart-container-sentiment', hasSentiment, {
     type: 'doughnut',
     data: {
-      labels: ['Pos', 'Neu', 'Neg'],
+      labels: ['Calm', 'Confident', 'Conflicted', 'Anxious', 'Distressed', 'Unknown'],
       datasets: [{
-        data: [STATS.sentiment?.dist?.positive || 0, STATS.sentiment?.dist?.neutral || 0, STATS.sentiment?.dist?.negative || 0],
-        backgroundColor: ['#ab8e8e', '#cbd5e1', '#574545'],
+        data: emoCounts,
+        backgroundColor: ['#ab8e8e', '#cbd5e1', '#94a3b8', '#f59e0b', '#574545', '#e2e8f0'],
         borderWidth: 0
       }]
     },
     options: { cutout: '70%', plugins: { legend: { position: 'bottom', labels: { boxWidth: 8, font: { size: 9, weight: 'bold' } } } }, maintainAspectRatio: false }
   });
 
-  const hasSurvey = STATS.survey?.pre_confidence_avg || STATS.survey?.post_satisfaction_avg;
-  initChart('barSurvey', 'chart-container-survey', !!hasSurvey, {
+  /* FIX 2: Bar chart hasAny accepts numeric averages even if count fields are missing */
+  const hasStepSurvey =
+    ((STATS.step_survey?.count || 0) > 0) ||
+    (typeof STATS.step_survey?.confidence_avg === "number") ||
+    (typeof STATS.step_survey?.morality_avg === "number") ||
+    (typeof STATS.step_survey?.sentiment_avg === "number");
+
+  const hasEmoBar =
+    ((STATS.emotional?.count || 0) > 0) ||
+    (typeof STATS.emotional?.avg === "number");
+
+  const hasAny = hasStepSurvey || hasEmoBar;
+
+  initChart('barSurvey', 'chart-container-survey', hasAny, {
     type: 'bar',
     data: {
-      labels: ['Confidence', 'Satisfaction', 'Sentiment'],
+      labels: ['Confidence', 'Morality', 'Sentiment', 'Emotional Index'],
       datasets: [
-        { label: 'Initial', data: [STATS.survey?.pre_confidence_avg, null, STATS.sentiment?.pre_avg], backgroundColor: '#e2e8f0', borderRadius: 4 },
-        { label: 'Final', data: [null, STATS.survey?.post_satisfaction_avg, STATS.sentiment?.post_avg], backgroundColor: '#574545', borderRadius: 4 }
+        {
+          label: 'Average',
+          data: [
+            (typeof STATS.step_survey?.confidence_avg === "number" ? STATS.step_survey.confidence_avg : null),
+            (typeof STATS.step_survey?.morality_avg === "number" ? STATS.step_survey.morality_avg : null),
+            (typeof STATS.step_survey?.sentiment_avg === "number" ? STATS.step_survey.sentiment_avg : null),
+            (typeof STATS.emotional?.avg === "number" ? STATS.emotional.avg : null)
+          ],
+          borderRadius: 4
+        }
       ]
     },
-    options: { maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 1 }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
+    options: {
+      maintainAspectRatio: false,
+      scales: { y: { beginAtZero: true, max: 1 }, x: { grid: { display: false } } },
+      plugins: { legend: { display: false } }
+    }
   });
+
+  /* =========================
+     Inline Ethics Report loader
+     - buttons live inside _profile_mission_log.html
+     - expects /run/<id>/result?partial=1 -> { html }
+     ========================= */
+  (function(){
+    const wrap = document.getElementById("missionLogWrap");
+    if (!wrap) return;
+
+    const loaded = new Set();
+
+    async function loadInlineReport(runId){
+      if (!runId || loaded.has(runId)) return;
+
+      const mount = document.getElementById(`reportMount${runId}`);
+      if (!mount) return;
+
+      try{
+        const res = await fetch(`/run/${runId}/result?partial=1`, {
+          headers: { "Accept": "application/json" }
+        });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+
+        const data = await res.json();
+        if (!data || typeof data.html !== "string") throw new Error("Bad payload");
+
+        mount.innerHTML = data.html;
+        loaded.add(runId);
+      } catch (e){
+        mount.innerHTML = `
+          <div class="empty-state" style="background: var(--empty-bg); border-radius: 14px; padding: 18px;">
+                <p class="m-0">Sorry, the research report is currently unavailable for research purposes.</p>
+          </div>
+        `;
+      }
+    }
+
+    wrap.addEventListener("click", (e) => {
+      const btn = e.target.closest(".btn-view-report");
+      if (!btn) return;
+
+      const runId = btn.getAttribute("data-run-id");
+      loadInlineReport(runId);
+    });
+
+    // reset cache when mission log is replaced by pagination
+    function resetLoaded(){
+      loaded.clear();
+    }
+
+    // observe missionLogWrap inner HTML replacement (AJAX paging)
+    const obs = new MutationObserver(() => resetLoaded());
+    obs.observe(wrap, { childList: true, subtree: false });
+  })();
 
   /* =========================
      AJAX Pagination (no refresh)
@@ -435,7 +535,6 @@
       inFlight = true;
       setLoading(true);
 
-      // Keep current scroll exactly
       const y = window.scrollY || 0;
 
       try{
@@ -450,7 +549,6 @@
 
         wrap.innerHTML = data.html;
 
-        // Update URL so refresh/back/forward keeps page
         const pageParam = (new URL(href, window.location.origin)).searchParams.get("page") || "1";
         const newUrl = new URL(window.location.href);
         newUrl.searchParams.set("page", pageParam);
@@ -458,7 +556,6 @@
 
         window.scrollTo(0, y);
       } catch (err){
-        // Fallback to normal navigation if anything goes wrong
         window.location.href = href;
       } finally {
         setLoading(false);
@@ -466,7 +563,6 @@
       }
     }
 
-    // Intercept clicks on pagination links inside the wrapper
     wrap.addEventListener("click", (e) => {
       const a = e.target.closest("a.page-link");
       if (!a) return;
@@ -481,7 +577,6 @@
       loadPage(a.getAttribute("href"));
     });
 
-    // Back/forward should also AJAX load
     window.addEventListener("popstate", () => {
       const page = new URL(window.location.href).searchParams.get("page") || "1";
       loadPage(`/profile?page=${page}`);
